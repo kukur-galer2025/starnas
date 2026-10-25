@@ -1,0 +1,12 @@
+*
+!.gitignore
+!*.png
+!*.jpg
+!*.jpeg
+!*.webp
+!*.docx
+!*.pdf
+/bukti_pembayaran/*
+!/bukti_pembayaran/.gitignore
+/abstrak/*
+!/abstrak/.gitignore

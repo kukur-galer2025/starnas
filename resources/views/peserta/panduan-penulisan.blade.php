@@ -240,12 +240,12 @@
                                                     <div class="bg-teal-50/80 p-3 rounded-lg border border-teal-100">
                                                         <p class="text-teal-800 font-semibold">Batas Akhir Pengiriman
                                                             Abstrak</p>
-                                                        <p class="text-teal-950 text-lg font-bold">15 November 2025</p>
+                                                        <p class="text-teal-950 text-lg font-bold">15 November 2026</p>
                                                     </div>
                                                     <div class="bg-teal-50/80 p-3 rounded-lg border border-teal-100">
                                                         <p class="text-teal-800 font-semibold">Batas Akhir Pengiriman
                                                             Makalah</p>
-                                                        <p class="text-teal-950 text-lg font-bold">24 November 2025</p>
+                                                        <p class="text-teal-950 text-lg font-bold">24 November 2026</p>
                                                     </div>
                                                 </div>
                                             </div>

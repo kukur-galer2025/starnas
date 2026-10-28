@@ -118,248 +118,286 @@
         </div>
     </section>
 
-     <!-- SECTION RAKORNAS - Refined & Proportional Version -->
-    <section id="rakornas"
-        class="py-16 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 relative overflow-hidden border-t border-emerald-500/10">
-        <!-- Elegant Background Elements -->
-        <div class="absolute inset-0">
+     <!-- SECTION UNDANGAN RESMI SEMINAR NASIONAL ASASI 2026 -->
+    <section id="undangan"
+        class="py-16 md:py-24 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 relative overflow-hidden border-t border-emerald-500/10">
+        <!-- Background Lighting Glows -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-10 left-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-10 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-pulse"
+                style="animation-delay: 2s;"></div>
             <div
-                class="absolute top-20 left-20 w-80 h-80 bg-gradient-to-r from-amber-500/5 to-orange-500/5 rounded-full blur-3xl animate-float">
-            </div>
-            <div class="absolute bottom-20 right-20 w-72 h-72 bg-gradient-to-r from-amber-500/5 to-teal-500/5 rounded-full blur-3xl animate-pulse-slow"
-                style="animation-delay: 1.5s;"></div>
-            <div
-                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 rounded-full blur-3xl">
+                class="absolute inset-0 opacity-5 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:40px_40px]">
             </div>
         </div>
 
         <div class="container mx-auto px-4 md:px-6 relative z-10">
-            <!-- Refined Header -->
-            <div class="text-center mb-12" data-aos="fade-down">
+            <!-- Header Section -->
+            <div class="text-center mb-12 md:mb-16" data-aos="fade-down">
                 <div
-                    class="inline-flex items-center px-5 py-2 glass-effect rounded-xl text-xs mb-4 border border-amber-400/20 backdrop-blur-lg">
-                    <span class="w-2 h-2 bg-amber-400 rounded-full mr-2 animate-pulse"></span>
-                    <i class="fas fa-crown mr-2 text-amber-300"></i>
-                    <span class="text-amber-200 font-medium tracking-wide">Rapat Koordinasi Nasional</span>
+                    class="inline-flex items-center px-4 py-2 glass-effect rounded-full text-xs md:text-sm mb-4 border border-amber-400/30">
+                    <span class="w-2 h-2 bg-amber-400 rounded-full mr-2 animate-ping"></span>
+                    <i class="fas fa-bullhorn mr-2 text-amber-300"></i>
+                    <span class="text-amber-200 font-semibold tracking-wide">UNDANGAN RESMI PARTISIPASI</span>
                 </div>
-
-                <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight">
-                    <span
-                        class="bg-gradient-to-r from-white via-amber-100 to-orange-100 bg-clip-text text-transparent">RAKORNAS
-                        ASASI</span>
-                </h1>
-
-                <div class="flex justify-center mb-4">
-                    <div
-                        class="text-gradient bg-gradient-to-r from-amber-400 to-orange-500 text-xl md:text-2xl font-black px-6 py-2 rounded-xl shadow-lg border border-amber-400/40 backdrop-blur-lg">
-                        2026
-                    </div>
+                <h2 class="text-2xl md:text-4xl lg:text-5xl font-black text-white mb-4 leading-tight">
+                    Seminar Nasional <span
+                        class="bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300 bg-clip-text text-transparent">ASASI
+                        2026</span>
+                </h2>
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-900/40 border border-emerald-500/30 rounded-xl text-emerald-200 text-xs md:text-sm font-medium mb-4">
+                    <span>🤖⚡</span>
+                    <span class="italic font-semibold">“AI untuk Dukung Tenaga Terampil Dalam Mewujudkan Kemandirian
+                        Ekonomi dan Energi”</span>
                 </div>
-
-                <!-- Date & Location -->
-                <div class="flex items-center justify-center text-amber-300 font-medium text-base mb-6">
-                    <div
-                        class="flex items-center bg-white/10 backdrop-blur-lg px-4 py-2 rounded-xl border border-amber-400/30 shadow-lg">
-                        <i class="fas fa-calendar-alt mr-2 text-amber-400"></i>
-                        <span class="text-amber-200 font-medium">1-2 Desember 2026 • Grand Hotel De Djokja</span>
-                    </div>
-                </div>
+                <p class="text-slate-400 max-w-2xl mx-auto text-xs md:text-sm">
+                    Diselenggarakan oleh <strong>Akademisi dan Saintis Indonesia (ASASI)</strong> • 1–2 Desember 2026 di
+                    Grand Hotel De Djokja, Yogyakarta
+                </p>
             </div>
 
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-8 mb-12">
-                <!-- Left Content - Refined -->
-                <div class="lg:w-1/2" data-aos="fade-right">
-                    <!-- Vision Statement -->
-                    <div class="mb-6">
-                        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-relaxed">
-                            AI untuk Dukung Tenaga Terampil
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start max-w-7xl mx-auto">
+                <!-- Kolom Kiri: Surat Undangan, Keynote, Tanggal Penting, Biaya & Fasilitas (7 Kolom) -->
+                <div class="lg:col-span-7 space-y-6" data-aos="fade-right">
+
+                    <!-- Card 1: Isi Surat Undangan Resmi -->
+                    <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-white/10 shadow-2xl">
+                        <div class="flex items-center gap-3 mb-4 text-amber-300 font-semibold text-sm md:text-base">
+                            <i class="fas fa-envelope-open-text text-lg"></i>
+                            <span>Assalamu’alaikum Warahmatullahi Wabarakatuh</span>
+                        </div>
+                        <p class="text-emerald-100 font-medium text-sm md:text-base mb-3">
+                            Yth. Bapak/Ibu Pimpinan, Dosen, Peneliti, dan Rekan Sejawat,
+                        </p>
+                        <p class="text-slate-300 text-xs md:text-sm leading-relaxed mb-4">
+                            Dengan hormat, melalui pesan ini kami mengundang Bapak/Ibu untuk berpartisipasi dalam
+                            <strong>Seminar Nasional yang diselenggarakan oleh Akademisi dan Saintis Indonesia (ASASI)</strong>,
+                            baik sebagai pemakalah (presenter) maupun peserta seminar.
+                        </p>
+
+                        <!-- Keynote Speakers Mini Pill -->
+                        <div
+                            class="bg-gradient-to-r from-emerald-950/80 to-slate-900/90 rounded-xl p-4 border border-emerald-500/30 mb-4">
+                            <div
+                                class="text-xs font-bold text-amber-300 uppercase tracking-wider mb-2.5 flex items-center gap-2">
+                                <i class="fas fa-microphone-alt"></i> Keynote Speakers Resmi:
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                                    <div class="font-bold text-white text-sm">Prof. Yassierli, S.T., M.T., Ph.D</div>
+                                    <div class="text-emerald-300 text-[11px] font-medium">Menteri Tenaga Kerja RI</div>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                                    <div class="font-bold text-white text-sm">Prof. Dr. Ir. Andi Adriansyah, M.Eng</div>
+                                    <div class="text-emerald-300 text-[11px] font-medium">Rektor Universitas Mercu Buana Jakarta</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Jadwal Pill -->
+                        <div
+                            class="flex flex-wrap items-center gap-2 text-xs text-slate-300 bg-white/5 p-3 rounded-xl border border-white/10">
+                            <span class="inline-flex items-center text-amber-300 font-semibold"><i
+                                    class="fas fa-calendar-check mr-1.5"></i> 1-2 Desember 2026</span>
+                            <span class="text-slate-500">•</span>
+                            <span class="inline-flex items-center text-teal-300 font-semibold"><i
+                                    class="fas fa-clock mr-1.5"></i> 08.00 WIB - Selesai</span>
+                            <span class="text-slate-500">•</span>
+                            <span class="inline-flex items-center text-emerald-300 font-semibold"><i
+                                    class="fas fa-map-marker-alt mr-1.5"></i> Grand Hotel De Djokja, Yogyakarta</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Tanggal Penting (Important Dates) -->
+                    <div
+                        class="bg-gradient-to-br from-emerald-950/60 via-slate-900 to-slate-950 rounded-2xl p-6 md:p-8 border border-emerald-500/30 shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base md:text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-calendar-alt text-amber-400"></i> Tanggal-Tanggal Penting
+                            </h3>
                             <span
-                                class="block text-xl md:text-2xl bg-gradient-to-r from-amber-300 to-orange-300 bg-clip-text text-transparent mt-2">
-                                Dalam Mewujudkan Kemandirian Ekonomi dan Energi
+                                class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                                Segera Kirim
                             </span>
-                        </h2>
-                    </div>
+                        </div>
 
-                    <!-- Feature Highlights -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                            <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-400/40 relative">
+                                <div class="text-[11px] font-bold text-amber-300 uppercase">Deadline Abstrak</div>
+                                <div class="text-lg font-black text-white">14 November 2026</div>
+                                <div class="text-[11px] text-amber-200/90 mt-0.5">Tersisa sekitar 3 minggu</div>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
+                                <div class="text-[11px] font-bold text-teal-300 uppercase">Notifikasi Penerimaan</div>
+                                <div class="text-lg font-black text-white">18 November 2026</div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">Pengumuman seleksi abstrak</div>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
+                                <div class="text-[11px] font-bold text-emerald-300 uppercase">Deadline Registrasi</div>
+                                <div class="text-lg font-black text-white">21 November 2026</div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">Batas akhir pembayaran</div>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
+                                <div class="text-[11px] font-bold text-teal-300 uppercase">Deadline Full Paper</div>
+                                <div class="text-lg font-black text-white">28 November 2026</div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">Naskah lengkap siap prosiding</div>
+                            </div>
+                        </div>
+
+                        <!-- Himbauan Callout -->
                         <div
-                            class="group p-4 bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 hover:border-emerald-400/30 transition-all duration-300">
-                            <div
-                                class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mb-3 shadow-lg shadow-emerald-500/30">
-                                <i class="fas fa-digital-tachograph text-white"></i>
+                            class="p-3.5 bg-amber-500/15 border-l-4 border-amber-400 rounded-r-xl text-xs text-amber-100 leading-relaxed">
+                            <strong>⏳ Catatan Panitia:</strong> Mengingat batas akhir pengiriman abstrak tinggal sekitar
+                            tiga minggu lagi (14 November 2026), kami mengimbau Bapak/Ibu untuk segera mengirimkan abstrak
+                            dan melakukan pendaftaran agar tidak terlewat.
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Biaya Pendaftaran & Fasilitas Lengkap -->
+                    <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-white/10 shadow-xl">
+                        <h3 class="text-base md:text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-tags text-emerald-400"></i> Biaya Pendaftaran Seminar
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <!-- Kolom Onsite -->
+                            <div class="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30">
+                                <div class="flex items-center justify-between mb-3 pb-2 border-b border-emerald-500/20">
+                                    <span class="font-bold text-emerald-300 text-sm flex items-center gap-1.5">
+                                        <i class="fas fa-hotel"></i> Kategori Onsite
+                                    </span>
+                                    <span
+                                        class="text-[10px] bg-emerald-500/20 text-emerald-200 px-2 py-0.5 rounded font-semibold">Grand
+                                        Hotel De Djokja</span>
+                                </div>
+                                <ul class="space-y-2 text-xs">
+                                    <li class="flex justify-between items-center text-slate-300">
+                                        <span>Anggota ASASI</span>
+                                        <strong class="text-white text-sm">Rp 450.000</strong>
+                                    </li>
+                                    <li class="flex justify-between items-center text-slate-300">
+                                        <span>Umum</span>
+                                        <strong class="text-white text-sm">Rp 500.000</strong>
+                                    </li>
+                                    <li class="flex justify-between items-center text-slate-300">
+                                        <span>Mahasiswa</span>
+                                        <strong class="text-white text-sm">Rp 250.000</strong>
+                                    </li>
+                                </ul>
                             </div>
-                            <h4 class="text-white font-semibold text-base mb-1">Transformasi Digital</h4>
-                            <p class="text-emerald-200/90 text-xs leading-relaxed">Inovasi teknologi untuk pembangunan nasional
-                            </p>
+
+                            <!-- Kolom Online -->
+                            <div class="p-4 rounded-xl bg-teal-950/40 border border-teal-500/30">
+                                <div class="flex items-center justify-between mb-3 pb-2 border-b border-teal-500/20">
+                                    <span class="font-bold text-teal-300 text-sm flex items-center gap-1.5">
+                                        <i class="fas fa-video"></i> Kategori Online
+                                    </span>
+                                    <span
+                                        class="text-[10px] bg-teal-500/20 text-teal-200 px-2 py-0.5 rounded font-semibold">Virtual
+                                        Zoom</span>
+                                </div>
+                                <ul class="space-y-2 text-xs">
+                                    <li class="flex justify-between items-center text-slate-300">
+                                        <span>Anggota ASASI</span>
+                                        <strong class="text-white text-sm">Rp 250.000</strong>
+                                    </li>
+                                    <li class="flex justify-between items-center text-slate-300">
+                                        <span>Umum</span>
+                                        <strong class="text-white text-sm">Rp 300.000</strong>
+                                    </li>
+                                    <li class="flex justify-between items-center text-slate-300">
+                                        <span>Mahasiswa</span>
+                                        <strong class="text-white text-sm">Rp 150.000</strong>
+                                    </li>
+                                    <li
+                                        class="flex justify-between items-center text-slate-300 pt-1.5 border-t border-white/10">
+                                        <span class="text-amber-200 font-medium">Non Presenter</span>
+                                        <strong class="text-amber-300 text-sm">Rp 100.000</strong>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
+                        <!-- Fasilitas -->
                         <div
-                            class="group p-4 bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 hover:border-emerald-400/30 transition-all duration-300">
-                            <div
-                                class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center mb-3 shadow-lg shadow-green-500/30">
-                                <i class="fas fa-brain text-white"></i>
+                            class="p-3.5 bg-gradient-to-r from-emerald-900/40 to-teal-900/30 rounded-xl border border-emerald-500/20 mb-4">
+                            <div class="text-xs font-bold text-emerald-300 mb-1 flex items-center gap-2">
+                                <i class="fas fa-gift text-amber-400"></i> Fasilitas Semua Peserta:
                             </div>
-                            <h4 class="text-white font-semibold text-base mb-1">Pengetahuan Mendalam</h4>
-                            <p class="text-emerald-200/90 text-xs leading-relaxed">Sharing expertise pakar kelas dunia</p>
-                        </div>
-
-                        <div
-                            class="group p-4 bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 hover:border-emerald-400/30 transition-all duration-300">
-                            <div
-                                class="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-lg flex items-center justify-center mb-3 shadow-lg shadow-teal-500/30">
-                                <i class="fas fa-network-wired text-white"></i>
-                            </div>
-                            <h4 class="text-white font-semibold text-base mb-1">Kesempatan Emas</h4>
-                            <p class="text-emerald-200/90 text-xs leading-relaxed">Networking dengan peneliti terkemuka</p>
-                        </div>
-
-                        <div
-                            class="group p-4 bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 hover:border-emerald-400/30 transition-all duration-300">
-                            <div
-                                class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center mb-3 shadow-lg shadow-amber-500/30">
-                                <i class="fas fa-compass text-white"></i>
-                            </div>
-                            <h4 class="text-white font-semibold text-base mb-1">Jelajahi Lebih Lanjut</h4>
-                            <p class="text-emerald-200/90 text-xs leading-relaxed">Eksplorasi inovasi terkini</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Content - Proportional Brochure -->
-                <div class="lg:w-1/2" data-aos="fade-left" data-aos-delay="300">
-                    <div class="relative">
-                        <div
-                            class="rounded-2xl overflow-hidden shadow-xl border-2 border-white/30 backdrop-blur-lg transform hover:scale-[1.02] transition-all duration-500">
-                            <img src="/storage/rakornasbrosur.jpg" alt="Rakornas ASASI 2025"
-                                class="w-full h-auto object-cover max-w-xs mx-auto">
-                        </div>
-
-                        <!-- Premium Badge -->
-                        <div
-                            class="absolute -top-3 -right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-xl text-xs font-bold shadow-lg z-20 border border-amber-300/50">
-                            <i class="fas fa-star mr-1"></i>Premium
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Key Speakers Section - Compact -->
-            <div class="mb-12" data-aos="fade-up">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-3">Pembicara Utama</h3>
-                    <div class="w-24 h-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full mx-auto"></div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
-                    <!-- Opening Speech -->
-                    <div
-                        class="group p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 hover:border-emerald-400/40 transition-all duration-300">
-                        <div class="flex items-start">
-                            <div
-                                class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                                <i class="fas fa-microphone text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span
-                                    class="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-xs font-semibold border border-amber-400/30 mb-3 inline-block">Opening
-                                    Speech</span>
-                                <h4 class="text-lg font-bold text-white mb-2">Prof. Dr. Elfahmi, S.Si., M.Si.</h4>
-                                <p class="text-emerald-200 text-sm">Ketua Umum ASASI</p>
+                            <div class="flex flex-wrap gap-4 text-xs text-slate-200 font-medium">
+                                <span class="flex items-center gap-1.5"><i
+                                        class="fas fa-check-circle text-emerald-400"></i> Sertifikat Resmi</span>
+                                <span class="flex items-center gap-1.5"><i
+                                        class="fas fa-check-circle text-emerald-400"></i> Prosiding / Book Chapter
+                                    ber-ISBN</span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Welcome Speech -->
-                    <div
-                        class="group p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 hover:border-teal-400/40 transition-all duration-300">
-                        <div class="flex items-start">
-                            <div
-                                class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                                <i class="fas fa-handshake text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span
-                                    class="bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full text-xs font-semibold border border-orange-400/30 mb-3 inline-block">Welcome
-                                    Speech</span>
-                                <h4 class="text-lg font-bold text-white mb-2">Dr. rer.nat. Teti Zubaidah, S.T., M.T.</h4>
-                                <p class="text-emerald-200 text-sm">Ketua ASASI NTB</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Research Coach 1 -->
-                    <div
-                        class="group p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 hover:border-emerald-400/40 transition-all duration-300">
-                        <div class="flex items-start">
-                            <div
-                                class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                                <i class="fas fa-graduation-cap text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span
-                                    class="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-400/30 mb-3 inline-block">Research
-                                    Coach</span>
-                                <h4 class="text-lg font-bold text-white mb-2">Prof. Dr. Anuraga Jayanegara</h4>
-                                <p class="text-emerald-200 text-sm">World's top 2% scientist worldwide 2025</p>
-                                <p class="text-emerald-300 text-xs font-medium">Peraih Habibi Award</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Research Coach 2 -->
-                    <div
-                        class="group p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 hover:border-teal-400/40 transition-all duration-300">
-                        <div class="flex items-start">
-                            <div
-                                class="w-12 h-12 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                                <i class="fas fa-rocket text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <span
-                                    class="bg-teal-500/20 text-teal-300 px-3 py-1 rounded-full text-xs font-semibold border border-teal-400/30 mb-3 inline-block">Research
-                                    Coach</span>
-                                <h4 class="text-lg font-bold text-white mb-2">Dr. Eng. Khairul Anwar</h4>
-                                <p class="text-emerald-200 text-sm">Penemu 4G LTE</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Compact Contact Info -->
-            <div class="text-center" data-aos="fade-up">
-                <div
-                    class="glass-effect rounded-2xl p-6 border border-white/20 backdrop-blur-lg shadow-xl max-w-md mx-auto">
-                    <div
-                        class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl mb-3 shadow-lg shadow-emerald-500/30">
-                        <i class="fas fa-headset text-white"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-amber-300 mb-4">Informasi & Kontak</h3>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-sm mx-auto">
-                        <div class="text-center group">
-                            <div
-                                class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center mx-auto mb-2 border border-emerald-400/30 group-hover:bg-emerald-500/30 transition-colors">
-                                <i class="fas fa-globe text-emerald-300"></i>
-                            </div>
-                            <a href="https://s.id/rakornasasasi" target="_blank"
-                                class="text-emerald-200 hover:text-amber-300 transition-colors font-medium text-sm block">
-                                s.id/rakornasasasi
+                        <!-- Tombol Aksi & Narahubung WA -->
+                        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                            <a href="{{ route('register') }}"
+                                class="flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 transition-all duration-300 shadow-lg shadow-amber-500/20 text-sm text-center">
+                                <i class="fas fa-paper-plane"></i> Daftar & Kirim Abstrak
+                            </a>
+                            <a href="https://wa.me/6285225519882?text=Halo%20Panitia%20Seminar%20Nasional%20ASASI%202026,%20saya%20ingin%20bertanya%20mengenai%20pendaftaran"
+                                target="_blank" rel="noopener noreferrer"
+                                class="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-all duration-300 shadow-lg shadow-emerald-600/30 text-sm">
+                                <i class="fab fa-whatsapp text-lg text-emerald-200"></i>
+                                <span>Narahubung: 085225519882</span>
                             </a>
                         </div>
+                    </div>
 
-                        <div class="text-center group">
+                </div>
+
+                <!-- Kolom Kanan: Banner Resmi Terbaru 2026 (5 Kolom) -->
+                <div class="lg:col-span-5" data-aos="fade-left">
+                    <div class="sticky top-28 space-y-4">
+                        <div
+                            class="bg-gradient-to-br from-slate-900 to-emerald-950 p-2 md:p-3 rounded-2xl md:rounded-3xl border-2 border-emerald-500/40 shadow-2xl relative group">
+
+                            <!-- Badge Poster Resmi -->
                             <div
-                                class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center mx-auto mb-2 border border-amber-400/30 group-hover:bg-amber-500/30 transition-colors">
-                                <i class="fas fa-phone text-amber-400"></i>
+                                class="absolute -top-3.5 left-6 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 px-3.5 py-1 rounded-full text-xs font-black shadow-lg z-20 flex items-center gap-1.5 border border-amber-300">
+                                <i class="fas fa-star text-xs"></i> BANNER RESMI 2026
                             </div>
-                            <div class="text-emerald-200 font-medium text-sm">
-                                <div>Khairil Pahmi</div>
-                                <div class="text-amber-300 text-xs">087856779646</div>
+
+                            <div class="overflow-hidden rounded-xl md:rounded-2xl relative bg-slate-900">
+                                <img src="{{ asset('storage/banner-starnas-2026.jpeg') }}"
+                                    alt="Banner Resmi Seminar Nasional ASASI 2026"
+                                    class="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105">
+
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                    <a href="{{ asset('storage/banner-starnas-2026.jpeg') }}" target="_blank"
+                                        class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold text-center flex items-center justify-center gap-2 shadow-lg">
+                                        <i class="fas fa-search-plus"></i> Lihat Ukuran Penuh
+                                    </a>
+                                </div>
                             </div>
+
+                            <div class="p-3 text-center">
+                                <p class="text-xs text-emerald-200 font-medium">
+                                    <i class="fas fa-check-circle text-emerald-400 mr-1"></i> Poster Resmi Seminar Nasional
+                                    ASASI 2026
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Direct WhatsApp Quick Card -->
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
+                            <p class="text-xs text-slate-400 mb-2">Butuh bantuan atau informasi narahubung?</p>
+                            <a href="https://wa.me/6285225519882?text=Halo%20Panitia%20Seminar%20Nasional%20ASASI%202026"
+                                target="_blank"
+                                class="inline-flex items-center gap-2 text-xs font-bold text-amber-300 hover:text-amber-200 transition-colors">
+                                <i class="fab fa-whatsapp text-emerald-400 text-sm"></i> Chat Panitia: 085225519882
+                                (WhatsApp)
+                            </a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>

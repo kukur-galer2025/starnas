@@ -119,7 +119,7 @@
             <img src="{{ $logoUrl }}" alt="Logo STARNAS">
         </div>
         <div class="title-block">
-            <h1>LAPORAN DATA PEMBAYARAN PESERTA STARNAS 2025</h1>
+            <h1>LAPORAN DATA PEMBAYARAN PESERTA STARNAS ASASI & ICoABCD 2026</h1>
             <p>Tanggal Ekspor: {{ date('d F Y H:i:s') }} WIB</p>
         </div>
     </div>
@@ -192,7 +192,7 @@
     </table>
 
     <div class="footer">
-        Laporan ini bersifat rahasia dan dibuat otomatis oleh Sistem Administrasi STARNAS 2025.
+        Laporan ini bersifat rahasia dan dibuat otomatis oleh Sistem Administrasi STARNAS ASASI & ICoABCD 2026.
     </div>
 </body>
 </html>

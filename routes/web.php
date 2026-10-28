@@ -9,10 +9,10 @@ use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes - STARNAS 2025
+| Web Routes - STARNAS ASASI & ICoABCD 2026
 |--------------------------------------------------------------------------
 |
-| Pemetaan rute aplikasi STARNAS 2025:
+| Pemetaan rute aplikasi STARNAS ASASI & ICoABCD 2026:
 | 1. Public & Informasi Umum (Landing page, rundown, panduan)
 | 2. Guest Authentication (Login, Register)
 | 3. Authenticated Routes (Logout, Admin Portal, Peserta Portal)

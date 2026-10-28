@@ -250,7 +250,7 @@ class PesertaController extends Controller
             'peran_peserta' => $peran_peserta,
             'nomor_unik' => $nomor_sertifikat_unik,
             'tanggal_acara' => '1 - 2 Desember 2026',
-            'tempat_acara' => 'DeJogja Hotel',
+            'tempat_acara' => 'Grand Hotel De Djokja, Yogyakarta',
             'tema' => 'AI untuk Dukung Tenaga Terampil Dalam Mewujudkan Kemandirian Ekonomi dan Energi',
         ];
 

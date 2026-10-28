@@ -1076,8 +1076,7 @@
             <div class="flex justify-between items-center">
                 <div class="logo-container">
                     <img src="/storage/starnas.png" alt="Logo STARNAS" class="logo-image rounded-lg">
-                    <img src="/storage/logo-asasi.png" alt="Logo Partner" class="logo-image rounded-lg">
-                    <img src="/storage/pnm.png" alt="Logo PNM" class="logo-image rounded-lg">
+                    <img src="/storage/logo-asasi.png" alt="Logo ASASI" class="logo-image rounded-lg">
                 </div>
 
                 <nav class="hidden lg:flex space-x-2 xl:space-x-3 text-xs xl:text-sm font-medium items-center">

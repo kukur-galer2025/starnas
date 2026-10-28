@@ -241,7 +241,7 @@
                                 <!-- Contact Information -->
                                 <div class="mt-12 text-center pt-8 border-t border-gray-200">
                                     <p class="text-gray-600 mb-6 text-lg">Pertanyaan mengenai proses peer review?</p>
-                                    <a href="mailto:peer-review@starnas2025.id"
+                                    <a href="mailto:info@starnas.asasi.or.id"
                                         class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
                                         <i class="fas fa-envelope mr-3"></i>
                                         Hubungi Tim Review

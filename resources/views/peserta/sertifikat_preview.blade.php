@@ -128,7 +128,6 @@
                     {{-- UTAMA --}}
                     <img src="{{ asset('storage/starnas.png') }}" class="h-10 w-auto object-contain" alt="Starnas">
                     <img src="{{ asset('storage/logo-asasi.png') }}" class="h-8 w-auto object-contain" alt="ASASI">
-                    <img src="{{ asset('storage/pnm.png') }}" class="h-8 w-auto object-contain" alt="PNM">
                     
                     <div class="h-6 w-px bg-gray-300 mx-1"></div>
 

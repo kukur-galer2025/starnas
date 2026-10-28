@@ -365,6 +365,7 @@
 
                             <div class="overflow-hidden rounded-xl md:rounded-2xl relative bg-slate-900">
                                 <img src="{{ asset('storage/banner-starnas-2026.jpeg') }}"
+                                    loading="lazy" decoding="async"
                                     alt="Banner Resmi Seminar Nasional ASASI 2026"
                                     class="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105">
 
@@ -945,6 +946,7 @@
                     <div class="relative">
                         <div class="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 group relative">
                             <img src="{{ asset('storage/brosur-starnas-2026.jpg') }}" alt="Poster Resmi STARNAS ASASI 2026 & ICoABCD 2026"
+                                loading="lazy" decoding="async"
                                 class="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]">
                         </div>
 
@@ -1130,7 +1132,7 @@
                 <div class="speaker-card rounded-2xl overflow-hidden h-full shadow-xl bg-white transition-all duration-300 hover:-translate-y-2 border border-emerald-500/10" data-aos="fade-up" data-aos-delay="100">
                     <div class="speaker-badge badge-keynote">KEYNOTE SPEAKER</div>
                     <div class="speaker-portrait overflow-hidden relative" style="height: 380px;">
-                        <img src="/storage/yaser.jpeg" alt="Prof. Yasserly, Ph.D." class="w-full h-full object-cover object-top">
+                        <img src="/storage/yaser.jpeg" loading="lazy" decoding="async" alt="Prof. Yasserly, Ph.D." class="w-full h-full object-cover object-top">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                     </div>
                     <div class="p-6 text-center">
@@ -1143,7 +1145,7 @@
                 <div class="speaker-card rounded-2xl overflow-hidden h-full shadow-xl bg-white transition-all duration-300 hover:-translate-y-2 border border-emerald-500/10" data-aos="fade-up" data-aos-delay="200">
                     <div class="speaker-badge badge-keynote">KEYNOTE SPEAKER</div>
                     <div class="speaker-portrait overflow-hidden relative" style="height: 380px;">
-                        <img src="/storage/andi.jpeg" alt="Prof. Andy Adriansyah" class="w-full h-full object-cover object-top">
+                        <img src="/storage/andi.jpeg" loading="lazy" decoding="async" alt="Prof. Andy Adriansyah" class="w-full h-full object-cover object-top">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                     </div>
                     <div class="p-6 text-center">
@@ -1519,7 +1521,7 @@
             <div class="flex flex-col lg:flex-row items-center max-w-6xl mx-auto">
                 <div class="lg:w-1/2 mb-8 md:mb-10 lg:mb-0 w-full" data-aos="fade-right">
                     <div class="rounded-3xl overflow-hidden shadow-2xl border-2 border-emerald-500/30 relative group h-full min-h-[360px] md:min-h-[420px] flex items-end">
-                        <img src="{{ asset('storage/venue-djokja.jpg') }}" alt="Grand Hotel De Djokja Yogyakarta" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="{{ asset('storage/venue-djokja.jpg') }}" loading="lazy" decoding="async" alt="Grand Hotel De Djokja Yogyakarta" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent"></div>
                         <div class="relative z-10 p-6 md:p-8 text-white w-full">
                             <div class="inline-flex items-center px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg mb-2 shadow-md">

@@ -151,7 +151,7 @@
                             <i class="fas fa-landmark text-gray-500 mr-3"></i>
                             <span class="font-medium text-gray-700">Bank</span>
                         </div>
-                        <span class="font-bold text-primary text-lg">BSI</span>
+                        <span class="font-bold text-primary text-lg"></span>
                     </div>
                     
                     {{-- Detail Rekening --}}
@@ -161,7 +161,7 @@
                             <span class="font-medium text-gray-700">Nomor Rekening</span>
                         </div>
                         {{-- Nomor Rekening sudah disesuaikan dengan poster --}}
-                        <span class="font-bold text-gray-900 text-lg">4593464250</span> 
+                        <span class="font-bold text-gray-900 text-lg"></span> 
                     </div>
                     
                     {{-- Detail Atas Nama --}}
@@ -171,7 +171,7 @@
                             <span class="font-medium text-gray-700">Atas Nama</span>
                         </div>
                         {{-- Atas Nama sudah disesuaikan dengan poster --}}
-                        <span class="font-bold text-gray-900 text-lg">Dian Yustitia</span>
+                        <span class="font-bold text-gray-900 text-lg"></span>
                     </div>
                 </div>
                 

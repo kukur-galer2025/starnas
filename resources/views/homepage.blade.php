@@ -1160,69 +1160,200 @@
         <div class="container mx-auto px-4 md:px-6">
             <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
                 <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold uppercase tracking-wider mb-3">Registrasi & Investasi</span>
-                <h2 class="text-2xl md:text-4xl font-extrabold text-slate-900 section-title">BIAYA PENDAFTARAN STARNAS ASASI & ICoABCD 2026</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto text-sm md:text-base mt-2">Informasi biaya pendaftaran untuk berbagai kategori peserta pemakalah dan non-presenter.</p>
+                <h2 class="text-2xl md:text-4xl font-extrabold text-slate-900 section-title">BIAYA PENDAFTARAN SEMINAR NASIONAL ASASI 2026</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto text-sm md:text-base mt-2">Informasi biaya pendaftaran resmi untuk kategori Onsite (Offline di Grand Hotel De Djokja) dan Online (Virtual Zoom Meeting).</p>
             </div>
 
             <div class="max-w-6xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
-                    <div class="bg-white rounded-2xl shadow-xl p-4 md:p-6 text-center hover-lift price-card group border border-emerald-100 hover:border-emerald-400 transition-all duration-300"
-                        data-aos="fade-up" data-aos-delay="100">
-                        <div
-                            class="benefit-icon bg-gradient-to-r from-emerald-600 to-teal-600 text-white mx-auto mb-3 md:mb-4 shadow-md shadow-emerald-500/20">
-                            <i class="fas fa-user-tie text-lg md:text-xl"></i>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 md:mb-12">
+                    <!-- KATEGORI ONSITE (OFFLINE) -->
+                    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border-2 border-emerald-500/30 relative flex flex-col justify-between hover:shadow-2xl transition-all duration-300"
+                        data-aos="fade-right">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                    <i class="fas fa-hotel"></i> KATEGORI ONSITE (OFFLINE)
+                                </span>
+                                <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                                    <i class="fas fa-map-marker-alt mr-1"></i> Grand Hotel De Djokja
+                                </span>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-black text-slate-900 mb-1">Pemakalah Onsite</h3>
+                            <p class="text-xs md:text-sm text-slate-500 mb-6">Presentasi tatap muka langsung di Grand Hotel De Djokja, Yogyakarta (1-2 Desember 2026).</p>
+
+                            <!-- DAFTAR HARGA ONSITE -->
+                            <div class="space-y-3 mb-6">
+                                <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-50/70 to-slate-50 border border-emerald-100 flex items-center justify-between hover:border-emerald-300 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-600/20">
+                                            <i class="fas fa-user-tie"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 text-sm md:text-base">Anggota ASASI</div>
+                                            <div class="text-[11px] text-slate-500">Khusus anggota aktif ASASI</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg md:text-xl font-black text-emerald-600">Rp 450.000</div>
+                                        <span class="text-[10px] text-emerald-700 font-semibold bg-emerald-100/80 px-2 py-0.5 rounded">Onsite</span>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-50/70 to-slate-50 border border-emerald-100 flex items-center justify-between hover:border-emerald-300 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold shadow-md shadow-teal-600/20">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 text-sm md:text-base">Umum</div>
+                                            <div class="text-[11px] text-slate-500">Dosen, praktisi & peneliti umum</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg md:text-xl font-black text-emerald-600">Rp 500.000</div>
+                                        <span class="text-[10px] text-emerald-700 font-semibold bg-emerald-100/80 px-2 py-0.5 rounded">Onsite</span>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-50/70 to-slate-50 border border-emerald-100 flex items-center justify-between hover:border-emerald-300 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center font-bold shadow-md shadow-teal-500/20">
+                                            <i class="fas fa-user-graduate"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 text-sm md:text-base">Mahasiswa</div>
+                                            <div class="text-[11px] text-slate-500">Khusus mahasiswa aktif (D3/S1/S2)</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg md:text-xl font-black text-emerald-600">Rp 250.000</div>
+                                        <span class="text-[10px] text-emerald-700 font-semibold bg-emerald-100/80 px-2 py-0.5 rounded">Onsite</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FASILITAS ONSITE -->
+                            <div class="p-4 rounded-2xl bg-emerald-900/5 border border-emerald-500/20 mb-6">
+                                <div class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <i class="fas fa-check-double text-emerald-600"></i> Fasilitas Kategori Onsite:
+                                </div>
+                                <ul class="text-xs text-slate-600 space-y-1.5">
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> Presentasi langsung tatap muka di Ballroom Hotel</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> Sertifikat Resmi & Prosiding / Book Chapter ISBN</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> Seminar Kit, Lunch Buffet & Coffee Break Hotel</li>
+                                </ul>
+                            </div>
                         </div>
-                        <h3 class="text-base md:text-lg font-bold text-slate-800 mb-2 md:mb-3">Anggota ASASI</h3>
-                        <div class="text-xl md:text-2xl font-black text-emerald-600 mb-3 md:mb-4">Rp. 450.000,-</div>
-                        <p class="text-slate-500 text-xs md:text-sm mb-3 md:mb-4">Khusus anggota aktif ASASI</p>
+
                         <a href="{{ route('register') }}"
-                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold py-2 px-3 md:py-2 md:px-4 rounded-lg transition-all duration-300 w-full block text-xs md:text-sm shadow-md shadow-emerald-600/20">
-                            Daftar Sekarang
+                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-300 w-full text-center text-sm shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2">
+                            <span>Daftar Pemakalah Onsite</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
                         </a>
                     </div>
 
-                    <div class="bg-white rounded-2xl shadow-xl p-4 md:p-6 text-center hover-lift price-card group border border-emerald-100 hover:border-emerald-400 transition-all duration-300"
-                        data-aos="fade-up" data-aos-delay="200">
-                        <div
-                            class="benefit-icon bg-gradient-to-r from-teal-600 to-emerald-700 text-white mx-auto mb-3 md:mb-4 shadow-md shadow-teal-500/20">
-                            <i class="fas fa-users text-lg md:text-xl"></i>
-                        </div>
-                        <h3 class="text-base md:text-lg font-bold text-slate-800 mb-2 md:mb-3">Umum</h3>
-                        <div class="text-xl md:text-2xl font-black text-emerald-600 mb-3 md:mb-4">Rp. 500.000,-</div>
-                        <p class="text-slate-500 text-xs md:text-sm mb-3 md:mb-4">Untuk peserta umum</p>
-                        <a href="{{ route('register') }}"
-                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold py-2 px-3 md:py-2 md:px-4 rounded-lg transition-all duration-300 w-full block text-xs md:text-sm shadow-md shadow-emerald-600/20">
-                            Daftar Sekarang
-                        </a>
-                    </div>
+                    <!-- KATEGORI ONLINE (DARING) -->
+                    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border-2 border-teal-500/30 relative flex flex-col justify-between hover:shadow-2xl transition-all duration-300"
+                        data-aos="fade-left">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300">
+                                    <i class="fas fa-video"></i> KATEGORI ONLINE (DARING)
+                                </span>
+                                <span class="text-xs text-teal-700 font-semibold bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200">
+                                    <i class="fas fa-laptop mr-1"></i> Virtual Zoom Meeting
+                                </span>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-black text-slate-900 mb-1">Pemakalah & Peserta Online</h3>
+                            <p class="text-xs md:text-sm text-slate-500 mb-6">Partisipasi fleksibel secara virtual melalui Zoom Meeting dari mana saja.</p>
 
-                    <div class="bg-white rounded-2xl shadow-xl p-4 md:p-6 text-center hover-lift price-card group border border-emerald-100 hover:border-emerald-400 transition-all duration-300"
-                        data-aos="fade-up" data-aos-delay="300">
-                        <div
-                            class="benefit-icon bg-gradient-to-r from-teal-500 to-emerald-600 text-white mx-auto mb-3 md:mb-4 shadow-md shadow-teal-500/20">
-                            <i class="fas fa-user-graduate text-lg md:text-xl"></i>
-                        </div>
-                        <h3 class="text-base md:text-lg font-bold text-slate-800 mb-2 md:mb-3">Mahasiswa</h3>
-                        <div class="text-xl md:text-2xl font-black text-emerald-600 mb-3 md:mb-4">Rp. 250.000,-</div>
-                        <p class="text-slate-500 text-xs md:text-sm mb-3 md:mb-4">Khusus mahasiswa aktif</p>
-                        <a href="{{ route('register') }}"
-                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold py-2 px-3 md:py-2 md:px-4 rounded-lg transition-all duration-300 w-full block text-xs md:text-sm shadow-md shadow-emerald-600/20">
-                            Daftar Sekarang
-                        </a>
-                    </div>
+                            <!-- DAFTAR HARGA ONLINE -->
+                            <div class="space-y-3 mb-6">
+                                <div class="p-3.5 rounded-2xl bg-gradient-to-r from-teal-50/70 to-slate-50 border border-teal-100 flex items-center justify-between hover:border-teal-300 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold shadow-md shadow-teal-600/20 text-xs">
+                                            <i class="fas fa-user-tie"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 text-sm">Anggota ASASI</div>
+                                            <div class="text-[11px] text-slate-500">Khusus anggota aktif ASASI</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-base md:text-lg font-black text-teal-600">Rp 250.000</div>
+                                        <span class="text-[10px] text-teal-700 font-semibold bg-teal-100/80 px-2 py-0.5 rounded">Online</span>
+                                    </div>
+                                </div>
 
-                    <div class="bg-white rounded-2xl shadow-xl p-4 md:p-6 text-center hover-lift price-card group border border-emerald-100 hover:border-emerald-400 transition-all duration-300"
-                        data-aos="fade-up" data-aos-delay="400">
-                        <div
-                            class="benefit-icon bg-gradient-to-r from-amber-500 to-amber-600 text-white mx-auto mb-3 md:mb-4 shadow-md shadow-amber-500/20">
-                            <i class="fas fa-user text-lg md:text-xl"></i>
+                                <div class="p-3.5 rounded-2xl bg-gradient-to-r from-teal-50/70 to-slate-50 border border-teal-100 flex items-center justify-between hover:border-teal-300 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold shadow-md shadow-teal-700/20 text-xs">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 text-sm">Umum</div>
+                                            <div class="text-[11px] text-slate-500">Dosen, praktisi & peneliti umum</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-base md:text-lg font-black text-teal-600">Rp 300.000</div>
+                                        <span class="text-[10px] text-teal-700 font-semibold bg-teal-100/80 px-2 py-0.5 rounded">Online</span>
+                                    </div>
+                                </div>
+
+                                <div class="p-3.5 rounded-2xl bg-gradient-to-r from-teal-50/70 to-slate-50 border border-teal-100 flex items-center justify-between hover:border-teal-300 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-teal-500 text-white flex items-center justify-center font-bold shadow-md shadow-teal-500/20 text-xs">
+                                            <i class="fas fa-user-graduate"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 text-sm">Mahasiswa</div>
+                                            <div class="text-[11px] text-slate-500">Khusus mahasiswa aktif (D3/S1/S2)</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-base md:text-lg font-black text-teal-600">Rp 150.000</div>
+                                        <span class="text-[10px] text-teal-700 font-semibold bg-teal-100/80 px-2 py-0.5 rounded">Online</span>
+                                    </div>
+                                </div>
+
+                                <div class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50/70 border-2 border-amber-300/80 flex items-center justify-between shadow-sm">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white flex items-center justify-center font-bold shadow-md shadow-amber-500/20 text-xs">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                                                <span>Non Presenter</span>
+                                                <span class="text-[10px] bg-amber-200 text-amber-900 font-bold px-1.5 py-0.5 rounded">Peserta Saja</span>
+                                            </div>
+                                            <div class="text-[11px] text-slate-500">Peserta tanpa presentasi makalah</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-base md:text-lg font-black text-amber-600">Rp 100.000</div>
+                                        <span class="text-[10px] text-amber-800 font-semibold bg-amber-100 px-2 py-0.5 rounded">Online</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FASILITAS ONLINE -->
+                            <div class="p-4 rounded-2xl bg-teal-900/5 border border-teal-500/20 mb-6">
+                                <div class="text-xs font-bold text-teal-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <i class="fas fa-check-double text-teal-600"></i> Fasilitas Kategori Online:
+                                </div>
+                                <ul class="text-xs text-slate-600 space-y-1.5">
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-teal-500 text-[10px]"></i> Akses virtual interaktif via Zoom Meeting</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-teal-500 text-[10px]"></i> e-Sertifikat Resmi & Prosiding / Book Chapter ISBN</li>
+                                    <li class="flex items-center gap-2"><i class="fas fa-check text-teal-500 text-[10px]"></i> Materi seminar & rekaman sesi pleno</li>
+                                </ul>
+                            </div>
                         </div>
-                        <h3 class="text-base md:text-lg font-bold text-slate-800 mb-2 md:mb-3">Non Presenter</h3>
-                        <div class="text-xl md:text-2xl font-black text-emerald-600 mb-3 md:mb-4">Rp. 100.000,-</div>
-                        <p class="text-slate-500 text-xs md:text-sm mb-3 md:mb-4">Peserta tanpa presentasi</p>
+
                         <a href="{{ route('register') }}"
-                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold py-2 px-3 md:py-2 md:px-4 rounded-lg transition-all duration-300 w-full block text-xs md:text-sm shadow-md shadow-emerald-600/20">
-                            Daftar Sekarang
+                            class="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-300 w-full text-center text-sm shadow-lg shadow-teal-600/25 flex items-center justify-center gap-2">
+                            <span>Daftar Kategori Online</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
                         </a>
                     </div>
                 </div>

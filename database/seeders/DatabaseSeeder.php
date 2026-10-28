@@ -17,26 +17,29 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Akun Admin
-        User::create([
-            'nama_lengkap' => 'Administrator Utama',
-            'email' => 'admin@starnas.com',
-            'password' => Hash::make('password'), // Password: 'password'
-            'role' => 'admin',
-            // Kolom opsional lain diabaikan karena ini akun sederhana
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@starnas.com'],
+            [
+                'nama_lengkap' => 'Administrator Utama',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+            ]
+        );
 
         // 2. Akun Peserta Uji Coba (dengan data lengkap)
-        User::create([
-            'nama_lengkap' => 'Budi Peserta',
-            'email' => 'peserta@starnas.com',
-            'password' => Hash::make('password'), // Password: 'password'
-            'pekerjaan' => 'Mahasiswa',
-            'jenis_kelamin' => 'Laki-laki',
-            'nomor_handphone' => '081234567890',
-            'provinsi' => 'DKI Jakarta',
-            'institusi' => 'Universitas Uji Coba',
-            'role' => 'peserta',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'peserta@starnas.com'],
+            [
+                'nama_lengkap' => 'Budi Peserta',
+                'password' => Hash::make('password'),
+                'pekerjaan' => 'Mahasiswa',
+                'jenis_kelamin' => 'Laki-laki',
+                'nomor_handphone' => '081234567890',
+                'provinsi' => 'DKI Jakarta',
+                'institusi' => 'Universitas Uji Coba',
+                'role' => 'peserta',
+            ]
+        );
 
     }
 }

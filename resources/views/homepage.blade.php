@@ -1067,21 +1067,21 @@
             </div>
 
             <div class="flex flex-col md:flex-row justify-center gap-6 md:gap-8 max-w-4xl mx-auto">
-                <a href="{{ asset('storage/rakornasbrosur.jpg') }}" download="Brosur_Rakornas_ASASI.jpg"
+                <a href="{{ asset('storage/banner-starnas-2026.jpeg') }}" download="Banner_Seminar_Nasional_ASASI_2026.jpeg"
                     class="group flex-1 min-w-0 md:w-1/2 p-6 md:p-8 bg-white rounded-2xl shadow-xl border-t-4 border-emerald-600 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                     data-aos="zoom-in" data-aos-delay="100">
 
                     <div class="flex items-center space-x-4 md:space-x-6">
                         <div
                             class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 bg-emerald-600 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-emerald-600/30">
-                            <i class="fas fa-file-pdf text-white text-xl md:text-2xl"></i>
+                            <i class="fas fa-image text-white text-xl md:text-2xl"></i>
                         </div>
                         <div class="flex-1 text-left">
                             <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-1">
-                                Brosur <span class="text-emerald-600">Rakornas</span> ASASI
+                                Banner <span class="text-emerald-600">Seminar Nasional</span> ASASI
                             </h4>
                             <p class="text-sm text-gray-500">
-                                Klik untuk Unduh Dokumen Lengkap Rakornas
+                                Klik untuk Unduh Banner Resmi 2026
                             </p>
                         </div>
                         <div
@@ -1091,7 +1091,7 @@
                     </div>
                 </a>
 
-                <a href="{{ asset('storage/icoabcd-brosur.jpg') }}" download="Brosur_ICoABCD.jpg"
+                <a href="{{ asset('storage/brosur-starnas-2026.jpg') }}" download="Poster_STARNAS_ICoABCD_2026.jpg"
                     class="group flex-1 min-w-0 md:w-1/2 p-6 md:p-8 bg-white rounded-2xl shadow-xl border-t-4 border-amber-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                     data-aos="zoom-in" data-aos-delay="300">
 
@@ -1102,10 +1102,10 @@
                         </div>
                         <div class="flex-1 text-left">
                             <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-1">
-                                Brosur <span class="text-amber-600">ICoABCD</span>
+                                Poster <span class="text-amber-600">STARNAS & ICoABCD</span>
                             </h4>
                             <p class="text-sm text-gray-500">
-                                Klik untuk Unduh Dokumen Lengkap ICoABCD
+                                Klik untuk Unduh Poster Resmi 2026
                             </p>
                         </div>
                         <div

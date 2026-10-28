@@ -34,5 +34,9 @@ cgi-bin
 !/storage/app/public/bukti_pembayaran/.gitignore
 /storage/app/public/abstrak/*
 !/storage/app/public/abstrak/.gitignore
+/public/storage/bukti_pembayaran/*
+!/public/storage/bukti_pembayaran/.gitignore
+/public/storage/abstrak/*
+!/public/storage/abstrak/.gitignore
 /public_html/storage/bukti_pembayaran/*
 /public_html/storage/abstrak/*

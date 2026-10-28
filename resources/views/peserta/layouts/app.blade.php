@@ -1557,7 +1557,7 @@
         // Function untuk preload images untuk menghindari flicker
         function preloadSliderImages() {
             const images = [
-                '/storage/sembalun.jpg',
+                '/storage/banner-starnas-2026.jpeg',
                 '/storage/konferensi.png',
                 '/storage/pidato.png'
             ];

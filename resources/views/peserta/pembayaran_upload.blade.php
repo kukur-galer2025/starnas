@@ -110,14 +110,18 @@
                                 </label>
                                 <select id="kategori_pembayaran" name="kategori_pembayaran" required
                                     class="block w-full p-3 bg-gray-50 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-300">
-                                    <option value="" selected disabled>-- Pilih Kategori --</option>
-                                    <option value="asasi_onsite">Anggota ASASI (Pemakalah Onsite)</option>
-                                    <option value="umum_onsite">Umum (Pemakalah Onsite)</option>
-                                    <option value="mahasiswa_onsite">Mahasiswa (Pemakalah Onsite)</option>
-                                    <option value="asasi_online">Anggota ASASI (Pemakalah Online)</option>
-                                    <option value="umum_online">Umum (Pemakalah Online)</option>
-                                    <option value="mahasiswa_online">Mahasiswa (Pemakalah Online)</option>
-                                    <option value="non-presenter">Non Presenter</option>
+                                    <option value="" selected disabled>-- Pilih Kategori & Tarif Pendaftaran --</option>
+                                    <optgroup label="📍 KATEGORI ONSITE (OFFLINE DI YOGYAKARTA)">
+                                        <option value="asasi_onsite">Anggota ASASI (Pemakalah Onsite) — Rp 450.000</option>
+                                        <option value="umum_onsite">Umum (Pemakalah Onsite) — Rp 500.000</option>
+                                        <option value="mahasiswa_onsite">Mahasiswa (Pemakalah Onsite) — Rp 250.000</option>
+                                    </optgroup>
+                                    <optgroup label="💻 KATEGORI ONLINE (VIRTUAL ZOOM)">
+                                        <option value="asasi_online">Anggota ASASI (Pemakalah Online) — Rp 250.000</option>
+                                        <option value="umum_online">Umum (Pemakalah Online) — Rp 300.000</option>
+                                        <option value="mahasiswa_online">Mahasiswa (Pemakalah Online) — Rp 150.000</option>
+                                        <option value="non-presenter">Non Presenter (Online) — Rp 100.000</option>
+                                    </optgroup>
                                 </select>
                             </div>
 
@@ -210,10 +214,10 @@
                         </div>
                     </div>
                     {{-- Ganti link/nomor WhatsApp jika diperlukan --}}
-                    <a href="https://wa.me/628122718132" target="_blank"
+                    <a href="https://wa.me/6285225519882?text=Halo%20Admin%20STARNAS%20ASASI%202026,%20saya%20butuh%20bantuan%20terkait%20pembayaran" target="_blank"
                         class="inline-flex items-center px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
                         <i class="fab fa-whatsapp text-lg mr-2"></i>
-                        Chat Admin
+                        Chat Admin (085225519882)
                     </a>
                 </div>
             </div>

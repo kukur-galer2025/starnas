@@ -33,16 +33,32 @@
                 </div>
                 
                 <div class="p-6">
-                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                        <i class="fas fa-bookmark text-accent mr-2"></i>
-                        Brosur STARNAS ASASI & ICoABCD 2026
-                    </h4>
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-lg font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-bullhorn text-amber-500 mr-2"></i>
+                            Banner Resmi Seminar Nasional ASASI 2026
+                        </h4>
+                        <a href="{{ asset('storage/banner-starnas-2026.jpeg') }}" target="_blank"
+                            class="text-xs text-emerald-700 hover:text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 flex items-center gap-1 transition-colors">
+                            <i class="fas fa-search-plus"></i> Lihat Ukuran Penuh
+                        </a>
+                    </div>
                     
-                    <div class="mt-4 border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-[1.02]">
-                        <img src="{{ asset('storage/brosur-starnas.jpg') }}" 
-                             alt="Brosur Resmi STARNAS ASASI & ICoABCD 2026" 
-                             class="w-full h-auto object-cover"
-                             onerror="this.src='https://via.placeholder.com/800x1000/059669/ffffff?text=STARNAS+2026+Brosur'">
+                    <div class="mt-2 border-2 border-emerald-500/30 rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-[1.01] bg-slate-900">
+                        <img src="{{ asset('storage/banner-starnas-2026.jpeg') }}" 
+                             alt="Banner Resmi Seminar Nasional ASASI 2026" 
+                             class="w-full h-auto object-contain">
+                    </div>
+
+                    <div class="mt-3 flex flex-col sm:flex-row gap-2.5">
+                        <a href="{{ asset('storage/banner-starnas-2026.jpeg') }}" download="Banner_Seminar_Nasional_ASASI_2026.jpeg"
+                            class="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl text-center flex items-center justify-center gap-1.5 shadow-sm transition-all">
+                            <i class="fas fa-download"></i> Unduh Banner Resmi 2026
+                        </a>
+                        <a href="{{ asset('storage/brosur-starnas-2026.jpg') }}" target="_blank"
+                            class="flex-1 py-2 px-3 bg-white border border-emerald-300 hover:bg-emerald-50 text-emerald-800 text-xs font-bold rounded-xl text-center flex items-center justify-center gap-1.5 shadow-sm transition-all">
+                            <i class="fas fa-image"></i> Lihat Poster ICoABCD 2026
+                        </a>
                     </div>
 
                     <!-- Event Details -->

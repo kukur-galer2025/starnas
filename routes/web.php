@@ -56,13 +56,13 @@ Route::middleware('guest')->group(function () {
     // Registrasi
     Route::controller(RegisterController::class)->group(function () {
         Route::get('/register', 'showRegistrationForm')->name('register');
-        Route::post('/register', 'register');
+        Route::post('/register', 'register')->middleware('throttle:10,1');
     });
 
     // Login & Google OAuth
     Route::controller(LoginController::class)->group(function () {
         Route::get('/login', 'showLoginForm')->name('login');
-        Route::post('/login', 'login');
+        Route::post('/login', 'login')->middleware('throttle:10,1');
         Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');
         Route::get('/auth/google/callback', 'handleGoogleCallback')->name('auth.google.callback');
     });
@@ -90,6 +90,9 @@ Route::middleware(['auth'])->group(function () {
             // Dashboard
             Route::get('/dashboard', 'dashboard')->name('dashboard');
 
+            // Sinkronisasi data masuk (dipoll browser admin)
+            Route::get('/status-sinkron', 'statusSinkron')->name('status.sinkron');
+
             // Manajemen Users (Peserta & Admin)
             Route::prefix('users')->name('users.')->group(function () {
                 Route::get('/', 'manageUsers')->name('index');
@@ -104,6 +107,13 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/{pembayaran}/verify', 'verifyPayment')->name('verify');
                 Route::post('/{pembayaran}/reject', 'rejectPayment')->name('reject');
                 Route::get('/{pembayaran}/view-bukti', 'viewBuktiPembayaran')->name('view-bukti');
+            });
+
+            // Log & Status Email
+            Route::prefix('emails')->name('emails.')->group(function () {
+                Route::get('/', 'emailLogs')->name('index');
+                Route::post('/resend-gagal', 'resendFailedEmails')->name('resend-failed');
+                Route::post('/{emailLog}/resend', 'resendEmail')->name('resend');
             });
 
             // Laporan Pembayaran
@@ -126,13 +136,23 @@ Route::middleware(['auth'])->group(function () {
     // PESERTA PORTAL (Prefix: /peserta | Role: peserta)
     // ---------------------------------------------------------------------
     Route::prefix('peserta')
-        ->middleware('role:peserta')
+        ->middleware(['role:peserta', 'profil.lengkap'])
         ->name('peserta.')
         ->controller(PesertaController::class)
         ->group(function () {
 
             // Beranda Peserta
             Route::get('/beranda', 'beranda')->name('beranda');
+
+            // Notifikasi (lonceng)
+            Route::prefix('notifikasi')->name('notifikasi.')->group(function () {
+                Route::get('/', 'notifikasi')->name('index');
+                Route::post('/baca-semua', 'bacaSemuaNotifikasi')->name('baca-semua');
+                Route::get('/{notifikasi}/buka', 'bukaNotifikasi')->name('buka');
+            });
+
+            // Sinkronisasi status abstrak & pembayaran (dipoll browser)
+            Route::get('/status-sinkron', 'statusSinkron')->name('status.sinkron');
 
             // Manajemen Pembayaran & Upload Bukti
             Route::prefix('pembayaran')->name('pembayaran.')->group(function () {

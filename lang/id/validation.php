@@ -1,0 +1,46 @@
+<?php
+
+return [
+    'accepted' => ':attribute harus disetujui.',
+    'confirmed' => 'Konfirmasi :attribute tidak cocok.',
+    'email' => ':attribute harus berupa alamat email yang valid.',
+    'file' => ':attribute harus berupa berkas.',
+    'in' => ':attribute yang dipilih tidak valid.',
+    'image' => ':attribute harus berupa gambar.',
+    'mimes' => ':attribute harus berupa berkas bertipe: :values.',
+    'required' => ':attribute wajib diisi.',
+    'string' => ':attribute harus berupa teks.',
+    'unique' => ':attribute sudah terdaftar. Gunakan yang lain atau login.',
+    'uploaded' => ':attribute gagal diunggah. Periksa ukuran berkas dan coba lagi.',
+    'max' => [
+        'string' => ':attribute maksimal :max karakter.',
+        'file' => 'Ukuran :attribute maksimal :max KB.',
+        'numeric' => ':attribute maksimal :max.',
+        'array' => ':attribute maksimal :max item.',
+    ],
+    'min' => [
+        'string' => ':attribute minimal :min karakter.',
+        'file' => 'Ukuran :attribute minimal :min KB.',
+        'numeric' => ':attribute minimal :min.',
+        'array' => ':attribute minimal :min item.',
+    ],
+
+    'attributes' => [
+        'nama_lengkap' => 'Nama lengkap',
+        'email' => 'Email',
+        'password' => 'Password',
+        'password_confirmation' => 'Konfirmasi password',
+        'pekerjaan' => 'Pekerjaan',
+        'jenis_kelamin' => 'Jenis kelamin',
+        'nomor_handphone' => 'Nomor handphone',
+        'provinsi' => 'Provinsi',
+        'institusi' => 'Institusi',
+        'judul_abstrak' => 'Judul abstrak',
+        'abstrak_file' => 'File abstrak',
+        'bukti_bayar' => 'Bukti pembayaran',
+        'kategori_pembayaran' => 'Kategori pembayaran',
+        'nomor_anggota_asasi' => 'Nomor anggota ASASI',
+        'catatan_admin' => 'Catatan admin',
+        'catatan_reviewer_abstrak' => 'Catatan reviewer',
+    ],
+];

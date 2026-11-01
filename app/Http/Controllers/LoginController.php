@@ -22,8 +22,16 @@ class LoginController extends Controller
     /**
      * Redirect pengguna ke halaman autentikasi Google.
      */
-    public function redirectToGoogle()
+    public function redirectToGoogle(Request $request)
     {
+        // Google selalu mengembalikan ke host APP_URL. Jika login dimulai dari host lain
+        // (mis. 127.0.0.1 vs localhost, atau www vs non-www), cookie sesi tidak ikut
+        // terbawa dan muncul InvalidStateException. Pindahkan dulu ke host yang benar.
+        $appUrl = rtrim(config('app.url'), '/');
+        if ($request->getSchemeAndHttpHost() !== $appUrl) {
+            return redirect()->away($appUrl . '/auth/google');
+        }
+
         return Socialite::driver('google')->redirect();
     }
 
@@ -70,8 +78,13 @@ class LoginController extends Controller
 
             return redirect()->intended(route('home'));
 
+        } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+            Log::warning('Google Auth: sesi login kedaluwarsa / host berbeda.');
+            return redirect()->away(rtrim(config('app.url'), '/') . '/login')->withErrors([
+                'email' => 'Sesi login Google kedaluwarsa. Silakan klik "Masuk dengan Google" sekali lagi.',
+            ]);
         } catch (\Exception $e) {
-            Log::error('Google Auth Error: ' . $e->getMessage());
+            Log::error('Google Auth Error: ' . get_class($e) . ' - ' . $e->getMessage());
             return redirect()->route('login')->withErrors([
                 'email' => 'Gagal masuk melalui Google. Silakan coba lagi atau gunakan login email.',
             ]);

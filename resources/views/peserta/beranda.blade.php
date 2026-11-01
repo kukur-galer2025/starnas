@@ -3,6 +3,15 @@
 @section('title', 'Beranda & Informasi STARNAS ASASI & ICoABCD 2026')
 
 @section('content')
+    <div class="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-2xl mb-6 flex items-start gap-3">
+        <i class="fas fa-envelope-open-text text-amber-500 mt-0.5"></i>
+        <p class="text-sm leading-relaxed">
+            <strong>Penting:</strong> status abstrak dan pembayaran juga dikirim ke email Anda.
+            <strong>Selalu cek folder Spam/Junk</strong>, dan tandai "Bukan spam" agar email berikutnya masuk inbox.
+            Anda juga bisa melihat semua pemberitahuan lewat ikon lonceng di atas.
+        </p>
+    </div>
+
     <!-- Welcome Alert -->
     <div class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-700 text-white p-6 rounded-2xl shadow-lg mb-8" role="alert">
         <div class="flex items-start space-x-4">

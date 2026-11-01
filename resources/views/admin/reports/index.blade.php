@@ -1,126 +1,230 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Laporan Pembayaran Peserta')
+@section('title', 'Laporan Pembayaran')
 
 @section('content')
-    <div class="bg-white p-8 rounded-2xl shadow-2xl">
-        
-        {{-- HEADER & EXPORT BUTTON --}}
-        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
-            <h3 class="text-3xl font-extrabold text-gray-900 flex items-center">
-                <i class="fas fa-file-invoice-dollar mr-3 text-emerald-600"></i> Data Laporan Pembayaran
-            </h3>
-            
-            <a href="{{ route('admin.reports.payments.export-pdf', ['search' => request('search')]) }}" target="_blank"
-               class="inline-flex items-center px-6 py-2.5 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition duration-150 transform hover:scale-105">
-                <i class="fas fa-file-pdf mr-2"></i> Ekspor ke PDF ({{ $payments->count() }} Data)
-            </a>
-        </div>
+    @php
+        $statusDipilih = (array) request('status', []);
+        $kategoriDipilih = (array) request('kategori', []);
+        $adaFilter = request()->hasAny(['search', 'status', 'kategori', 'dari', 'sampai']);
+        $totalNominal = $payments->sum('nominal');
+    @endphp
 
-        {{-- SEARCH FORM --}}
-        <div class="mb-6">
-            <form action="{{ route('admin.reports.payments.index') }}" method="GET" class="flex gap-3 items-center">
-                <input 
-                    type="text" 
-                    name="search" 
-                    placeholder="Cari Nama, Email, atau No. HP Peserta..." 
-                    value="{{ request('search') }}"
-                    class="block w-full rounded-xl border-gray-300 shadow-sm p-3 focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm transition duration-150"
-                >
-                <button type="submit" class="inline-flex items-center px-5 py-3 border border-transparent rounded-xl shadow-md text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
-                    <i class="fas fa-search mr-1"></i> Cari
-                </button>
-                @if (request('search'))
-                    <a href="{{ route('admin.reports.payments.index') }}" class="inline-flex items-center px-5 py-3 border border-gray-300 rounded-xl shadow-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                        <i class="fas fa-sync mr-1"></i> Reset
-                    </a>
+    <form id="form-laporan" action="{{ route('admin.reports.payments.index') }}" method="GET" class="space-y-6">
+
+        {{-- FILTER --}}
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 md:p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-slate-800"><i class="fas fa-filter text-emerald-600 mr-2"></i>Filter Data</h3>
+                @if($adaFilter)
+                    <a href="{{ route('admin.reports.payments.index') }}" class="text-xs font-semibold text-red-600 hover:underline"><i class="fas fa-xmark mr-1"></i>Reset semua filter</a>
                 @endif
-            </form>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Cari peserta</label>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama, email, no. HP, atau institusi"
+                            class="w-full h-11 px-3.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-400">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Tanggal upload dari</label>
+                            <input type="date" name="dari" value="{{ request('dari') }}" class="w-full h-11 px-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-400">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Sampai</label>
+                            <input type="date" name="sampai" value="{{ request('sampai') }}" class="w-full h-11 px-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-400">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Urutkan</label>
+                        <select name="urut" class="w-full h-11 px-3 text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-emerald-400">
+                            @foreach(['terlama' => 'Tanggal upload (terlama dulu)', 'terbaru' => 'Tanggal upload (terbaru dulu)', 'nama' => 'Nama peserta (A-Z)', 'nominal' => 'Nominal (terbesar)'] as $v => $l)
+                                <option value="{{ $v }}" @selected(request('urut', 'terlama') === $v)>{{ $l }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Status</label>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach(\App\Models\Pembayaran::STATUS as $v => $l)
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="status[]" value="{{ $v }}" class="peer sr-only" @checked(in_array($v, $statusDipilih))>
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm border border-slate-200 text-slate-600 peer-checked:bg-emerald-600 peer-checked:border-emerald-600 peer-checked:text-white transition">{{ $l }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Kategori</label>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach(\App\Models\Pembayaran::KATEGORI as $v => $l)
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="kategori[]" value="{{ $v }}" class="peer sr-only" @checked(in_array($v, $kategoriDipilih))>
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs border border-slate-200 text-slate-600 peer-checked:bg-emerald-600 peer-checked:border-emerald-600 peer-checked:text-white transition">{{ $l }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1.5">Kosongkan pilihan = tampilkan semua.</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Kolom --}}
+            <details class="mt-5 group" @if(request()->has('kolom')) open @endif>
+                <summary class="cursor-pointer text-sm font-semibold text-slate-700 select-none">
+                    <i class="fas fa-table-columns text-emerald-600 mr-2"></i>Pilih kolom yang dicetak
+                    <span class="text-xs font-normal text-slate-400 ml-1">({{ count($kolomDipilih) }} kolom)</span>
+                </summary>
+                <div class="flex flex-wrap gap-2 mt-3">
+                    @foreach($kolomList as $key => [$label])
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="kolom[]" value="{{ $key }}" class="peer sr-only" @checked(in_array($key, $kolomDipilih))>
+                            <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm border border-slate-200 text-slate-500 peer-checked:bg-slate-800 peer-checked:border-slate-800 peer-checked:text-white transition">{{ $label }}</span>
+                        </label>
+                    @endforeach
+                </div>
+            </details>
+
+            <div class="mt-5 flex justify-end">
+                <button type="submit" class="inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">
+                    <i class="fas fa-magnifying-glass"></i> Terapkan Filter
+                </button>
+            </div>
         </div>
 
-        @if ($payments->isEmpty())
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl flex items-center gap-3 shadow-inner">
-                <i class="fas fa-info-circle text-xl text-emerald-600"></i>
-                <p class="font-medium">
-                    @if (request('search'))
-                        Tidak ditemukan data pembayaran untuk pencarian "{{ request('search') }}".
-                    @else
-                        Belum ada data pembayaran yang tercatat dalam sistem.
-                    @endif
-                </p>
-            </div>
-        @else
-            <div class="text-md font-medium text-gray-700 mb-3">
-                Menampilkan {{ $payments->count() }} data pembayaran.
+        {{-- HASIL + EXPORT --}}
+        <div class="bg-white rounded-2xl border border-slate-200">
+            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 p-4 md:p-5 border-b border-slate-100">
+                <div>
+                    <p class="font-semibold text-slate-800">{{ $payments->count() }} data <span class="text-slate-400 font-normal">dari {{ $totalSemua }} total</span></p>
+                    <p class="text-sm text-slate-500">Total nominal: <strong class="text-emerald-700">Rp {{ number_format($totalNominal, 0, ',', '.') }}</strong>
+                        <span class="text-slate-400">&middot; terverifikasi Rp {{ number_format($totalVerified, 0, ',', '.') }}</span></p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <span id="info-pilih" class="text-xs text-slate-500 mr-1">Semua data akan diekspor</span>
+                    <button type="button" data-export="{{ route('admin.reports.payments.export-pdf') }}" data-tampil="1"
+                        class="btn-export inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold">
+                        <i class="fas fa-print"></i> Cetak
+                    </button>
+                    <button type="button" data-export="{{ route('admin.reports.payments.export-pdf') }}"
+                        class="btn-export inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                </div>
             </div>
 
-            <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-md">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="pl-6 pr-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider rounded-tl-xl">No.</th> 
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Peserta</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Email / No. HP</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Kategori</th>
-                            <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Nominal</th>
-                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
-                            <th class="pr-6 pl-4 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider rounded-tr-xl">Tgl Verifikasi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($payments as $index => $payment)
-                            <tr class="hover:bg-emerald-50/40 transition duration-100">
-                                <td class="pl-6 pr-4 py-4 whitespace-nowrap text-gray-600">{{ $index + 1 }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ $payment->user->nama_lengkap }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-500 text-sm">
-                                    {{ $payment->user->email }}<br>
-                                    @if($payment->user->nomor_handphone)
-                                        <span class="text-xs text-emerald-600 font-medium">{{ $payment->user->nomor_handphone }}</span>
-                                    @endif
-                                </td>
-                                
-                                <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-medium">
-                                    @switch($payment->kategori_pembayaran)
-                                        @case('asasi') <span class="text-emerald-700 font-semibold">Anggota ASASI</span> @break
-                                        @case('umum') Umum @break
-                                        @case('mahasiswa') Mahasiswa @break
-                                        @case('non-presenter') Non Presenter @break
-                                        @default {{ ucfirst($payment->kategori_pembayaran) }}
-                                    @endswitch
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap font-bold text-right text-emerald-700">
-                                    Rp {{ number_format($payment->nominal, 0, ',', '.') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    @php
-                                        $statusClass = [
-                                            'pending' => 'bg-yellow-100 text-yellow-800',
-                                            'verified' => 'bg-green-100 text-green-800',
-                                            'rejected' => 'bg-red-100 text-red-800',
-                                        ][$payment->status] ?? 'bg-gray-100 text-gray-800';
-                                    @endphp
-                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClass }}">
-                                        {{ ucfirst($payment->status) }}
-                                    </span>
-                                </td>
-                                <td class="pr-6 pl-4 py-4 whitespace-nowrap text-center text-gray-600">
-                                    {{ $payment->status == 'verified' ? $payment->updated_at->format('d/m/Y') : '-' }}
-                                </td>
+            @if($payments->isEmpty())
+                <div class="p-12 text-center text-slate-400">
+                    <i class="fas fa-folder-open text-3xl mb-2 block"></i>
+                    {{ $adaFilter ? 'Tidak ada data yang cocok dengan filter ini.' : 'Belum ada data pembayaran.' }}
+                </div>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
+                            <tr>
+                                <th class="pl-5 pr-2 py-3 w-10">
+                                    <input type="checkbox" id="pilih-semua" class="w-4 h-4 rounded accent-emerald-600" title="Pilih semua baris">
+                                </th>
+                                <th class="px-3 py-3">No</th>
+                                @foreach($kolomDipilih as $k)
+                                    <th class="px-4 py-3 {{ $k === 'nominal' ? 'text-right' : '' }}">{{ $kolomList[$k][0] }}</th>
+                                @endforeach
                             </tr>
-                        @endforeach
-                        
-                        {{-- ROW TOTAL NOMINAL --}}
-                        <tr class="font-bold bg-emerald-50/60">
-                            <td colspan="4" class="px-6 py-4 text-left border-t border-gray-900">
-                                <span class="text-xl text-gray-900">Total Nominal:</span>
-                            </td>
-                            <td colspan="3" class="px-6 py-4 text-right font-extrabold text-2xl text-emerald-800 border-t border-gray-900">
-                                Rp {{ number_format($payments->sum('nominal'), 0, ',', '.') }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        @endif
-    </div>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($payments as $i => $p)
+                                <tr class="hover:bg-slate-50">
+                                    <td class="pl-5 pr-2 py-3">
+                                        <input type="checkbox" value="{{ $p->id }}" class="pilih-baris w-4 h-4 rounded accent-emerald-600">
+                                    </td>
+                                    <td class="px-3 py-3 text-slate-400">{{ $i + 1 }}</td>
+                                    @foreach($kolomDipilih as $k)
+                                        @php
+                                            $val = match($k) {
+                                                'nama' => $p->user->nama_lengkap ?? '-',
+                                                'email' => $p->user->email ?? '-',
+                                                'hp' => $p->user->nomor_handphone ?: '-',
+                                                'institusi' => $p->user->institusi ?: '-',
+                                                'kategori' => $p->labelKategori(),
+                                                'nominal' => 'Rp ' . number_format($p->nominal, 0, ',', '.'),
+                                                'tgl_upload' => $p->created_at->format('d/m/Y'),
+                                                'tgl_verifikasi' => $p->status === 'verified' ? $p->updated_at->format('d/m/Y') : '-',
+                                                'catatan' => $p->catatan_admin ?: '-',
+                                                default => '',
+                                            };
+                                        @endphp
+                                        <td class="px-4 py-3 {{ $k === 'nominal' ? 'text-right font-semibold text-emerald-700 whitespace-nowrap' : 'text-slate-700' }} {{ $k === 'nama' ? 'font-medium text-slate-900' : '' }}">
+                                            @if($k === 'status')
+                                                @php $cls = ['pending' => 'bg-amber-100 text-amber-700', 'verified' => 'bg-emerald-100 text-emerald-700', 'rejected' => 'bg-red-100 text-red-700'][$p->status] ?? 'bg-slate-100 text-slate-600'; @endphp
+                                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold {{ $cls }}">{{ $p->labelStatus() }}</span>
+                                            @else
+                                                {{ $val }}
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        @if(in_array('nominal', $kolomDipilih))
+                        <tfoot>
+                            <tr class="bg-emerald-50/70 font-bold">
+                                <td colspan="{{ 2 + array_search('nominal', $kolomDipilih) }}" class="px-5 py-4 text-right text-slate-700">Total</td>
+                                <td class="px-4 py-4 text-right text-emerald-800 whitespace-nowrap">Rp {{ number_format($totalNominal, 0, ',', '.') }}</td>
+                                <td colspan="{{ max(count($kolomDipilih) - array_search('nominal', $kolomDipilih) - 1, 0) }}"></td>
+                            </tr>
+                        </tfoot>
+                        @endif
+                    </table>
+                </div>
+            @endif
+        </div>
+    </form>
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        var form = document.getElementById('form-laporan');
+        var semua = document.getElementById('pilih-semua');
+        var info = document.getElementById('info-pilih');
+        var baris = function () { return Array.prototype.slice.call(document.querySelectorAll('.pilih-baris')); };
+
+        function perbarui() {
+            var n = baris().filter(function (c) { return c.checked; }).length;
+            info.textContent = n > 0 ? n + ' baris dipilih akan diekspor' : 'Semua data akan diekspor';
+            if (semua) semua.checked = n > 0 && n === baris().length;
+        }
+
+        if (semua) semua.addEventListener('change', function () {
+            baris().forEach(function (c) { c.checked = semua.checked; });
+            perbarui();
+        });
+        baris().forEach(function (c) { c.addEventListener('change', perbarui); });
+
+        // Export memakai filter yang sedang aktif di halaman (bukan isi form yang belum diterapkan).
+        document.querySelectorAll('.btn-export').forEach(function (b) {
+            b.addEventListener('click', function () {
+                var params = new URLSearchParams(window.location.search);
+                params.delete('ids[]');
+                baris().filter(function (c) { return c.checked; }).forEach(function (c) { params.append('ids[]', c.value); });
+                if (b.dataset.tampil) params.set('tampil', '1');
+                var url = b.dataset.export + '?' + params.toString();
+                if (b.dataset.tampil) { window.open(url, '_blank'); } else { window.location.href = url; }
+            });
+        });
+
+        perbarui();
+    })();
+</script>
+@endpush

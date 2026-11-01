@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sertifikat STARNAS ASASI & ICoABCD 2026 - {{ $nama_peserta ?? 'Peserta' }}</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
@@ -132,10 +132,8 @@
                     <div class="h-6 w-px bg-gray-300 mx-1"></div>
 
                     {{-- MITRA --}}
-                    <img src="{{ asset('storage/logo-uts.png') }}" class="h-7 w-auto object-contain" alt="UTS">
-                    <img src="{{ asset('storage/logo-lombok.png') }}" class="h-7 w-auto object-contain" alt="Lombok IT">
+                    <img src="{{ asset('storage/logo-uim.png') }}" class="h-7 w-auto object-contain" alt="UIM">
                     <img src="{{ asset('storage/sptn.png') }}" class="h-7 w-auto object-contain" alt="SPTN">
-                    <img src="{{ asset('storage/apji.png') }}" class="h-7 w-auto object-contain" alt="APJI">
                     <img src="{{ asset('storage/pinestilu.png') }}" class="h-7 w-auto object-contain" alt="Pinestilu">
                     <img src="{{ asset('storage/morikafe.png') }}" class="h-7 w-auto object-contain" alt="Morikafe">
                     <img src="{{ asset('storage/edutech.png') }}" class="h-7 w-auto object-contain" alt="Edutech">

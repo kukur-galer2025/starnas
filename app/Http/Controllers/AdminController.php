@@ -13,19 +13,102 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log; 
 use Illuminate\Support\Facades\Storage; 
 use Illuminate\Support\Facades\Response;
+use App\Support\NotifPeserta;
+use App\Models\EmailLog;
 
 class AdminController extends Controller
 {
+    /**
+     * Penanda perubahan data abstrak & pembayaran, dipoll browser admin
+     * agar daftar/dashboard otomatis ikut ter-update.
+     */
+    public function statusSinkron()
+    {
+        $abstrak = Abstrak::selectRaw('count(*) as total, max(updated_at) as terakhir')->first();
+        $pembayaran = Pembayaran::selectRaw('count(*) as total, max(updated_at) as terakhir')->first();
+
+        return response()->json([
+            'abstrak' => $abstrak->total . '|' . $abstrak->terakhir,
+            'pembayaran' => $pembayaran->total . '|' . $pembayaran->terakhir,
+            'user' => User::count(),
+            'email' => EmailLog::count() . '|' . EmailLog::max('updated_at'),
+        ])->header('Cache-Control', 'no-store, max-age=0');
+    }
+
     public function dashboard()
     {
-        $totalUsers = User::count();
-        $totalPeserta = User::where('role', 'peserta')->count();
-        $pendingPayments = Pembayaran::where('status', 'pending')->count();
-        
-        // Mengambil hitungan Abstrak dari tabel Abstrak
-        $pendingAbstractsCount = Abstrak::where('status_abstrak', 'pending')->count();
+        $stat = [
+            'peserta' => User::where('role', 'peserta')->count(),
+            'peserta_baru' => User::where('role', 'peserta')->where('created_at', '>=', now()->subDay())->count(),
+            'abstrak_total' => Abstrak::count(),
+            'abstrak_pending' => Abstrak::where('status_abstrak', 'pending')->count(),
+            'abstrak_diterima' => Abstrak::where('status_abstrak', 'diterima')->count(),
+            'abstrak_ditolak' => Abstrak::where('status_abstrak', 'ditolak')->count(),
+            'bayar_pending' => Pembayaran::where('status', 'pending')->count(),
+            'bayar_verified' => Pembayaran::where('status', 'verified')->count(),
+            'pemasukan' => Pembayaran::where('status', 'verified')->sum('nominal'),
+            'email_terkirim' => EmailLog::where('status', 'terkirim')->count(),
+            'email_gagal' => EmailLog::where('status', 'gagal')->count(),
+            'email_antri' => EmailLog::where('status', 'antri')->count(),
+        ];
 
-        return view('admin.dashboard', compact('totalUsers', 'totalPeserta', 'pendingPayments', 'pendingAbstractsCount'));
+        $abstrakMenunggu = Abstrak::with('user')->where('status_abstrak', 'pending')->oldest()->take(5)->get();
+        $bayarMenunggu = Pembayaran::with('user')->where('status', 'pending')->oldest()->take(5)->get();
+        $emailTerbaru = EmailLog::latest()->take(6)->get();
+
+        return view('admin.dashboard', compact('stat', 'abstrakMenunggu', 'bayarMenunggu', 'emailTerbaru'));
+    }
+
+    /**
+     * Riwayat & status pengiriman email notifikasi.
+     */
+    public function emailLogs(Request $request)
+    {
+        $status = $request->input('status');
+        $search = $request->input('search');
+
+        $logs = EmailLog::with('user')
+            ->when(in_array($status, ['antri', 'terkirim', 'gagal']), fn ($q) => $q->where('status', $status))
+            ->when($search, fn ($q) => $q->where(fn ($w) => $w->where('email', 'like', "%{$search}%")->orWhere('subjek', 'like', "%{$search}%")))
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+
+        $ringkas = [
+            'semua' => EmailLog::count(),
+            'terkirim' => EmailLog::where('status', 'terkirim')->count(),
+            'gagal' => EmailLog::where('status', 'gagal')->count(),
+            'antri' => EmailLog::where('status', 'antri')->count(),
+        ];
+
+        return view('admin.emails.index', compact('logs', 'ringkas', 'status', 'search'));
+    }
+
+    public function resendEmail(EmailLog $emailLog)
+    {
+        if ($emailLog->status === 'terkirim') {
+            return back()->with('warning', 'Email ini sudah terkirim.');
+        }
+
+        $emailLog->update(['status' => 'antri', 'percobaan' => 0, 'error' => null]);
+        NotifPeserta::jadwalkan($emailLog);
+
+        return back()->with('success', 'Email ke ' . $emailLog->email . ' sedang dikirim ulang.');
+    }
+
+    public function resendFailedEmails()
+    {
+        $logs = EmailLog::where('status', 'gagal')
+            ->orWhere(fn ($q) => $q->where('status', 'antri')->where('updated_at', '<', now()->subMinutes(5)))
+            ->take(50)
+            ->get();
+
+        foreach ($logs as $log) {
+            $log->update(['status' => 'antri', 'percobaan' => 0, 'error' => null]);
+            NotifPeserta::jadwalkan($log);
+        }
+
+        return back()->with('success', $logs->count() . ' email dijadwalkan untuk dikirim ulang.');
     }
 
     public function manageUsers(Request $request)
@@ -97,7 +180,9 @@ class AdminController extends Controller
     public function showPayment(Pembayaran $pembayaran)
     {
         $pembayaran->load('user');
-        return view('admin.payments.show', compact('pembayaran'));
+        $emailLogs = EmailLog::where('user_id', $pembayaran->user_id)->latest()->take(8)->get();
+
+        return view('admin.payments.show', compact('pembayaran', 'emailLogs'));
     }
 
     public function verifyPayment(Request $request, Pembayaran $pembayaran)
@@ -125,6 +210,10 @@ class AdminController extends Controller
             'catatan_admin' => $request->input('catatan_admin', 'Pembayaran telah dikonfirmasi.')
         ]);
         
+        NotifPeserta::kirim($pembayaran->user, 'Pembayaran Terverifikasi', 'Pembayaran Anda telah diverifikasi',
+            ['Terima kasih, pembayaran pendaftaran Anda telah kami terima dan diverifikasi.', 'Kwitansi dapat diunduh melalui halaman Riwayat Status di dashboard peserta.'],
+            $request->input('catatan_admin'), 'Buka Riwayat Status', route('peserta.riwayat'));
+
         return redirect()->route('admin.payments.show', $pembayaran->id)->with('success', 'Pembayaran dari ' . $pembayaran->user->nama_lengkap . ' berhasil diverifikasi.');
     }
 
@@ -149,6 +238,10 @@ class AdminController extends Controller
             'catatan_admin' => $request->catatan_admin
         ]);
         
+        NotifPeserta::kirim($pembayaran->user, 'Pembayaran Ditolak', 'Bukti pembayaran Anda belum dapat diverifikasi',
+            ['Mohon maaf, bukti pembayaran Anda ditolak. Silakan unggah ulang bukti pembayaran yang sesuai.'],
+            $request->catatan_admin, 'Upload Ulang Bukti', route('peserta.pembayaran.upload'));
+
         return redirect()->route('admin.payments.show', $pembayaran->id)->with('success', 'Pembayaran dari ' . $pembayaran->user->nama_lengkap . ' berhasil ditolak.');
     }
 
@@ -261,7 +354,9 @@ class AdminController extends Controller
         // Memuat relasi user
         $abstrak->load('user');
 
-        return view('admin.abstracts.show', compact('abstrak'));
+        $emailLogs = EmailLog::where('user_id', $abstrak->user_id)->latest()->take(8)->get();
+
+        return view('admin.abstracts.show', compact('abstrak', 'emailLogs'));
     }
 
     /**
@@ -292,6 +387,10 @@ class AdminController extends Controller
             'catatan_reviewer_abstrak' => $request->input('catatan_reviewer_abstrak', 'Abstrak telah diterima dan memenuhi syarat.')
         ]);
         
+        NotifPeserta::kirim($abstrak->user, 'Abstrak Diterima', 'Selamat, abstrak Anda diterima',
+            ['Abstrak Anda berjudul "' . $abstrak->judul_abstrak . '" telah diterima.', 'Anda sekarang dapat melanjutkan ke tahap pembayaran pendaftaran.'],
+            $abstrak->catatan_reviewer_abstrak, 'Lanjut ke Pembayaran', route('peserta.pembayaran.upload'));
+
         return redirect()->route('admin.abstracts.show', $abstrak->id)->with('success', 'Abstrak dari ' . $abstrak->user->nama_lengkap . ' berhasil diverifikasi.');
     }
 
@@ -320,6 +419,10 @@ class AdminController extends Controller
             'catatan_reviewer_abstrak' => $request->catatan_reviewer_abstrak
         ]);
         
+        NotifPeserta::kirim($abstrak->user, 'Abstrak Perlu Perbaikan', 'Abstrak Anda belum dapat diterima',
+            ['Abstrak Anda berjudul "' . $abstrak->judul_abstrak . '" belum dapat diterima. Silakan perbaiki dan unggah ulang.'],
+            $request->catatan_reviewer_abstrak, 'Upload Ulang Abstrak', route('peserta.abstrak.upload'));
+
         return redirect()->route('admin.abstracts.show', $abstrak->id)->with('success', 'Abstrak dari ' . $abstrak->user->nama_lengkap . ' berhasil ditolak.');
     }
 
@@ -339,41 +442,140 @@ class AdminController extends Controller
     // == METHOD: EKSPOR LAPORAN PDF (Menggunakan URL Publik) ==
     // ==========================================================
 
-    public function showPaymentsReport(Request $request)
-    {
-        $search = $request->input('search');
-        
-        $paymentsQuery = Pembayaran::with('user')->orderBy('created_at', 'asc'); 
+    /**
+     * Kolom yang dapat dipilih admin untuk laporan: key => [label, lebar PDF (%)].
+     */
+    private const KOLOM_LAPORAN = [
+        'nama' => ['Nama Peserta', 15],
+        'email' => ['Email', 18],
+        'hp' => ['No. HP', 10],
+        'institusi' => ['Institusi', 15],
+        'kategori' => ['Kategori', 12],
+        'nominal' => ['Nominal', 9],
+        'status' => ['Status', 9],
+        'tgl_upload' => ['Tgl Upload', 9],
+        'tgl_verifikasi' => ['Tgl Verifikasi', 9],
+        'catatan' => ['Catatan Admin', 16],
+    ];
 
-        if ($search) {
-            $paymentsQuery->whereHas('user', function ($query) use ($search) {
-                $query->where('nama_lengkap', 'like', '%' . $search . '%')
-                        ->orWhere('email', 'like', '%' . $search . '%')
-                        ->orWhere('nomor_handphone', 'like', '%' . $search . '%');
+    private const KOLOM_DEFAULT = ['nama', 'email', 'hp', 'kategori', 'nominal', 'status', 'tgl_verifikasi'];
+
+    /**
+     * Query laporan pembayaran berdasarkan filter (dipakai halaman, PDF, dan CSV).
+     */
+    private function queryLaporan(Request $request)
+    {
+        $status = array_values(array_intersect((array) $request->input('status', []), array_keys(Pembayaran::STATUS)));
+        $kategori = array_values(array_intersect((array) $request->input('kategori', []), array_keys(Pembayaran::KATEGORI)));
+        $ids = array_filter(array_map('intval', (array) $request->input('ids', [])));
+        $search = trim((string) $request->input('search'));
+        $dari = $request->input('dari');
+        $sampai = $request->input('sampai');
+
+        $query = Pembayaran::with('user')
+            ->when($ids, fn ($q) => $q->whereIn('id', $ids))
+            ->when($status, fn ($q) => $q->whereIn('status', $status))
+            ->when($kategori, fn ($q) => $q->whereIn('kategori_pembayaran', $kategori))
+            ->when($dari, fn ($q) => $q->whereDate('created_at', '>=', $dari))
+            ->when($sampai, fn ($q) => $q->whereDate('created_at', '<=', $sampai))
+            ->when($search !== '', function ($q) use ($search) {
+                $q->whereHas('user', fn ($u) => $u->where('nama_lengkap', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('nomor_handphone', 'like', "%{$search}%")
+                    ->orWhere('institusi', 'like', "%{$search}%"));
             });
-        }
-        
-        $payments = $paymentsQuery->get();
-        
-        return view('admin.reports.index', compact('payments', 'search')); 
+
+        match ($request->input('urut')) {
+            'terbaru' => $query->orderByDesc('created_at'),
+            'nominal' => $query->orderByDesc('nominal'),
+            'nama' => $query->orderBy(
+                \App\Models\User::select('nama_lengkap')->whereColumn('users.id', 'pembayaran.user_id')->limit(1)
+            ),
+            default => $query->orderBy('created_at'),
+        };
+
+        return $query;
     }
 
-    public function exportPaymentsPdf()
+    private function kolomTerpilih(Request $request): array
     {
-        $payments = Pembayaran::with('user')->orderBy('created_at', 'asc')->get(); 
+        $dipilih = array_values(array_intersect(array_keys(self::KOLOM_LAPORAN), (array) $request->input('kolom', [])));
 
-        $domain_anda = 'starnas.asasi.or.id'; 
+        return $dipilih ?: self::KOLOM_DEFAULT;
+    }
 
-        $logoUrl = "https://" . $domain_anda . "/storage/logo-starnas-asasi.jpeg"; 
+    private function nilaiKolom(Pembayaran $p, string $kolom): string
+    {
+        return match ($kolom) {
+            'nama' => $p->user->nama_lengkap ?? '-',
+            'email' => $p->user->email ?? '-',
+            'hp' => $p->user->nomor_handphone ?: '-',
+            'institusi' => $p->user->institusi ?: '-',
+            'kategori' => $p->labelKategori(),
+            'nominal' => (string) (int) $p->nominal,
+            'status' => $p->labelStatus(),
+            'tgl_upload' => $p->created_at->format('d/m/Y'),
+            'tgl_verifikasi' => $p->status === 'verified' ? $p->updated_at->format('d/m/Y') : '-',
+            'catatan' => $p->catatan_admin ?: '-',
+            default => '',
+        };
+    }
+
+    private function ringkasanFilter(Request $request): array
+    {
+        $ringkas = [];
+        if ($s = (array) $request->input('status')) {
+            $ringkas[] = 'Status: ' . implode(', ', array_map(fn ($x) => Pembayaran::STATUS[$x] ?? $x, $s));
+        }
+        if ($k = (array) $request->input('kategori')) {
+            $ringkas[] = 'Kategori: ' . implode(', ', array_map(fn ($x) => Pembayaran::KATEGORI[$x] ?? $x, $k));
+        }
+        if ($request->filled('dari') || $request->filled('sampai')) {
+            $ringkas[] = 'Tanggal upload: ' . ($request->input('dari') ?: '...') . ' s/d ' . ($request->input('sampai') ?: '...');
+        }
+        if ($request->filled('search')) {
+            $ringkas[] = 'Pencarian: "' . $request->input('search') . '"';
+        }
+        if (array_filter((array) $request->input('ids'))) {
+            $ringkas[] = 'Hanya baris yang dipilih (' . count(array_filter((array) $request->input('ids'))) . ')';
+        }
+
+        return $ringkas;
+    }
+
+    public function showPaymentsReport(Request $request)
+    {
+        $payments = $this->queryLaporan($request)->get();
+        $kolomList = self::KOLOM_LAPORAN;
+        $kolomDipilih = $this->kolomTerpilih($request);
+
+        $totalSemua = Pembayaran::count();
+        $totalVerified = $payments->where('status', 'verified')->sum('nominal');
+
+        return view('admin.reports.index', compact('payments', 'kolomList', 'kolomDipilih', 'totalSemua', 'totalVerified'));
+    }
+
+    public function exportPaymentsPdf(Request $request)
+    {
+        $payments = $this->queryLaporan($request)->get();
+        $kolomDipilih = $this->kolomTerpilih($request);
+        $kolomList = self::KOLOM_LAPORAN;
+        $filter = $this->ringkasanFilter($request);
+        $nilai = fn (Pembayaran $p, string $k) => $this->nilaiKolom($p, $k);
+
+        $logoPath = public_path('storage/logo-starnas-asasi.jpeg');
+        $logoUrl = is_file($logoPath)
+            ? 'data:image/jpeg;base64,' . base64_encode(file_get_contents($logoPath))
+            : '';
 
         $pdf = Pdf::setOptions([
             'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true, 
-            'chroot' => public_path(),
-        ])->loadView('admin.reports.payments_pdf', compact('payments', 'logoUrl'));
-        
-        $filename = 'Laporan_Pembayaran_STARNAS_' . now()->format('Ymd_His') . '.pdf';
-        
-        return $pdf->download($filename);
+            'isRemoteEnabled' => false,
+        ])->loadView('admin.reports.payments_pdf', compact('payments', 'logoUrl', 'kolomDipilih', 'kolomList', 'filter', 'nilai'));
+
+        $nama = 'Laporan_Pembayaran_STARNAS_' . now()->format('Ymd_His') . '.pdf';
+
+        // ?tampil=1 -> buka di tab baru (siap dicetak), selain itu unduh.
+        return $request->boolean('tampil') ? $pdf->stream($nama) : $pdf->download($nama);
     }
 }

@@ -72,6 +72,14 @@
                             </div>
                         @endif
 
+                        <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg mb-6 text-sm">
+                            <p class="mb-2"><i class="fas fa-info-circle mr-1"></i> Upload abstrak terlebih dahulu. Pembayaran kategori pemakalah baru dapat dilakukan <strong>setelah abstrak diterima</strong>. Peserta tanpa presentasi (Non Presenter) tidak wajib upload abstrak.</p>
+                            <a href="/storage/Template_Abstrak_STARNAS_ASASI_2026.docx" download="Template Abstrak STARNAS ASASI 2026.docx"
+                               class="inline-flex items-center font-semibold text-amber-900 hover:underline">
+                                <i class="fas fa-download mr-2"></i> Download Template Abstrak
+                            </a>
+                        </div>
+
                         <form action="{{ route('peserta.abstrak.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-6">

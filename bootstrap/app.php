@@ -3,7 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\RoleMiddleware; // Pastikan Anda mengimpor middleware
+use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\EnsureProfileComplete; // Pastikan Anda mengimpor middleware
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,7 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Daftarkan RoleMiddleware di sini sebagai alias 'role'
         $middleware->alias([
-            'role' => RoleMiddleware::class, 
+            'role' => RoleMiddleware::class,
+            'profil.lengkap' => EnsureProfileComplete::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

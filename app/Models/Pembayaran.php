@@ -26,6 +26,32 @@ class Pembayaran extends Model
         // ============================
     ];
 
+    public const KATEGORI = [
+        'asasi_onsite' => 'Anggota ASASI - Onsite',
+        'umum_onsite' => 'Umum - Onsite',
+        'mahasiswa_onsite' => 'Mahasiswa - Onsite',
+        'asasi_online' => 'Anggota ASASI - Online',
+        'umum_online' => 'Umum - Online',
+        'mahasiswa_online' => 'Mahasiswa - Online',
+        'non-presenter' => 'Non Presenter',
+    ];
+
+    public const STATUS = [
+        'pending' => 'Menunggu',
+        'verified' => 'Terverifikasi',
+        'rejected' => 'Ditolak',
+    ];
+
+    public function labelKategori(): string
+    {
+        return self::KATEGORI[$this->kategori_pembayaran] ?? ucfirst((string) $this->kategori_pembayaran);
+    }
+
+    public function labelStatus(): string
+    {
+        return self::STATUS[$this->status] ?? ucfirst((string) $this->status);
+    }
+
     /**
      * Relasi: Pembayaran ini dimiliki oleh satu User (Peserta).
      */

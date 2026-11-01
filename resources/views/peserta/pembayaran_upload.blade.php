@@ -112,17 +112,25 @@
                                     class="block w-full p-3 bg-gray-50 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-300">
                                     <option value="" selected disabled>-- Pilih Kategori & Tarif Pendaftaran --</option>
                                     <optgroup label="📍 KATEGORI ONSITE (OFFLINE DI YOGYAKARTA)">
-                                        <option value="asasi_onsite">Anggota ASASI (Pemakalah Onsite) — Rp 450.000</option>
-                                        <option value="umum_onsite">Umum (Pemakalah Onsite) — Rp 500.000</option>
-                                        <option value="mahasiswa_onsite">Mahasiswa (Pemakalah Onsite) — Rp 250.000</option>
+                                        <option value="asasi_onsite" @disabled(!($bolehPemakalah ?? false))>Anggota ASASI (Pemakalah Onsite) — Rp 450.000</option>
+                                        <option value="umum_onsite" @disabled(!($bolehPemakalah ?? false))>Umum (Pemakalah Onsite) — Rp 500.000</option>
+                                        <option value="mahasiswa_onsite" @disabled(!($bolehPemakalah ?? false))>Mahasiswa (Pemakalah Onsite) — Rp 250.000</option>
                                     </optgroup>
                                     <optgroup label="💻 KATEGORI ONLINE (VIRTUAL ZOOM)">
-                                        <option value="asasi_online">Anggota ASASI (Pemakalah Online) — Rp 250.000</option>
-                                        <option value="umum_online">Umum (Pemakalah Online) — Rp 300.000</option>
-                                        <option value="mahasiswa_online">Mahasiswa (Pemakalah Online) — Rp 150.000</option>
+                                        <option value="asasi_online" @disabled(!($bolehPemakalah ?? false))>Anggota ASASI (Pemakalah Online) — Rp 250.000</option>
+                                        <option value="umum_online" @disabled(!($bolehPemakalah ?? false))>Umum (Pemakalah Online) — Rp 300.000</option>
+                                        <option value="mahasiswa_online" @disabled(!($bolehPemakalah ?? false))>Mahasiswa (Pemakalah Online) — Rp 150.000</option>
                                         <option value="non-presenter">Non Presenter (Online) — Rp 100.000</option>
                                     </optgroup>
                                 </select>
+                                @if(!($bolehPemakalah ?? false))
+                                    <p class="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Kategori pemakalah baru bisa dipilih setelah abstrak Anda <strong>diterima</strong>.
+                                        <a href="{{ route('peserta.abstrak.upload') }}" class="underline font-semibold">Upload abstrak</a>.
+                                        Jika hanya hadir tanpa presentasi, pilih <strong>Non Presenter</strong>.
+                                    </p>
+                                @endif
                             </div>
 
                             {{-- Display Harga (Javascript controlled) --}}

@@ -7,26 +7,7 @@
 
     <title>Peserta | @yield('title', 'Beranda')</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': '#059669',
-                        'primary-dark': '#047857',
-                        'secondary': '#10b981',
-                        'accent': '#f59e0b',
-                        'emerald-dark': '#022c22',
-                    },
-                    fontFamily: {
-                        'poppins': ['Poppins', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    @vite('resources/css/app.css')
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -82,6 +63,9 @@
                     </div>
                 </a>
 
+                <div class="flex items-center gap-3">
+                @include('peserta.partials.bell')
+
                 {{-- DROPDOWN MENU PROFIL & LOGOUT --}}
                 <div class="flex items-center space-x-2 relative" x-data="{ open: false }">
                     
@@ -103,7 +87,7 @@
                          x-transition:leave="transition ease-in duration-150"
                          x-transition:leave-start="opacity-100 scale-100"
                          x-transition:leave-end="opacity-0 scale-95"
-                         class="absolute right-0 mt-2 top-full w-48 rounded-xl shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 origin-top-right">
+                         class="absolute right-0 mt-2 top-full w-48 rounded-xl shadow-2xl bg-white ring-1 ring-black/5 focus:outline-none z-50 origin-top-right">
                         <div class="py-1">
                             
                             {{-- Menu Edit Profil --}}
@@ -120,6 +104,7 @@
                             </form>
                         </div>
                     </div>
+                </div>
                 </div>
                 
             </div>
@@ -145,6 +130,13 @@
                                Beranda
                             </a>
 
+                            <a href="{{ route('peserta.abstrak.upload') }}"
+                                class="nav-item flex items-center p-4 text-base font-medium rounded-xl transition-all duration-300 
+                               @if(Request::routeIs('peserta.abstrak.upload')) active bg-primary/5 text-white border-l-4 border-primary @else text-gray-600 hover:bg-gray-50 hover:text-primary hover:border-l-4 hover:border-primary/50 @endif">
+                                <i class="fas fa-cloud-upload-alt w-5 h-5 mr-4"></i>
+                                Upload Abstrak
+                            </a>
+
                             <a href="{{ route('peserta.pembayaran.cara') }}" 
                                class="nav-item flex items-center p-4 text-base font-medium rounded-xl transition-all duration-300 
                                @if(Request::routeIs('peserta.pembayaran.cara')) active bg-primary/5 text-white border-l-4 border-primary @else text-gray-600 hover:bg-gray-50 hover:text-primary hover:border-l-4 hover:border-primary/50 @endif">
@@ -159,12 +151,6 @@
                                Upload Bukti
                             </a>
                             
-                             <a href="{{ route('peserta.abstrak.upload') }}"
-                                class="nav-item flex items-center p-4 text-base font-medium rounded-xl transition-all duration-300 
-                               @if(Request::routeIs('peserta.abstrak.upload')) active bg-primary/5 text-white border-l-4 border-primary @else text-gray-600 hover:bg-gray-50 hover:text-primary hover:border-l-4 hover:border-primary/50 @endif">
-                                <i class="fas fa-cloud-upload-alt w-5 h-5 mr-4"></i>
-                                Upload Abstrak
-                            </a>
 
                             <a href="{{ route('peserta.riwayat') }}" 
                                class="nav-item flex items-center p-4 text-base font-medium rounded-xl transition-all duration-300 
@@ -246,5 +232,7 @@
     {{-- Alpine.js untuk fungsionalitas dropdown --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('scripts')
+    @include('partials.password-toggle')
+    @include('partials.status-sync', ['syncUrl' => route('peserta.status.sinkron'), 'syncPesan' => 'Status Anda diperbarui'])
 </body>
 </html>

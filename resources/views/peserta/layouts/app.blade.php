@@ -5,30 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STARNAS ASASI 2026 & ICoABCD 2026 - Seminar Teknologi dan Sains Nasional</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        emerald: {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            200: '#a7f3d0',
-                            300: '#6ee7b7',
-                            400: '#34d399',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            800: '#065f46',
-                            900: '#064e3b',
-                            950: '#022c22',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    @vite('resources/css/app.css')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
@@ -1158,6 +1135,11 @@
                                     <i class="fas fa-info-circle mr-3 w-4 text-center text-amber-500"></i>
                                     Template
                                 </a>
+                                <a href="/storage/Template_Abstrak_STARNAS_ASASI_2026.docx" download="Template Abstrak.docx"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors duration-200">
+                                    <i class="fas fa-info-circle mr-3 w-4 text-center text-amber-500"></i>
+                                    Template Abstrak
+                                </a>
                              <a href="https://asasijournal.com/index.php/starnas" target="_blank"
                                     class="block px-4 py-3 text-sm font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-md mx-2 my-2 text-center transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:from-emerald-600 hover:to-teal-700 border-2 border-emerald-400">
                                     <i class="fas fa-paper-plane mr-2 animate-pulse"></i>
@@ -1285,6 +1267,11 @@
                         class="block py-2.5 px-6 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg text-sm transition-all duration-200 border-l-2 border-emerald-300 ml-4 flex items-center mobile-nav-link">
                         <i class="fas fa-file-download mr-3 w-4 text-center text-amber-500"></i>
                         Template
+                    </a>
+                    <a href="/storage/Template_Abstrak_STARNAS_ASASI_2026.docx" download="Template Abstrak.docx"
+                        class="block py-2.5 px-6 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg text-sm transition-all duration-200 border-l-2 border-emerald-300 ml-4 flex items-center mobile-nav-link">
+                        <i class="fas fa-file-download mr-3 w-4 text-center text-amber-500"></i>
+                        Template Abstrak
                     </a>
                     <a href="https://asasijournal.com/index.php/starnas" target="_blank"
                         class="block py-2.5 px-6 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg text-sm transition-all duration-200 border-l-2 border-emerald-300 ml-4 flex items-center mobile-nav-link">

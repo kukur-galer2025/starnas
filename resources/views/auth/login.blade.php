@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - STARNAS ASASI & ICoABCD 2026</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
@@ -178,8 +178,8 @@
                 <div class="relative z-10">
                     <div class="text-center mb-4 mobile-mb-4">
                         <div
-                            class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-3 rounded-2xl bg-white/10 border border-emerald-400/30 flex items-center justify-center logo-container shadow-lg shadow-emerald-950/40">
-                            <img src="/storage/starnas.png" alt="Logo STARNAS 2026" class="rounded-lg object-contain">
+                            class="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 rounded-3xl bg-white p-2 ring-4 ring-emerald-400/30 flex items-center justify-center logo-container shadow-2xl shadow-emerald-950/50">
+                            <img src="/storage/starnas.png" alt="Logo STARNAS ASASI 2026" class="w-full h-full object-contain">
                         </div>
                         <div class="inline-flex items-center px-3 py-1 glass-effect rounded-full text-xs mb-3 text-emerald-200">
                             <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-pulse"></span>
@@ -192,6 +192,7 @@
                     </div>
 
                     <div class="text-center mb-4 mobile-mb-4 mobile-text-center">
+                        <p class="text-amber-300 text-xs md:text-sm font-semibold tracking-wide mb-1">STARNAS Series ke-5 &bull; ICoABCD Series ke-4</p>
                         <h2 class="text-base md:text-lg font-bold text-emerald-300 mb-2">Seminar Teknologi dan Sains Nasional ASASI & ICoABCD 2026</h2>
                         <p class="text-emerald-100/90 text-xs leading-relaxed">
                             AI untuk Dukung Tenaga Terampil Dalam Mewujudkan Kemandirian Ekonomi dan Energi
@@ -244,6 +245,15 @@
                 <form method="POST" action="{{ route('login') }}" class="space-y-4">
                     @csrf
 
+                    @if($errors->any())
+                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm" role="alert">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>{{ $errors->first() }}
+                        </div>
+                    @endif
+                    @if(session('success'))
+                        <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm" role="status">{{ session('success') }}</div>
+                    @endif
+
                     <div class="form-space-compact">
                         <label for="email" class="block text-xs font-semibold text-slate-700 mb-1">
                             <i class="fas fa-envelope text-emerald-600 mr-1"></i>
@@ -251,9 +261,6 @@
                         </label>
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
                             class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('email') border-red-500 @enderror">
-                        @error('email')
-                            <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
                     </div>
 
                     <div class="form-space-compact">
@@ -263,9 +270,6 @@
                         </label>
                         <input id="password" type="password" name="password" required
                             class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('password') border-red-500 @enderror">
-                        @error('password')
-                            <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
                     </div>
 
                     <div
@@ -336,6 +340,7 @@
             </div>
         </div>
     </div>
+    @include('partials.password-toggle')
 </body>
 
 </html>

@@ -129,6 +129,13 @@
                     <div class="flex justify-between items-start"><dt class="font-medium text-gray-500 w-1/3">Role Akun:</dt><dd class="text-gray-900 w-2/3 text-right">{{ ucfirst($pembayaran->user->role) }}</dd></div>
                 </dl>
             </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                    <h3 class="font-semibold text-gray-900"><i class="fas fa-envelope text-emerald-600 mr-2"></i>Riwayat Email Peserta</h3>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Live</span>
+                </div>
+                @include('admin.partials.email-list', ['emailLogs' => $emailLogs ?? collect(), 'ringkas' => false])
+            </div>
         </div>
 
         {{-- Kolom Kanan: Bukti Pembayaran & Action --}}

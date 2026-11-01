@@ -295,6 +295,14 @@
                                         Download Template Penulisan
                                     </a>
                                     <p class="text-gray-500 text-sm mt-4">Format: Microsoft Word (.docx)</p>
+                                    <div class="mt-8">
+                                        <p class="text-gray-600 mb-4">Template abstrak untuk tahap submit abstrak</p>
+                                        <a href="/storage/Template_Abstrak_STARNAS_ASASI_2026.docx" download="Template Abstrak.docx"
+                                            class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
+                                            <i class="fas fa-download mr-3"></i>
+                                            Download Template Abstrak
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

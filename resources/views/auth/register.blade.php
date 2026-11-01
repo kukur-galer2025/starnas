@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Akun Peserta - STARNAS ASASI & ICoABCD 2026</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -132,8 +132,8 @@
                     <div class="text-center mobile-mb-3">
                         <div class="mb-4 mobile-mb-3">
                             
-                            <div class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-2 rounded-2xl bg-white/10 border border-emerald-400/30 flex items-center justify-center shadow-lg shadow-emerald-950/40">
-                                <img src="/storage/starnas.png" alt="Logo STARNAS 2026" class="logo-starnas">
+                            <div class="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 rounded-3xl bg-white p-2 ring-4 ring-emerald-400/30 flex items-center justify-center shadow-2xl shadow-emerald-950/50">
+                                <img src="/storage/starnas.png" alt="Logo STARNAS ASASI 2026" class="w-full h-full object-contain">
                             </div>
                             
                             <div class="inline-flex items-center px-3 py-1 glass-effect rounded-full text-xs mb-3 text-emerald-200">
@@ -147,6 +147,7 @@
                         </div>
 
                         <div class="text-center mb-5 mobile-mb-4 mobile-text-center">
+                            <p class="text-amber-300 text-xs md:text-sm font-semibold tracking-wide mb-1">STARNAS Series ke-5 &bull; ICoABCD Series ke-4</p>
                             <h2 class="text-base md:text-lg font-bold text-emerald-300 mb-2">Seminar Teknologi dan Sains Nasional ASASI & ICoABCD 2026</h2>
                             <p class="text-emerald-100/90 text-xs leading-relaxed px-2 md:px-4">
                                 AI untuk Dukung Tenaga Terampil Dalam Mewujudkan Kemandirian Ekonomi dan Energi
@@ -186,118 +187,79 @@
                 </div>
             </div>
 
-            <div class="md:w-3/5 p-6 flex flex-col mobile-padding">
+            <div class="md:w-3/5 p-6 md:p-8 flex flex-col mobile-padding">
                 <div class="mb-4 mobile-mb-3 mobile-text-center md:text-left"> 
                     <h1 class="text-xl md:text-2xl font-black text-gray-900 mb-2"> 
                         Daftar Akun <span class="text-gradient">Peserta</span>
                     </h1>
                     <p class="text-gray-600 text-sm"> 
-                        Bergabunglah dengan komunitas STARNAS ASASI & ICoABCD 2026 dan jadilah bagian dari inovasi AI untuk kemandirian bangsa.
+                        Cukup isi data singkat berikut. Profil lengkap (HP, institusi, dll.) dapat dilengkapi setelah Anda login.
                     </p>
                 </div>
 
                 <div class="flex-1"> 
-                    <form method="POST" action="{{ route('register') }}" class="space-y-3 mobile-form-space">
+                    <form method="POST" action="{{ route('register') }}" class="space-y-4 mobile-form-space">
                         @csrf
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mobile-form-space">
+                        @if($errors->any())
+                            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm" role="alert">
+                                <p class="font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>Pendaftaran belum berhasil.</p>
+                                <p class="text-xs mt-0.5">Periksa kembali kolom yang bertanda merah di bawah ini.</p>
+                            </div>
+                        @endif
+                        @if(session('error'))
+                            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm" role="alert">{{ session('error') }}</div>
+                        @endif
+
+                        <div class="flex items-center gap-2 pt-1">
+                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700"><i class="fas fa-user mr-1.5"></i>Data Akun</span>
+                            <span class="flex-1 h-px bg-emerald-100"></span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 mobile-form-space">
                             <div>
-                                <label for="nama_lengkap" class="block text-xs font-semibold text-gray-700 mb-1">
+                                <label for="nama_lengkap" class="block text-sm font-semibold text-gray-700 mb-1.5">
                                     <i class="fas fa-user text-emerald-600 mr-1"></i>
                                     Nama Lengkap <span class="text-red-500">*</span>
                                 </label>
-                                <input id="nama_lengkap" type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required autofocus
-                                    class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('nama_lengkap') border-red-500 @enderror">
-                                @error('nama_lengkap')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                                <input id="nama_lengkap" type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required autofocus placeholder="Nama sesuai identitas / sertifikat"
+                                    class="form-input w-full rounded-xl focus:outline-none h-11 px-3.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition duration-150 ease-in-out @error('nama_lengkap') border-red-500 @enderror">
+                                @error('nama_lengkap')<p class="text-xs text-red-600 mt-1"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>@enderror
                             </div>
 
                             <div>
-                                <label for="email" class="block text-xs font-semibold text-gray-700 mb-1">
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">
                                     <i class="fas fa-envelope text-emerald-600 mr-1"></i>
                                     Email <span class="text-red-500">*</span>
                                 </label>
-                                <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                                    class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('email') border-red-500 @enderror">
-                                @error('email')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                                <input id="email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com"
+                                    class="form-input w-full rounded-xl focus:outline-none h-11 px-3.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition duration-150 ease-in-out @error('email') border-red-500 @enderror">
+                                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-info-circle text-emerald-600 mr-1"></i>Gunakan email aktif. Notifikasi abstrak dan pembayaran dikirim ke email ini. <strong>Selalu cek folder Spam.</strong></p>
+                                @error('email')<p class="text-xs text-red-600 mt-1"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>@enderror
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mobile-form-space">
-                            <div>
-                                <label for="pekerjaan" class="block text-xs font-semibold text-gray-700 mb-1">
-                                    <i class="fas fa-briefcase text-emerald-600 mr-1"></i>
-                                    Pekerjaan
-                                </label>
-                                <input id="pekerjaan" type="text" name="pekerjaan" value="{{ old('pekerjaan') }}"
-                                    class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('pekerjaan') border-red-500 @enderror">
-                                @error('pekerjaan')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
-                            </div>
-
-                            <div>
-                                <label for="jenis_kelamin" class="block text-xs font-semibold text-gray-700 mb-1">
-                                    <i class="fas fa-venus-mars text-emerald-600 mr-1"></i>
-                                    Jenis Kelamin
-                                </label>
-                                <select id="jenis_kelamin" name="jenis_kelamin"
-                                    class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('jenis_kelamin') border-red-500 @enderror">
-                                    <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
-                                    <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
-                                </select>
-                                @error('jenis_kelamin')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
-                            </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700"><i class="fas fa-shield-halved mr-1.5"></i>Keamanan Akun</span>
+                            <span class="flex-1 h-px bg-emerald-100"></span>
                         </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mobile-form-space">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 mobile-form-space">
                             <div>
-                                <label for="nomor_handphone" class="block text-xs font-semibold text-gray-700 mb-1">
-                                    <i class="fas fa-phone text-emerald-600 mr-1"></i>
-                                    Nomor Handphone
-                                </label>
-                                <input id="nomor_handphone" type="text" name="nomor_handphone" value="{{ old('nomor_handphone') }}"
-                                    class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('nomor_handphone') border-red-500 @enderror">
-                                @error('nomor_handphone')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
-                            </div>
-
-                            <div>
-                                <label for="provinsi" class="block text-xs font-semibold text-gray-700 mb-1">
-                                    <i class="fas fa-map text-emerald-600 mr-1"></i>
-                                    Provinsi
-                                </label>
-                                <input id="provinsi" type="text" name="provinsi" value="{{ old('provinsi') }}"
-                                    class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('provinsi') border-red-500 @enderror">
-                                @error('provinsi')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="institusi" class="block text-xs font-semibold text-gray-700 mb-1">
-                                <i class="fas fa-university text-emerald-600 mr-1"></i>
-                                Institusi
-                            </label>
-                            <input id="institusi" type="text" name="institusi" value="{{ old('institusi') }}"
-                                class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('institusi') border-red-500 @enderror">
-                            @error('institusi')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mobile-form-space">
-                            <div>
-                                <label for="password" class="block text-xs font-semibold text-gray-700 mb-1">
+                                <label for="password" class="block text-sm font-semibold text-gray-700 mb-1.5">
                                     <i class="fas fa-lock text-emerald-600 mr-1"></i>
                                     Password <span class="text-red-500">*</span>
                                 </label>
-                                <input id="password" type="password" name="password" required
-                                    class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out @error('password') border-red-500 @enderror">
-                                @error('password')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                                <input id="password" type="password" name="password" required placeholder="Minimal 8 karakter"
+                                    class="form-input w-full rounded-xl focus:outline-none h-11 px-3.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition duration-150 ease-in-out @error('password') border-red-500 @enderror">
+                                @error('password')<p class="text-xs text-red-600 mt-1"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>@enderror
                             </div>
 
                             <div>
-                                <label for="password_confirmation" class="block text-xs font-semibold text-gray-700 mb-1">
+                                <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-1.5">
                                     <i class="fas fa-lock text-emerald-600 mr-1"></i>
                                     Konfirmasi Password <span class="text-red-500">*</span>
                                 </label>
-                                <input id="password_confirmation" type="password" name="password_confirmation" required
-                                    class="form-input w-full rounded-xl shadow-sm focus:ring-emerald-500 p-3 text-sm transition duration-150 ease-in-out">
+                                <input id="password_confirmation" type="password" name="password_confirmation" required placeholder="Ulangi password"
+                                    class="form-input w-full rounded-xl focus:outline-none h-11 px-3.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition duration-150 ease-in-out">
                             </div>
                         </div>
 
@@ -316,7 +278,7 @@
                                 <div class="w-full border-t border-gray-300"></div>
                             </div>
                             <div class="relative flex justify-center text-xs uppercase">
-                                <span class="bg-white/95 px-2 text-gray-500 font-semibold">atau daftar lebih cepat dengan</span>
+                                <span class="bg-white px-3 text-gray-500 font-semibold">atau daftar lebih cepat dengan</span>
                             </div>
                         </div>
 
@@ -345,5 +307,6 @@
             </div>
         </div>
     </div>
+    @include('partials.password-toggle')
 </body>
 </html>

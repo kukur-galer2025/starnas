@@ -31,6 +31,8 @@
                         <span class="text-gradient bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300">2026</span>
                     </h1>
 
+                    <p class="text-amber-300 text-sm md:text-base font-semibold tracking-wide mb-3">STARNAS Series ke-5 &bull; ICoABCD Series ke-4</p>
+
                     <div class="relative mb-4 md:mb-6">
                         <h2 class="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-amber-300 drop-shadow-lg">
                             Seminar Teknologi dan Sains Nasional ASASI & ICoABCD 2026
@@ -1424,20 +1426,14 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto">
                 <div class="cohost-card text-center group" data-aos="fade-up" data-aos-delay="100">
                     <div
                         class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-slate-100 hover:border-emerald-300 hover:shadow-xl transition-all duration-300 flex items-center justify-center h-32 md:h-40">
-                        <img src="/storage/logo-uts.png" alt="Universitas Teknologi Sumbawa" class="cohost-logo mx-auto">
+                        <img src="/storage/logo-uim.png" alt="Universitas Islam Mulia Yogyakarta" class="cohost-logo mx-auto">
                     </div>
                 </div>
 
-                <div class="cohost-card text-center group" data-aos="fade-up" data-aos-delay="200">
-                    <div
-                        class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-slate-100 hover:border-emerald-300 hover:shadow-xl transition-all duration-300 flex items-center justify-center h-32 md:h-40">
-                        <img src="/storage/logo-lombok.png" alt="Lombok Institue Technology" class="cohost-logo mx-auto">
-                    </div>
-                </div>
 
                 <div class="cohost-card text-center group" data-aos="fade-up" data-aos-delay="300">
                     <div
@@ -1446,12 +1442,6 @@
                     </div>
                 </div>
 
-                <div class="cohost-card text-center group" data-aos="fade-up" data-aos-delay="400">
-                    <div
-                        class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-slate-100 hover:border-emerald-300 hover:shadow-xl transition-all duration-300 flex items-center justify-center h-32 md:h-40">
-                        <img src="/storage/apji.png" alt="APJI" class="cohost-logo mx-auto">
-                    </div>
-                </div>
 
                 <div class="cohost-card text-center group" data-aos="fade-up" data-aos-delay="500">
                     <div

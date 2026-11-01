@@ -33,6 +33,22 @@ class User extends Authenticatable
     ];
 
     /**
+     * Kolom profil yang wajib dilengkapi peserta setelah mendaftar.
+     */
+    public const PROFIL_WAJIB = ['nomor_handphone', 'jenis_kelamin', 'pekerjaan', 'institusi', 'provinsi'];
+
+    public function profilLengkap(): bool
+    {
+        foreach (self::PROFIL_WAJIB as $kolom) {
+            if (blank($this->{$kolom})) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>

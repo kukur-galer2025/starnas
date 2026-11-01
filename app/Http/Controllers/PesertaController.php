@@ -14,6 +14,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
+use App\Support\NotifPeserta;
+use App\Models\Notifikasi;
 
 class PesertaController extends Controller
 {
@@ -25,6 +27,70 @@ class PesertaController extends Controller
         return view('peserta.beranda', compact('pembayaran'));
     }
 
+    /**
+     * Ringkasan status terkini, dipoll oleh browser agar tampilan peserta
+     * langsung mengikuti perubahan dari admin tanpa refresh manual.
+     */
+    public function statusSinkron()
+    {
+        $userId = Auth::id();
+        $abstrak = Abstrak::where('user_id', $userId)->first();
+        $pembayaran = Pembayaran::where('user_id', $userId)->latest()->first();
+
+        return response()->json([
+            'abstrak' => $abstrak ? $abstrak->status_abstrak . '|' . $abstrak->updated_at?->timestamp : 'none',
+            'pembayaran' => $pembayaran ? $pembayaran->status . '|' . $pembayaran->updated_at?->timestamp : 'none',
+        ])->header('Cache-Control', 'no-store, max-age=0');
+    }
+
+    /**
+     * Daftar notifikasi terbaru + jumlah yang belum dibaca (dipoll lonceng).
+     */
+    public function notifikasi(Request $request)
+    {
+        $belumDibaca = Notifikasi::where('user_id', Auth::id())->whereNull('dibaca_at')->count();
+        $versi = $belumDibaca . '-' . (Notifikasi::where('user_id', Auth::id())->max('id') ?? 0);
+
+        // Mode cek cepat: hanya penanda versi, tanpa daftar (dipanggil sering oleh lonceng).
+        if ($request->boolean('cek')) {
+            return response()->json(['belum_dibaca' => $belumDibaca, 'versi' => $versi])
+                ->header('Cache-Control', 'no-store, max-age=0');
+        }
+
+        $items = Notifikasi::where('user_id', Auth::id())->latest()->take(15)->get();
+
+        return response()->json([
+            'belum_dibaca' => $belumDibaca,
+            'versi' => $versi,
+            'items' => $items->map(fn ($n) => [
+                'id' => $n->id,
+                'judul' => $n->judul,
+                'pesan' => $n->pesan,
+                'waktu' => $n->created_at->diffForHumans(),
+                'baru' => is_null($n->dibaca_at),
+                'url' => route('peserta.notifikasi.buka', $n->id),
+            ]),
+        ])->header('Cache-Control', 'no-store, max-age=0');
+    }
+
+    public function bacaSemuaNotifikasi()
+    {
+        Notifikasi::where('user_id', Auth::id())->whereNull('dibaca_at')->update(['dibaca_at' => now()]);
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function bukaNotifikasi(Notifikasi $notifikasi)
+    {
+        abort_if($notifikasi->user_id !== Auth::id(), 403);
+
+        if (is_null($notifikasi->dibaca_at)) {
+            $notifikasi->update(['dibaca_at' => now()]);
+        }
+
+        return redirect($notifikasi->url ?: route('peserta.riwayat'));
+    }
+
     public function caraPembayaran()
     {
         $user = Auth::user();
@@ -33,12 +99,31 @@ class PesertaController extends Controller
         return view('peserta.pembayaran_cara', compact('pembayaran'));
     }
 
+    /**
+     * Kategori pemakalah baru boleh dibayar setelah abstrak diterima.
+     * Kategori non-presenter tidak wajib abstrak. Peserta yang sudah punya
+     * data pembayaran (data lama) tidak dibatasi.
+     */
+    private function bolehBayarPemakalah(): bool
+    {
+        $userId = Auth::id();
+
+        if (Pembayaran::where('user_id', $userId)->exists()) {
+            return true;
+        }
+
+        $abstrak = Abstrak::where('user_id', $userId)->first();
+
+        return $abstrak && $abstrak->status_abstrak === 'diterima';
+    }
+
     public function uploadBukti()
     {
         $user = Auth::user();
         $pembayaran = Pembayaran::where('user_id', $user->id)->latest()->first();
+        $bolehPemakalah = $this->bolehBayarPemakalah();
 
-        return view('peserta.pembayaran_upload', compact('pembayaran'));
+        return view('peserta.pembayaran_upload', compact('pembayaran', 'bolehPemakalah'));
     }
 
     public function storeBukti(Request $request)
@@ -72,6 +157,11 @@ class PesertaController extends Controller
                 throw new \Exception("Kategori pembayaran tidak valid.");
             }
 
+            if ($kategori !== 'non-presenter' && !$this->bolehBayarPemakalah()) {
+                return redirect()->route('peserta.abstrak.upload')
+                    ->with('error', 'Kategori pemakalah: silakan upload abstrak terlebih dahulu. Pembayaran dapat dilakukan setelah abstrak Anda diterima.');
+            }
+
             $nominal = $harga[$kategori];
             $pembayaran = Pembayaran::where('user_id', Auth::id())->first();
 
@@ -100,7 +190,11 @@ class PesertaController extends Controller
                 ]
             );
 
-            return redirect()->route('peserta.riwayat')->with('success', 'Bukti pembayaran berhasil diunggah.');
+            NotifPeserta::kirim(Auth::user(), 'Bukti Pembayaran Diterima Sistem', 'Bukti pembayaran Anda sudah kami terima',
+                ['Bukti pembayaran Anda berhasil diunggah dan sedang menunggu verifikasi admin.', 'Kami akan mengirim email lagi setelah proses verifikasi selesai.'],
+                null, 'Lihat Riwayat Status', route('peserta.riwayat'));
+
+            return redirect()->route('peserta.riwayat')->with('success', 'Bukti pembayaran berhasil diunggah. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
@@ -158,11 +252,11 @@ class PesertaController extends Controller
 
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
-            'pekerjaan' => 'nullable|string|max:255',
-            'jenis_kelamin' => 'nullable|string|in:Laki-laki,Perempuan',
-            'nomor_handphone' => 'nullable|string|max:15',
-            'provinsi' => 'nullable|string|max:255',
-            'institusi' => 'nullable|string|max:255',
+            'pekerjaan' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|string|in:Laki-laki,Perempuan',
+            'nomor_handphone' => 'required|string|max:15',
+            'provinsi' => 'required|string|max:255',
+            'institusi' => 'required|string|max:255',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
@@ -172,7 +266,13 @@ class PesertaController extends Controller
             $data['password'] = Hash::make($request->input('password'));
         }
 
+        $sebelumnyaLengkap = $user->profilLengkap();
+
         $user->update($data);
+
+        if (!$sebelumnyaLengkap && $user->profilLengkap()) {
+            return redirect()->route('peserta.beranda')->with('success', 'Profil berhasil dilengkapi. Selamat datang!');
+        }
 
         return redirect()->route('peserta.profile.edit')->with('success', 'Profil berhasil diperbarui.');
     }
@@ -293,7 +393,13 @@ class PesertaController extends Controller
             ]);
             $abstrak->save();
 
-            return redirect()->route('peserta.riwayat')->with('success', 'Abstrak berhasil diupload.');
+            NotifPeserta::kirim($user, 'Abstrak Berhasil Diupload', 'Abstrak Anda sudah kami terima',
+                ['Abstrak berjudul "' . $abstrak->judul_abstrak . '" berhasil diunggah dan sedang menunggu review (3-7 hari kerja).', 'Pembayaran kategori pemakalah dapat dilakukan setelah abstrak diterima.'],
+                null, 'Lihat Riwayat Status', route('peserta.riwayat'));
+
+            return redirect()->route('peserta.riwayat')->with('success', 'Abstrak berhasil diupload. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }

@@ -22,7 +22,7 @@
             <div class="xl:col-span-1 space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 bg-primary bg-opacity-10 rounded-lg flex items-center justify-center mr-3">
+                        <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
                             <i class="fas fa-user-circle text-primary text-lg"></i>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900">Informasi Peserta</h3>
@@ -51,7 +51,7 @@
 
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 bg-emerald-500 bg-opacity-10 rounded-lg flex items-center justify-center mr-3">
+                        <div class="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mr-3">
                             <i class="fas fa-info-circle text-emerald-600 text-lg"></i>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900">Status Abstrak</h3>
@@ -103,12 +103,19 @@
                         @endif
                     </div>
                 </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                        <h3 class="font-semibold text-gray-900"><i class="fas fa-envelope text-emerald-600 mr-2"></i>Riwayat Email Peserta</h3>
+                        <span class="inline-flex items-center gap-1 text-[11px] text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Live</span>
+                    </div>
+                    @include('admin.partials.email-list', ['emailLogs' => $emailLogs ?? collect(), 'ringkas' => false])
+                </div>
             </div>
 
             <div class="xl:col-span-3">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div class="flex items-center mb-6">
-                        <div class="w-10 h-10 bg-teal-500 bg-opacity-10 rounded-lg flex items-center justify-center mr-3">
+                        <div class="w-10 h-10 bg-teal-500/10 rounded-lg flex items-center justify-center mr-3">
                             <i class="fas fa-file-alt text-teal-600 text-lg"></i>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900">Detail Abstrak</h3>
@@ -142,7 +149,7 @@
                         <div class="border-t border-gray-200 pt-6">
                             <div class="flex items-center mb-6">
                                 <div
-                                    class="w-8 h-8 bg-green-500 bg-opacity-10 rounded-lg flex items-center justify-center mr-3">
+                                    class="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center mr-3">
                                     <i class="fas fa-check-circle text-green-500"></i>
                                 </div>
                                 <h4 class="text-lg font-semibold text-gray-900">Verifikasi Abstrak</h4>

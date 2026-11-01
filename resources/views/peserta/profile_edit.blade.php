@@ -8,6 +8,12 @@
     </h2>
 
     <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+        @unless($user->profilLengkap())
+            <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-xl mb-6 text-sm">
+                <i class="fas fa-info-circle mr-1"></i>
+                Lengkapi data berikut untuk mulai menggunakan akun Anda. Data ini dipakai untuk sertifikat dan kwitansi.
+            </div>
+        @endunless
         <p class="text-gray-600 mb-6">Kelola detail pribadi, institusi, dan kata sandi Anda di sini.</p>
 
         <form action="{{ route('peserta.profile.update') }}" method="POST" class="space-y-8">
@@ -31,14 +37,14 @@
                     </div>
 
                     <div>
-                        <label for="nomor_handphone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Handphone</label>
+                        <label for="nomor_handphone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Handphone <span class="text-red-500">*</span></label>
                         <input type="text" name="nomor_handphone" id="nomor_handphone" value="{{ old('nomor_handphone', $user->nomor_handphone) }}" class="w-full rounded-lg border-gray-300 shadow-sm p-3 focus:ring-primary focus:border-primary @error('nomor_handphone') border-red-500 @enderror">
                         @error('nomor_handphone') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
-                        <select name="jenis_kelamin" id="jenis_kelamin" class="w-full rounded-lg border-gray-300 shadow-sm p-3 focus:ring-primary focus:border-primary @error('jenis_kelamin') border-red-500 @enderror">
+                        <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin <span class="text-red-500">*</span></label>
+                        <select name="jenis_kelamin" id="jenis_kelamin" required class="w-full rounded-lg border-gray-300 shadow-sm p-3 focus:ring-primary focus:border-primary @error('jenis_kelamin') border-red-500 @enderror">
                             <option value="">Pilih...</option>
                             <option value="Laki-laki" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                             <option value="Perempuan" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
@@ -54,19 +60,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <div>
-                        <label for="pekerjaan" class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
+                        <label for="pekerjaan" class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan <span class="text-red-500">*</span></label>
                         <input type="text" name="pekerjaan" id="pekerjaan" value="{{ old('pekerjaan', $user->pekerjaan) }}" class="w-full rounded-lg border-gray-300 shadow-sm p-3 focus:ring-primary focus:border-primary @error('pekerjaan') border-red-500 @enderror">
                         @error('pekerjaan') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label for="institusi" class="block text-sm font-medium text-gray-700 mb-1">Institusi/Sekolah/Kampus</label>
+                        <label for="institusi" class="block text-sm font-medium text-gray-700 mb-1">Institusi/Sekolah/Kampus <span class="text-red-500">*</span></label>
                         <input type="text" name="institusi" id="institusi" value="{{ old('institusi', $user->institusi) }}" class="w-full rounded-lg border-gray-300 shadow-sm p-3 focus:ring-primary focus:border-primary @error('institusi') border-red-500 @enderror">
                         @error('institusi') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="md:col-span-2">
-                        <label for="provinsi" class="block text-sm font-medium text-gray-700 mb-1">Provinsi</label>
+                        <label for="provinsi" class="block text-sm font-medium text-gray-700 mb-1">Provinsi <span class="text-red-500">*</span></label>
                         <input type="text" name="provinsi" id="provinsi" value="{{ old('provinsi', $user->provinsi) }}" class="w-full rounded-lg border-gray-300 shadow-sm p-3 focus:ring-primary focus:border-primary @error('provinsi') border-red-500 @enderror">
                         @error('provinsi') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>

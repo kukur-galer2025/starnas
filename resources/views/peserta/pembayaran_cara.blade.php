@@ -38,7 +38,7 @@
                 <div class="bg-gradient-to-br from-gray-50 to-white rounded-xl border border-primary/20 p-4 md:p-6">
                     <div class="text-center mb-6">
                         <h4 class="text-xl font-bold text-primary mb-2">Pemakalah (Onsite)</h4>
-                        <p class="text-sm text-gray-500">Presentasi langsung di Grand Hotel De Djokja, Yogyakarta</p>
+                        <p class="text-sm text-gray-500">Presentasi langsung di The Malioboro Hotel, Yogyakarta</p>
                         <div class="w-16 h-1 bg-primary rounded-full mx-auto mt-2"></div>
                     </div>
                     

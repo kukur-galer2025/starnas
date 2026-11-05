@@ -23,7 +23,7 @@
                     </div>
                     <div class="flex items-center gap-2 bg-emerald-950/40 px-4 py-2 rounded-xl border border-emerald-500/30 backdrop-blur-sm">
                         <i class="fas fa-map-marker-alt text-amber-400"></i>
-                        <span class="font-semibold">Grand Hotel De Djokja, Yogyakarta</span>
+                        <span class="font-semibold">The Malioboro Hotel, Yogyakarta</span>
                     </div>
                     <div class="flex items-center gap-2 bg-emerald-950/40 px-4 py-2 rounded-xl border border-emerald-500/30 backdrop-blur-sm">
                         <i class="fas fa-user-shield text-amber-400"></i>
@@ -60,7 +60,7 @@
                         </div>
                         <div>
                             <h2 class="text-xl md:text-2xl font-black text-slate-900">HARI PERTAMA: SIDANG PLENO I</h2>
-                            <p class="text-xs md:text-sm font-semibold text-emerald-700">Selasa, 1 Desember 2026 • Grand Hotel De Djokja</p>
+                            <p class="text-xs md:text-sm font-semibold text-emerald-700">Selasa, 1 Desember 2026 • The Malioboro Hotel</p>
                         </div>
                     </div>
 
@@ -122,7 +122,7 @@
                         </div>
                         <div>
                             <h2 class="text-xl md:text-2xl font-black text-slate-900">HARI KEDUA: SIDANG KOMISI & PENETAPAN HASIL</h2>
-                            <p class="text-xs md:text-sm font-semibold text-amber-700">Rabu, 2 Desember 2026 • Grand Hotel De Djokja</p>
+                            <p class="text-xs md:text-sm font-semibold text-amber-700">Rabu, 2 Desember 2026 • The Malioboro Hotel</p>
                         </div>
                     </div>
 

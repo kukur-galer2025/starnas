@@ -22,7 +22,7 @@
                     <div
                         class="inline-flex items-center px-3 py-1 md:px-4 md:py-2 glass-effect rounded-full text-xs md:text-sm mb-4 md:mb-6 animate-pulse">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-ping"></span>
-                        <i class="fas fa-calendar-alt mr-2"></i>1-2 Desember 2026 • Grand Hotel De Djokja
+                        <i class="fas fa-calendar-alt mr-2"></i>1-2 Desember 2026 • 08:00 - selesai • The Malioboro Hotel
                     </div>
 
                     <h1 class="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 leading-tight">
@@ -86,7 +86,6 @@
                     <div class="relative w-full max-w-xl">
                         <div class="hero-slider">
                             <div class="slide active" style="background-image: url('/storage/starnas-stage.jpg')"></div>
-                            <div class="slide" style="background-image: url('/storage/venue-djokja.jpg')"></div>
                             <div class="slide" style="background-image: url('/storage/konferensi.png')"></div>
 
                             <button class="slider-arrow prev">
@@ -155,7 +154,7 @@
                 </div>
                 <p class="text-slate-400 max-w-2xl mx-auto text-xs md:text-sm">
                     Diselenggarakan oleh <strong>Akademisi dan Saintis Indonesia (ASASI)</strong> • 1–2 Desember 2026 di
-                    Grand Hotel De Djokja, Yogyakarta
+                    The Malioboro Hotel, Yogyakarta
                 </p>
             </div>
 
@@ -207,7 +206,7 @@
                                     class="fas fa-clock mr-1.5"></i> 08.00 WIB - Selesai</span>
                             <span class="text-slate-500">•</span>
                             <span class="inline-flex items-center text-emerald-300 font-semibold"><i
-                                    class="fas fa-map-marker-alt mr-1.5"></i> Grand Hotel De Djokja, Yogyakarta</span>
+                                    class="fas fa-map-marker-alt mr-1.5"></i> The Malioboro Hotel, Yogyakarta</span>
                         </div>
                     </div>
 
@@ -224,11 +223,16 @@
                             </span>
                         </div>
 
+                        @php
+                            $sisaHari = (int) now()->startOfDay()->diffInDays(\Carbon\Carbon::parse('2026-11-14')->startOfDay(), false);
+                            $teksSisa = $sisaHari > 1 ? "Tersisa {$sisaHari} hari lagi"
+                                : ($sisaHari === 1 ? 'Besok batas akhir' : ($sisaHari === 0 ? 'Hari ini batas akhir!' : 'Pengiriman abstrak telah ditutup'));
+                        @endphp
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                             <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-400/40 relative">
                                 <div class="text-[11px] font-bold text-amber-300 uppercase">Deadline Abstrak</div>
                                 <div class="text-lg font-black text-white">14 November 2026</div>
-                                <div class="text-[11px] text-amber-200/90 mt-0.5">Tersisa sekitar 3 minggu</div>
+                                <div class="text-[11px] text-amber-200/90 mt-0.5">{{ $teksSisa }}</div>
                             </div>
                             <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
                                 <div class="text-[11px] font-bold text-teal-300 uppercase">Notifikasi Penerimaan</div>
@@ -250,8 +254,7 @@
                         <!-- Himbauan Callout -->
                         <div
                             class="p-3.5 bg-amber-500/15 border-l-4 border-amber-400 rounded-r-xl text-xs text-amber-100 leading-relaxed">
-                            <strong>⏳ Catatan Panitia:</strong> Mengingat batas akhir pengiriman abstrak tinggal sekitar
-                            tiga minggu lagi (14 November 2026), kami mengimbau Bapak/Ibu untuk segera mengirimkan abstrak
+                            <strong>⏳ Catatan Panitia:</strong> Mengingat batas akhir pengiriman abstrak {{ $sisaHari > 0 ? "tinggal " . $sisaHari . " hari lagi" : "jatuh pada" }} (14 November 2026), kami mengimbau Bapak/Ibu untuk segera mengirimkan abstrak
                             dan melakukan pendaftaran agar tidak terlewat.
                         </div>
                     </div>
@@ -270,8 +273,7 @@
                                         <i class="fas fa-hotel"></i> Kategori Onsite
                                     </span>
                                     <span
-                                        class="text-[10px] bg-emerald-500/20 text-emerald-200 px-2 py-0.5 rounded font-semibold">Grand
-                                        Hotel De Djokja</span>
+                                        class="text-[10px] bg-emerald-500/20 text-emerald-200 px-2 py-0.5 rounded font-semibold">The Malioboro Hotel</span>
                                 </div>
                                 <ul class="space-y-2 text-xs">
                                     <li class="flex justify-between items-center text-slate-300">
@@ -1048,7 +1050,7 @@
                                     <h4 class="font-bold text-emerald-950 mb-2 text-sm md:text-base">Informasi Acara</h4>
                                     <p class="text-emerald-900 text-xs md:text-sm">
                                         Acara ini akan diselenggarakan pada <span class="font-semibold text-emerald-950">1-2 Desember 2026</span>
-                                        di <span class="font-semibold text-emerald-950">Grand Hotel De Djokja, Yogyakarta</span>. Jangan
+                                        di <span class="font-semibold text-emerald-950">The Malioboro Hotel, Yogyakarta</span>. Jangan
                                         lewatkan kesempatan emas untuk menjadi bagian dari kemandirian ekonomi dan energi bangsa bersama kecerdasan buatan (AI).
                                     </p>
                                 </div>
@@ -1165,7 +1167,7 @@
             <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
                 <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold uppercase tracking-wider mb-3">Registrasi & Investasi</span>
                 <h2 class="text-2xl md:text-4xl font-extrabold text-slate-900 section-title">BIAYA PENDAFTARAN SEMINAR NASIONAL ASASI 2026</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto text-sm md:text-base mt-2">Informasi biaya pendaftaran resmi untuk kategori Onsite (Offline di Grand Hotel De Djokja) dan Online (Virtual Zoom Meeting).</p>
+                <p class="text-slate-600 max-w-2xl mx-auto text-sm md:text-base mt-2">Informasi biaya pendaftaran resmi untuk kategori Onsite (Offline di The Malioboro Hotel) dan Online (Virtual Zoom Meeting).</p>
             </div>
 
             <div class="max-w-6xl mx-auto">
@@ -1179,11 +1181,11 @@
                                     <i class="fas fa-hotel"></i> KATEGORI ONSITE (OFFLINE)
                                 </span>
                                 <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-                                    <i class="fas fa-map-marker-alt mr-1"></i> Grand Hotel De Djokja
+                                    <i class="fas fa-map-marker-alt mr-1"></i> The Malioboro Hotel
                                 </span>
                             </div>
                             <h3 class="text-xl md:text-2xl font-black text-slate-900 mb-1">Pemakalah Onsite</h3>
-                            <p class="text-xs md:text-sm text-slate-500 mb-6">Presentasi tatap muka langsung di Grand Hotel De Djokja, Yogyakarta (1-2 Desember 2026).</p>
+                            <p class="text-xs md:text-sm text-slate-500 mb-6">Presentasi tatap muka langsung di The Malioboro Hotel, Yogyakarta (1-2 Desember 2026).</p>
 
                             <!-- DAFTAR HARGA ONSITE -->
                             <div class="space-y-3 mb-6">
@@ -1505,26 +1507,26 @@
             <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
                 <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold uppercase tracking-wider mb-3">Venue Penyelenggaraan</span>
                 <h2 class="text-2xl md:text-4xl font-extrabold text-slate-900 section-title">LOKASI ACARA</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto text-sm md:text-base mt-2">STARNAS ASASI 2026 & ICoABCD 2026 akan diselenggarakan di Grand Hotel De Djokja, Yogyakarta.</p>
+                <p class="text-slate-600 max-w-2xl mx-auto text-sm md:text-base mt-2">STARNAS ASASI 2026 & ICoABCD 2026 akan diselenggarakan di The Malioboro Hotel, Yogyakarta.</p>
             </div>
 
             <div class="flex flex-col lg:flex-row items-center max-w-6xl mx-auto">
                 <div class="lg:w-1/2 mb-8 md:mb-10 lg:mb-0 w-full" data-aos="fade-right">
                     <div class="rounded-3xl overflow-hidden shadow-2xl border-2 border-emerald-500/30 relative group h-full min-h-[360px] md:min-h-[420px] flex items-end">
-                        <img src="{{ asset('storage/venue-djokja.jpg') }}" loading="lazy" decoding="async" alt="Grand Hotel De Djokja Yogyakarta" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-950 flex items-center justify-center"><i class="fas fa-hotel text-white/10 text-[10rem]"></i></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent"></div>
                         <div class="relative z-10 p-6 md:p-8 text-white w-full">
                             <div class="inline-flex items-center px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg mb-2 shadow-md">
-                                <i class="fas fa-hotel mr-1.5"></i> Grand Hotel De Djokja
+                                <i class="fas fa-hotel mr-1.5"></i> The Malioboro Hotel
                             </div>
-                            <h3 class="text-2xl font-black mb-1 text-white">Grand Hotel De Djokja</h3>
+                            <h3 class="text-2xl font-black mb-1 text-white">The Malioboro Hotel</h3>
                             <p class="text-emerald-200 text-xs md:text-sm">Venue Resmi STARNAS ASASI & ICoABCD 2026 • Kota Yogyakarta</p>
                         </div>
                     </div>
                 </div>
                 <div class="lg:w-1/2 lg:pl-8 md:lg:pl-12" data-aos="fade-left" data-aos-delay="300">
-                    <h3 class="text-xl md:text-2xl font-bold text-slate-900 mb-4 md:mb-6">Grand Hotel De Djokja Yogyakarta</h3>
-                    <p class="text-slate-600 mb-4 md:mb-6 text-sm md:text-base leading-relaxed">Sebagai venue representatif di Yogyakarta, Grand Hotel De Djokja menyediakan fasilitas lengkap, ballroom representatif, dan akses strategis untuk mendukung kesuksesan STARNAS ASASI 2026 & ICoABCD 2026.</p>
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-900 mb-4 md:mb-6">The Malioboro Hotel Yogyakarta</h3>
+                    <p class="text-slate-600 mb-4 md:mb-6 text-sm md:text-base leading-relaxed">STARNAS ASASI 2026 diselenggarakan secara tatap muka (onsite) di The Malioboro Hotel, Yogyakarta, dan juga tersedia kategori peserta online (virtual Zoom).</p>
 
                     <div class="space-y-3 md:space-y-4 mb-6 md:mb-8">
                         <div class="flex items-center p-3 rounded-xl bg-slate-50 border border-slate-100">
@@ -1533,7 +1535,7 @@
                                 <i class="fas fa-map-marker-alt text-base"></i>
                             </div>
                             <div>
-                                <p class="text-slate-800 text-sm md:text-base font-medium">Grand Hotel De Djokja, Kota Yogyakarta, D.I. Yogyakarta</p>
+                                <p class="text-slate-800 text-sm md:text-base font-medium">The Malioboro Hotel, Yogyakarta</p>
                             </div>
                         </div>
 
@@ -1543,7 +1545,7 @@
                                 <i class="fas fa-hotel text-base"></i>
                             </div>
                             <div>
-                                <p class="text-slate-800 text-sm md:text-base">Convention hall & ballroom modern berkapasitas besar</p>
+                                <p class="text-slate-800 text-sm md:text-base">Waktu: 08:00 WIB - selesai (1-2 Desember 2026)</p>
                             </div>
                         </div>
 
@@ -1553,7 +1555,7 @@
                                 <i class="fas fa-wifi text-base"></i>
                             </div>
                             <div>
-                                <p class="text-slate-800 text-sm md:text-base">Konektivitas internet dedicated & hybrid conference system</p>
+                                <p class="text-slate-800 text-sm md:text-base">Tersedia kategori Onsite (tatap muka) dan Online (virtual Zoom)</p>
                             </div>
                         </div>
 
@@ -1568,7 +1570,7 @@
                         </div>
                     </div>
 
-                    <a href="https://maps.google.com/?q=Grand+Hotel+De+Djokja" target="_blank"
+                    <a href="https://maps.google.com/?q=The+Malioboro+Hotel+Yogyakarta" target="_blank"
                         class="inline-flex items-center bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 hover-lift text-sm md:text-base shadow-lg shadow-emerald-600/25">
                         <i class="fas fa-map-marked-alt mr-2"></i>
                         <span>Buka Petunjuk Arah Google Maps</span>

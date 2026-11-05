@@ -227,7 +227,7 @@
                 <div class="relative z-10 text-center mt-4 md:mt-0">
                     <div class="flex items-center justify-center text-emerald-200 text-xs bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-2.5 backdrop-blur-sm">
                         <i class="fas fa-map-marker-alt mr-2 text-emerald-400"></i>
-                        <span>Grand Hotel De Djokja, Yogyakarta</span>
+                        <span>The Malioboro Hotel, Yogyakarta</span>
                     </div>
                 </div>
             </div>
@@ -289,7 +289,7 @@
                             <i class="fas fa-info-circle mr-1 text-emerald-600"></i>
                             Jika lupa password atau butuh bantuan, hubungi admin
                         </p>
-                        <a href="https://wa.me/628122718132" target="_blank"
+                        <a href="https://wa.me/6285225519882" target="_blank"
                             class="inline-flex items-center justify-center py-1.5 px-3 rounded-lg btn-whatsapp font-medium text-xs">
                             <i class="fab fa-whatsapp mr-1 text-sm"></i>
                             Hubungi via WhatsApp

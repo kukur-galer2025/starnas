@@ -23,7 +23,7 @@
                     @if($tombolUrl)
                         <p style="margin:24px 0;"><a href="{{ $tombolUrl }}" style="background:#059669;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:bold;display:inline-block;">{{ $tombolTeks }}</a></p>
                     @endif
-                    <p style="margin:24px 0 0;font-size:13px;color:#6b7280;">1-2 Desember 2026 &bull; Grand Hotel De Djokja, Yogyakarta</p>
+                    <p style="margin:24px 0 0;font-size:13px;color:#6b7280;">1-2 Desember 2026 &bull; The Malioboro Hotel, Yogyakarta</p>
                 </td></tr>
                 <tr><td style="padding:16px 28px;background:#f9fafb;font-size:12px;color:#9ca3af;">
                     Email ini dikirim otomatis, mohon tidak membalas langsung.

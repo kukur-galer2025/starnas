@@ -23,7 +23,7 @@
                     </div>
                     <div class="flex items-center gap-2 bg-emerald-950/40 px-4 py-2 rounded-xl border border-emerald-500/30 backdrop-blur-sm">
                         <i class="fas fa-map-marker-alt text-amber-400"></i>
-                        <span class="font-semibold">Grand Hotel De Djokja, Yogyakarta</span>
+                        <span class="font-semibold">The Malioboro Hotel, Yogyakarta</span>
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                         <div>
                             <h2 class="text-xl md:text-2xl font-black text-slate-900">HARI PERTAMA</h2>
                             <p class="text-xs md:text-sm font-semibold text-emerald-700 flex items-center gap-2">
-                                <i class="fas fa-calendar-alt"></i> Selasa, 1 Desember 2026 • Grand Hotel De Djokja
+                                <i class="fas fa-calendar-alt"></i> Selasa, 1 Desember 2026 • The Malioboro Hotel
                             </p>
                         </div>
                     </div>
@@ -313,7 +313,7 @@
                         <div>
                             <h2 class="text-xl md:text-2xl font-black text-slate-900">HARI KEDUA</h2>
                             <p class="text-xs md:text-sm font-semibold text-amber-700 flex items-center gap-2">
-                                <i class="fas fa-calendar-alt"></i> Rabu, 2 Desember 2026 • Grand Hotel De Djokja
+                                <i class="fas fa-calendar-alt"></i> Rabu, 2 Desember 2026 • The Malioboro Hotel
                             </p>
                         </div>
                     </div>
@@ -549,7 +549,7 @@
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <i class="fas fa-map-marker-alt text-amber-600 mt-1 flex-shrink-0"></i>
-                                    <span>Venue penyelenggaraan berada di <strong>Grand Hotel De Djokja, Yogyakarta</strong>. WiFi & fasilitas multimedia representatif telah disiapkan panitia.</span>
+                                    <span>Venue penyelenggaraan berada di <strong>The Malioboro Hotel, Yogyakarta</strong>. WiFi & fasilitas multimedia representatif telah disiapkan panitia.</span>
                                 </li>
                             </ul>
                         </div>

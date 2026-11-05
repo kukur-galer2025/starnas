@@ -17,6 +17,6 @@ Catatan: {{ $catatan }}
 {{ $tombolTeks }}: {{ $tombolUrl }}
 
 @endif
-1-2 Desember 2026 • Grand Hotel De Djokja, Yogyakarta
+1-2 Desember 2026 • The Malioboro Hotel, Yogyakarta
 
 Email ini dikirim otomatis, mohon tidak membalas langsung.

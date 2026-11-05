@@ -249,7 +249,7 @@
                             Jika Anda memiliki pertanyaan tentang status verifikasi atau mengalami kendala teknis,
                             jangan ragu untuk menghubungi tim support kami.
                         </p>
-                        <a href="https://wa.me/628122718132" target="_blank"
+                        <a href="https://wa.me/6285225519882" target="_blank"
                             class="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors duration-200">
                             <i class="fab fa-whatsapp mr-2"></i>
                             Chat WhatsApp

@@ -85,10 +85,11 @@
                                     </a>
                                     @if($st !== 'diterima')
                                         <form action="{{ route('peserta.abstrak.delete', $abs->id) }}" method="POST"
-                                              onsubmit="return confirm('Yakin ingin menghapus abstrak ini? Tindakan tidak dapat dibatalkan.');">
+                                              id="form-hapus-{{ $abs->id }}" class="form-hapus-abstrak">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
+                                            <button type="button"
+                                                onclick="bukaModa('{{ $abs->id }}', '{{ addslashes($abs->judul_abstrak) }}')"
                                                 class="inline-flex items-center justify-center w-full px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-xl text-xs transition-colors duration-200">
                                                 <i class="fas fa-trash-alt mr-1.5"></i> Hapus
                                             </button>
@@ -263,8 +264,94 @@
         </div>
     </div>
 
+    {{-- ======================= --}}
+    {{-- MODAL KONFIRMASI HAPUS --}}
+    {{-- ======================= --}}
+    <div id="modal-hapus" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        {{-- Overlay --}}
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="tutupModal()"></div>
+
+        {{-- Card Modal --}}
+        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden animate-modal">
+
+            {{-- Header merah --}}
+            <div class="bg-gradient-to-r from-red-500 to-rose-500 px-6 py-5 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-white text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-lg leading-tight">Hapus Abstrak?</h3>
+                    <p class="text-red-100 text-xs mt-0.5">Tindakan ini tidak dapat dibatalkan</p>
+                </div>
+                <button onclick="tutupModal()" class="ml-auto text-white/70 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            {{-- Body --}}
+            <div class="p-6">
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Anda akan menghapus abstrak:
+                </p>
+                <div class="mt-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                    <p id="modal-judul-abstrak" class="text-red-800 font-semibold text-sm leading-relaxed italic">"..."</p>
+                </div>
+                <p class="text-gray-500 text-xs mt-3">
+                    <i class="fas fa-info-circle text-amber-500 mr-1"></i>
+                    File yang sudah diunggah akan dihapus permanen dari sistem.
+                </p>
+            </div>
+
+            {{-- Footer tombol --}}
+            <div class="px-6 pb-6 flex gap-3">
+                <button onclick="tutupModal()"
+                    class="flex-1 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-sm transition-colors duration-200">
+                    <i class="fas fa-arrow-left mr-1.5"></i> Batalkan
+                </button>
+                <button id="modal-btn-hapus"
+                    class="flex-1 py-2.5 px-4 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 text-white font-semibold rounded-xl text-sm transition-all duration-200 shadow-md shadow-red-500/30">
+                    <i class="fas fa-trash-alt mr-1.5"></i> Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9) translateY(10px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-modal { animation: modalIn 0.2s ease-out; }
+    </style>
+
     @push('scripts')
     <script>
+        let formHapusTarget = null;
+
+        function bukaModa(id, judul) {
+            formHapusTarget = document.getElementById('form-hapus-' + id);
+            document.getElementById('modal-judul-abstrak').textContent = '"' + judul + '"';
+            const modal = document.getElementById('modal-hapus');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function tutupModal() {
+            const modal = document.getElementById('modal-hapus');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            formHapusTarget = null;
+        }
+
+        document.getElementById('modal-btn-hapus').addEventListener('click', function () {
+            if (formHapusTarget) formHapusTarget.submit();
+        });
+
+        // Tutup modal jika tekan Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') tutupModal();
+        });
+    </script>
         const fileInput = document.getElementById('abstrak_file');
         const uploadArea = document.querySelector('.border-dashed');
         const fileUploadArea = document.getElementById('file-upload-area');

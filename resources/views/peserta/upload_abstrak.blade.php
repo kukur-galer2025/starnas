@@ -351,7 +351,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') tutupModal();
         });
-    </script>
+
         const fileInput = document.getElementById('abstrak_file');
         const uploadArea = document.querySelector('.border-dashed');
         const fileUploadArea = document.getElementById('file-upload-area');

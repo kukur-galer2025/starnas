@@ -1137,10 +1137,10 @@
                                     <i class="fas fa-check-circle mr-3 w-4 text-center text-emerald-500"></i>
                                     Komite
                                 </a>
-                                <a href="/storage/Manuscript-Template.docx" download="Manuscript Template.docx"
+                                <a href="/storage/Template_Full_Paper_STARNAS_ASASI_2026.docx" download="Template Full Paper STARNAS ASASI 2026.docx"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors duration-200">
                                     <i class="fas fa-info-circle mr-3 w-4 text-center text-amber-500"></i>
-                                    Template
+                                    Template Full Paper
                                 </a>
                                 <a href="/storage/Template_Abstrak_STARNAS_ASASI_2026.docx" download="Template Abstrak.docx"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors duration-200">
@@ -1270,10 +1270,10 @@
                         <i class="fas fa-users mr-3 w-4 text-center text-emerald-500"></i>
                         Komite
                     </a>
-                    <a href="/storage/Manuscript-Template.docx" download="Manuscript Template.docx"
+                    <a href="/storage/Template_Full_Paper_STARNAS_ASASI_2026.docx" download="Template Full Paper STARNAS ASASI 2026.docx"
                         class="block py-2.5 px-6 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg text-sm transition-all duration-200 border-l-2 border-emerald-300 ml-4 flex items-center mobile-nav-link">
                         <i class="fas fa-file-download mr-3 w-4 text-center text-amber-500"></i>
-                        Template
+                        Template Full Paper
                     </a>
                     <a href="/storage/Template_Abstrak_STARNAS_ASASI_2026.docx" download="Template Abstrak.docx"
                         class="block py-2.5 px-6 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg text-sm transition-all duration-200 border-l-2 border-emerald-300 ml-4 flex items-center mobile-nav-link">

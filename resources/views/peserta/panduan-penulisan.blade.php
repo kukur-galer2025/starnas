@@ -287,12 +287,12 @@
 
                                 <!-- Download Section -->
                                 <div class="mt-12 text-center pt-8 border-t border-gray-200">
-                                    <p class="text-gray-600 mb-6 text-lg">Download template penulisan untuk memudahkan
+                                    <p class="text-gray-600 mb-6 text-lg">Download template full paper untuk memudahkan
                                         penyusunan naskah</p>
-                                    <a href="/storage/Manuscript-Template.docx" download="Template Penulisan.docx"
+                                    <a href="/storage/Template_Full_Paper_STARNAS_ASASI_2026.docx" download="Template Full Paper STARNAS ASASI 2026.docx"
                                         class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
                                         <i class="fas fa-download mr-3"></i>
-                                        Download Template Penulisan
+                                        Download Template Full Paper
                                     </a>
                                     <p class="text-gray-500 text-sm mt-4">Format: Microsoft Word (.docx)</p>
                                     <div class="mt-8">

@@ -83,7 +83,7 @@
                             <i class="fas fa-map-marker-alt text-secondary mr-3"></i>
                             <div>
                                 <p class="text-sm font-semibold text-gray-700">Lokasi</p>
-                                <p class="text-xs text-gray-600 font-bold">Grand Hotel De Djokja, Yogyakarta</p>
+                                <p class="text-xs text-gray-600 font-bold">The Malioboro Hotel, Yogyakarta</p>
                             </div>
                         </div>
                     </div>

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne; // <-- Import Relasi HasOne
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -82,5 +83,13 @@ class User extends Authenticatable
     {
         // Hubungan satu pengguna memiliki satu abstrak
         return $this->hasOne(Abstrak::class);
+    }
+
+    /**
+     * Relasi one-to-many ke Model Abstrak (multi-abstrak, maks 3).
+     */
+    public function abstraks(): HasMany
+    {
+        return $this->hasMany(Abstrak::class);
     }
 }

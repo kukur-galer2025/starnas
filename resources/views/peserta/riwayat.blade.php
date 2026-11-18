@@ -32,55 +32,64 @@
         @endif
 
         {{-- =============================================== --}}
-        {{-- == RIWAYAT STATUS ABSTRAK (KARTU BARU) == --}}
+        {{-- == RIWAYAT STATUS ABSTRAK (MULTI) == --}}
         {{-- =============================================== --}}
-        @if(isset($abstrak) && $abstrak)
-            <div class="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-teal-500">
-                <div class="flex items-start justify-between mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-file-alt mr-3 text-teal-600"></i> Status Abstrak
-                    </h3>
-                    <a href="{{ route('peserta.abstrak.upload') }}" class="text-xs text-primary hover:text-emerald-700 font-medium">
-                        Lihat Detail
-                    </a>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Judul Abstrak</p>
-                        <p class="text-base font-semibold text-gray-900 leading-relaxed">{{ $abstrak->judul_abstrak }}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Status Verifikasi</p>
-                        @php
-                            $status = $abstrak->status_abstrak;
-                            $statusData = [
-                                'pending' => ['class' => 'bg-yellow-100 text-yellow-800', 'text' => 'Menunggu Review'],
-                                'diterima' => ['class' => 'bg-green-100 text-green-800', 'text' => 'Diterima'],
-                                'ditolak' => ['class' => 'bg-red-100 text-red-800', 'text' => 'Ditolak'],
-                            ];
-                            $currentStatus = $statusData[$status] ?? ['class' => 'bg-gray-100 text-gray-800', 'text' => 'Data Kosong'];
-                        @endphp
-                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full {{ $currentStatus['class'] }}">
-                            {{ $currentStatus['text'] }}
-                        </span>
-                    </div>
-                </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-teal-500">
+            <div class="flex items-start justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-file-alt mr-3 text-teal-600"></i> Status Abstrak
+                </h3>
+                <a href="{{ route('peserta.abstrak.upload') }}" class="text-xs text-primary hover:text-emerald-700 font-medium">
+                    Kelola Abstrak
+                </a>
+            </div>
 
-                @if($abstrak->catatan_reviewer_abstrak)
-                    <div class="mt-4 p-3 rounded-lg border {{ $status == 'ditolak' ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200' }}">
-                        <strong class="text-sm text-gray-600">Catatan Reviewer:</strong>
-                        <p class="text-sm {{ $status == 'ditolak' ? 'text-red-700' : 'text-gray-800' }} mt-1 italic">
-                            {{ $abstrak->catatan_reviewer_abstrak }}
-                        </p>
-                    </div>
-                @endif
-            </div>
-        @else
-            <div class="p-4 bg-teal-50 border border-teal-200 rounded-xl text-teal-800">
-                <i class="fas fa-exclamation-circle mr-2 text-teal-600"></i> Anda belum mengunggah abstrak. Silakan unggah di halaman Upload Abstrak.
-            </div>
-        @endif
+            @php
+                $abstraksRiwayat = $abstraks ?? collect();
+            @endphp
+
+            @if($abstraksRiwayat->isEmpty())
+                <div class="p-4 bg-teal-50 border border-teal-200 rounded-xl text-teal-800">
+                    <i class="fas fa-exclamation-circle mr-2 text-teal-600"></i> Anda belum mengunggah abstrak. Silakan unggah di halaman Upload Abstrak.
+                </div>
+            @else
+                <div class="space-y-3">
+                    @foreach($abstraksRiwayat as $i => $abs)
+                        @php
+                            $st = $abs->status_abstrak;
+                            $stCfg = [
+                                'pending'  => ['class' => 'bg-yellow-100 text-yellow-800', 'text' => 'Menunggu Review'],
+                                'diterima' => ['class' => 'bg-green-100 text-green-800',  'text' => 'Diterima'],
+                                'ditolak'  => ['class' => 'bg-red-100 text-red-800',     'text' => 'Ditolak'],
+                            ][$st] ?? ['class' => 'bg-gray-100 text-gray-800', 'text' => 'Unknown'];
+                        @endphp
+                        <div class="border border-gray-200 rounded-xl p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <p class="text-xs font-medium text-gray-500 mb-0.5">Abstrak #{{ $i + 1 }} &mdash; Judul</p>
+                                    <p class="text-sm font-semibold text-gray-900 leading-relaxed">{{ $abs->judul_abstrak }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ $abs->created_at->format('d M Y') }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-gray-500 mb-1">Status Verifikasi</p>
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full {{ $stCfg['class'] }}">
+                                        {{ $stCfg['text'] }}
+                                    </span>
+                                </div>
+                            </div>
+                            @if($abs->catatan_reviewer_abstrak)
+                                <div class="mt-3 p-3 rounded-lg border {{ $st == 'ditolak' ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200' }}">
+                                    <strong class="text-xs text-gray-600">Catatan Reviewer:</strong>
+                                    <p class="text-sm {{ $st == 'ditolak' ? 'text-red-700' : 'text-gray-800' }} mt-1 italic">
+                                        {{ $abs->catatan_reviewer_abstrak }}
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
         {{-- =============================================== --}}
         {{-- == AKHIR RIWAYAT STATUS ABSTRAK == --}}
         {{-- =============================================== --}}
@@ -182,6 +191,12 @@
                                                     class="inline-flex items-center justify-center w-full px-4 py-3 bg-primary/10 hover:bg-primary/20 text-primary font-bold rounded-2xl text-base transition-colors duration-200 group shadow-md hover:shadow-lg">
                                                     <i class="fas fa-eye mr-2"></i>
                                                     Lihat Bukti
+                                                </a>
+
+                                                {{-- TOMBOL INVOICE (semua status) --}}
+                                                <a href="{{ route('peserta.invoice.download', $item->id) }}"
+                                                    class="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition-colors duration-200 shadow-md">
+                                                    <i class="fas fa-file-invoice mr-2"></i> Unduh Invoice
                                                 </a>
 
                                                 {{-- JIKA DITOLAK, MUNCUL TOMBOL UPLOAD ULANG --}}

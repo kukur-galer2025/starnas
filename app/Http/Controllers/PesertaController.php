@@ -34,7 +34,7 @@ class PesertaController extends Controller
     public function statusSinkron()
     {
         $userId = Auth::id();
-        $abstrak = Abstrak::where('user_id', $userId)->first();
+        $abstrak = Abstrak::where('user_id', $userId)->latest()->first();
         $pembayaran = Pembayaran::where('user_id', $userId)->latest()->first();
 
         return response()->json([
@@ -112,9 +112,7 @@ class PesertaController extends Controller
             return true;
         }
 
-        $abstrak = Abstrak::where('user_id', $userId)->first();
-
-        return $abstrak && $abstrak->status_abstrak === 'diterima';
+        return Abstrak::where('user_id', $userId)->where('status_abstrak', 'diterima')->exists();
     }
 
     public function uploadBukti()
@@ -235,9 +233,9 @@ class PesertaController extends Controller
     {
         $user = Auth::user();
         $riwayat_pembayaran = Pembayaran::where('user_id', $user->id)->latest()->get();
-        $abstrak = Abstrak::where('user_id', $user->id)->latest()->first();
+        $abstraks = Abstrak::where('user_id', $user->id)->latest()->get();
 
-        return view('peserta.riwayat', compact('riwayat_pembayaran', 'abstrak'));
+        return view('peserta.riwayat', compact('riwayat_pembayaran', 'abstraks'));
     }
 
     public function editProfile()
@@ -359,45 +357,46 @@ class PesertaController extends Controller
 
     public function uploadAbstrak()
     {
-        $user = User::find(Auth::id())->load('abstrak');
+        $user = User::find(Auth::id());
+        $abstraks = $user->abstraks()->latest()->get();
         $pembayaran = Pembayaran::where('user_id', $user->id)->latest()->first();
-        $abstrak = $user->abstrak ?: new Abstrak(['user_id' => $user->id]);
+        $batasAbstrak = 3;
+        $sudahMaksimal = $abstraks->count() >= $batasAbstrak;
 
-        return view('peserta.upload_abstrak', compact('user', 'pembayaran', 'abstrak'));
+        return view('peserta.upload_abstrak', compact('user', 'pembayaran', 'abstraks', 'sudahMaksimal', 'batasAbstrak'));
     }
 
     public function storeAbstrak(Request $request)
     {
         try {
+            $user = Auth::user();
+            $jumlahAbstrak = \App\Models\Abstrak::where('user_id', $user->id)->count();
+            if ($jumlahAbstrak >= 3) {
+                return redirect()->back()->with('error', 'Anda sudah mencapai batas maksimal 3 abstrak.');
+            }
+
             $request->validate([
                 'judul_abstrak' => 'required|string|max:255',
                 'abstrak_file' => 'required|file|mimes:doc,docx,pdf|max:10240'
             ]);
 
-            $user = Auth::user();
-            $abstrak = Abstrak::firstOrNew(['user_id' => $user->id]);
-
-            if ($abstrak->file_abstrak_path && Storage::disk('public')->exists($abstrak->file_abstrak_path)) {
-                Storage::disk('public')->delete($abstrak->file_abstrak_path);
-            }
-
             $file = $request->file('abstrak_file');
             $filePath = $file->storeAs('abstrak', 'abstrak_' . time() . '_' . $user->id . '.' . $file->getClientOriginalExtension(), 'public');
 
-            $abstrak->fill([
+            $abstrak = \App\Models\Abstrak::create([
+                'user_id' => $user->id,
                 'judul_abstrak' => $request->judul_abstrak,
                 'file_abstrak_path' => $filePath,
                 'file_abstrak_original_name' => $file->getClientOriginalName(),
                 'status_abstrak' => 'pending',
                 'catatan_reviewer_abstrak' => null,
             ]);
-            $abstrak->save();
 
             NotifPeserta::kirim($user, 'Abstrak Berhasil Diupload', 'Abstrak Anda sudah kami terima',
                 ['Abstrak berjudul "' . $abstrak->judul_abstrak . '" berhasil diunggah dan sedang menunggu review (3-7 hari kerja).', 'Pembayaran kategori pemakalah dapat dilakukan setelah abstrak diterima.'],
                 null, 'Lihat Riwayat Status', route('peserta.riwayat'));
 
-            return redirect()->route('peserta.riwayat')->with('success', 'Abstrak berhasil diupload. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
+            return redirect()->route('peserta.abstrak.upload')->with('success', 'Abstrak berhasil diupload. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
@@ -405,22 +404,20 @@ class PesertaController extends Controller
         }
     }
 
-    public function downloadAbstrak()
+    public function downloadAbstrak(Abstrak $abstrak)
     {
-        $user = User::find(Auth::id())->load('abstrak');
-        $abstrak = $user->abstrak;
+        abort_if($abstrak->user_id !== Auth::id(), 403);
 
-        if (!$abstrak || !$abstrak->file_abstrak_path) {
+        if (!$abstrak->file_abstrak_path) {
             return redirect()->back()->with('error', 'File tidak ditemukan.');
         }
 
         $filePath = storage_path('app/public/' . $abstrak->file_abstrak_path);
 
         if (!file_exists($filePath)) {
-            // Fallback check
             $filePathPublic = public_path('storage/' . $abstrak->file_abstrak_path);
             if (file_exists($filePathPublic)) {
-                 return response()->download($filePathPublic, $abstrak->file_abstrak_original_name);
+                return response()->download($filePathPublic, $abstrak->file_abstrak_original_name);
             }
             return redirect()->back()->with('error', 'File fisik tidak ditemukan di server.');
         }
@@ -428,18 +425,43 @@ class PesertaController extends Controller
         return response()->download($filePath, $abstrak->file_abstrak_original_name);
     }
 
-    public function deleteAbstrak()
+    public function deleteAbstrak(Abstrak $abstrak)
     {
-        $user = User::find(Auth::id())->load('abstrak');
-        $abstrak = $user->abstrak;
+        abort_if($abstrak->user_id !== Auth::id(), 403);
 
-        if ($abstrak) {
-            if ($abstrak->file_abstrak_path && Storage::disk('public')->exists($abstrak->file_abstrak_path)) {
-                Storage::disk('public')->delete($abstrak->file_abstrak_path);
-            }
-            $abstrak->delete();
+        if ($abstrak->file_abstrak_path && Storage::disk('public')->exists($abstrak->file_abstrak_path)) {
+            Storage::disk('public')->delete($abstrak->file_abstrak_path);
         }
 
-        return redirect()->route('peserta.riwayat')->with('success', 'Abstrak berhasil dihapus.');
+        $abstrak->delete();
+
+        return redirect()->route('peserta.abstrak.upload')->with('success', 'Abstrak berhasil dihapus.');
     }
-}
+
+    public function downloadInvoice(Pembayaran $pembayaran)
+    {
+        $user = User::find(Auth::id());
+        abort_if($pembayaran->user_id !== $user->id, 403);
+
+        $nomorInvoice = 'INV-STARNAS-' . now()->year . '-' . str_pad($pembayaran->id, 5, '0', STR_PAD_LEFT);
+
+        $logoPath = null;
+        $possiblePaths = [
+            storage_path('app/public/starnas.png'),
+            public_path('storage/starnas.png'),
+            base_path('public_html/storage/starnas.png'),
+        ];
+        foreach ($possiblePaths as $path) {
+            if (file_exists($path)) { $logoPath = $path; break; }
+        }
+        $logoBase64 = $logoPath ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : null;
+
+        $pdf = Pdf::loadView('peserta.invoice_pdf', [
+            'pembayaran' => $pembayaran,
+            'user' => $user,
+            'nomorInvoice' => $nomorInvoice,
+            'logoBase64' => $logoBase64,
+        ])->setPaper('a4');
+
+        return $pdf->download('Invoice_STARNAS_' . $nomorInvoice . '.pdf');
+    }}

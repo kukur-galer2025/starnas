@@ -165,8 +165,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/riwayat', 'riwayat')->name('riwayat');
             Route::get('/payments/{pembayaran}/view-bukti', 'viewBuktiPembayaranPeserta')->name('payments.view-bukti');
 
-            // Dokumen (Kwitansi & Sertifikat)
+            // Dokumen (Kwitansi, Invoice & Sertifikat)
             Route::get('/kwitansi/{pembayaran}', 'downloadKwitansi')->name('kwitansi.download');
+            Route::get('/invoice/{pembayaran}', 'downloadInvoice')->name('invoice.download');
             Route::get('/sertifikat/download', 'generateSertifikat')->name('sertifikat.download');
 
             // Profil Pengguna
@@ -179,8 +180,8 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('abstrak')->name('abstrak.')->group(function () {
                 Route::get('/upload', 'uploadAbstrak')->name('upload');
                 Route::post('/upload', 'storeAbstrak')->name('store');
-                Route::get('/download', 'downloadAbstrak')->name('download');
-                Route::delete('/delete', 'deleteAbstrak')->name('delete');
+                Route::get('/{abstrak}/download', 'downloadAbstrak')->name('download');
+                Route::delete('/{abstrak}/delete', 'deleteAbstrak')->name('delete');
             });
         });
 });

@@ -75,6 +75,12 @@
                                     <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full {{ $stCfg['class'] }}">
                                         {{ $stCfg['text'] }}
                                     </span>
+                                    @if($st === 'diterima')
+                                        <a href="{{ route('peserta.abstrak.loa', $abs->id) }}"
+                                           class="mt-2 ml-1 inline-flex items-center px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-full transition-colors duration-200">
+                                            <i class="fas fa-file-signature mr-1.5"></i> Unduh LoA
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                             @if($abs->catatan_reviewer_abstrak)

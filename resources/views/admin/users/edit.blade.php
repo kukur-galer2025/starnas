@@ -66,7 +66,7 @@
                         <select name="jenis_kelamin" id="jenis_kelamin" 
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 @error('jenis_kelamin') border-red-500 @enderror">
                             <option value="">Pilih Jenis Kelamin</option>
-                            <option value="Laki-Laki" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'Laki-Laki' ? 'selected' : '' }}>Laki-Laki</option>
+                            <option value="Laki-laki" {{ strtolower((string) old('jenis_kelamin', $user->jenis_kelamin)) === 'laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                             <option value="Perempuan" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                         @error('jenis_kelamin')

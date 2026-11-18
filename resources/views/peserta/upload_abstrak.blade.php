@@ -83,6 +83,13 @@
                                        class="inline-flex items-center justify-center px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary font-semibold rounded-xl text-xs transition-colors duration-200">
                                         <i class="fas fa-download mr-1.5"></i> Unduh
                                     </a>
+                                    @if($st === 'diterima')
+                                        <a href="{{ route('peserta.abstrak.loa', $abs->id) }}"
+                                           title="Unduh Letter of Acceptance"
+                                           class="inline-flex items-center justify-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl text-xs transition-colors duration-200">
+                                            <i class="fas fa-file-signature mr-1.5"></i> LoA
+                                        </a>
+                                    @endif
                                     @if($st !== 'diterima')
                                         <form action="{{ route('peserta.abstrak.delete', $abs->id) }}" method="POST"
                                               id="form-hapus-{{ $abs->id }}" class="form-hapus-abstrak">
@@ -127,7 +134,7 @@
                             </a>
                         </div>
 
-                        <form action="{{ route('peserta.abstrak.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="form-abstrak" action="{{ route('peserta.abstrak.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-6">
                                 <label for="judul_abstrak" class="block text-sm font-medium text-gray-700 mb-2">
@@ -156,8 +163,7 @@
                                             id="abstrak_file"
                                             name="abstrak_file"
                                             class="hidden"
-                                            accept=".doc,.docx,.pdf"
-                                            required>
+                                            accept=".doc,.docx,.pdf">
                                     <div id="file-upload-area" class="cursor-pointer">
                                         <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
                                         <p class="text-gray-600 mb-1">
@@ -179,6 +185,7 @@
                                             </button>
                                         </div>
                                     </div>
+                                    <p id="file-error" class="hidden text-red-500 text-sm mt-2"></p>
                                     @error('abstrak_file')
                                         <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                                     @enderror
@@ -396,13 +403,48 @@
             });
         }
 
+        const fileError = document.getElementById('file-error');
+        const formAbstrak = document.getElementById('form-abstrak');
+        const MAX_SIZE = 10 * 1024 * 1024;
+
+        function tampilkanError(pesan) {
+            if (!fileError) return;
+            fileError.textContent = pesan;
+            fileError.classList.toggle('hidden', !pesan);
+        }
+
         function handleFileSelect(file) {
-            if (file) {
-                fileName.textContent = file.name;
-                fileSize.textContent = formatFileSize(file.size);
-                fileInfo.classList.remove('hidden');
-                fileUploadArea.classList.add('hidden');
+            if (!file) return;
+
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!['doc', 'docx', 'pdf'].includes(ext)) {
+                fileInput.value = '';
+                tampilkanError('Format file tidak didukung. Gunakan DOC, DOCX, atau PDF.');
+                return;
             }
+            if (file.size > MAX_SIZE) {
+                fileInput.value = '';
+                tampilkanError('Ukuran file melebihi 10MB.');
+                return;
+            }
+
+            tampilkanError('');
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.remove('hidden');
+            fileUploadArea.classList.add('hidden');
+        }
+
+        // Input file disembunyikan, jadi validasi "wajib" bawaan browser tidak bisa
+        // menampilkan pesan (form diam saja). Cek manual di sini.
+        if (formAbstrak && fileInput) {
+            formAbstrak.addEventListener('submit', function (e) {
+                if (!fileInput.files.length) {
+                    e.preventDefault();
+                    tampilkanError('Silakan pilih file abstrak terlebih dahulu.');
+                    uploadArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
         }
 
         if (judulInput && charCounter) {

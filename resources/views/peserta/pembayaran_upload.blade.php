@@ -97,7 +97,7 @@
             @else
                 {{-- FORM UPLOAD --}}
                 <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-200">
-                    <form action="{{ route('peserta.pembayaran.store') }}" method="POST" enctype="multipart/form-data"
+                    <form id="form-bukti" action="{{ route('peserta.pembayaran.store') }}" method="POST" enctype="multipart/form-data"
                         class="space-y-6">
                         @csrf
 
@@ -170,7 +170,7 @@
                                         <p class="text-sm text-gray-500 font-medium">Klik untuk memilih file atau seret ke sini</p>
                                         <p class="text-xs text-gray-400 mt-1">JPG, PNG, atau PDF (Maks. 10MB)</p>
                                     </div>
-                                    <input id="bukti_bayar" name="bukti_bayar" type="file" class="hidden" required />
+                                    <input id="bukti_bayar" name="bukti_bayar" type="file" class="hidden" accept=".jpg,.jpeg,.png,.pdf" />
                                 </label>
                             </div>
 
@@ -179,6 +179,7 @@
                                 <i class="fas fa-file mr-2 text-primary"></i>
                                 File Terpilih: <span id="file-name-text" class="font-medium text-emerald-900"></span>
                             </div>
+                            <p id="bukti-error" class="hidden mt-2 text-sm text-red-500"></p>
 
                             {{-- Alert: Bukti Ditolak --}}
                             @if($pembayaran && $pembayaran->status == 'rejected')
@@ -396,10 +397,44 @@
         if (fileInput && dropArea) { 
 
             // File name display
+            const buktiError = document.getElementById('bukti-error');
+            const tampilkanErrorBukti = function (pesan) {
+                buktiError.textContent = pesan;
+                buktiError.classList.toggle('hidden', !pesan);
+            };
+
+            // Input file disembunyikan, jadi validasi "wajib" bawaan browser tidak bisa
+            // menampilkan pesan (form diam saja). Cek manual di sini.
+            document.getElementById('form-bukti').addEventListener('submit', function (e) {
+                if (!fileInput.files.length) {
+                    e.preventDefault();
+                    tampilkanErrorBukti('Silakan pilih file bukti pembayaran terlebih dahulu.');
+                    dropArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+
             fileInput.addEventListener('change', function (e) {
-                const fileName = e.target.files[0]?.name;
+                const file = e.target.files[0];
+                const fileName = file?.name;
                 const fileNameDisplay = document.getElementById('file-name');
                 const fileNameText = document.getElementById('file-name-text');
+
+                if (file) {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    if (!['jpg', 'jpeg', 'png', 'pdf'].includes(ext)) {
+                        fileInput.value = '';
+                        fileNameDisplay.classList.add('hidden');
+                        tampilkanErrorBukti('Format file tidak didukung. Gunakan JPG, PNG, atau PDF.');
+                        return;
+                    }
+                    if (file.size > 10 * 1024 * 1024) {
+                        fileInput.value = '';
+                        fileNameDisplay.classList.add('hidden');
+                        tampilkanErrorBukti('Ukuran file melebihi 10MB.');
+                        return;
+                    }
+                    tampilkanErrorBukti('');
+                }
 
                 if (fileName) {
                     fileNameText.textContent = fileName;

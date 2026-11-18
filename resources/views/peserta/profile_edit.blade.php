@@ -46,7 +46,7 @@
                         <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin <span class="text-red-500">*</span></label>
                         <select name="jenis_kelamin" id="jenis_kelamin" required class="w-full rounded-lg border-gray-300 shadow-sm p-3 focus:ring-primary focus:border-primary @error('jenis_kelamin') border-red-500 @enderror">
                             <option value="">Pilih...</option>
-                            <option value="Laki-laki" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="Laki-laki" {{ strtolower((string) old('jenis_kelamin', $user->jenis_kelamin)) === 'laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                             <option value="Perempuan" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                         @error('jenis_kelamin') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror

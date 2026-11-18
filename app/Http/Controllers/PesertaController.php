@@ -425,9 +425,51 @@ class PesertaController extends Controller
         return response()->download($filePath, $abstrak->file_abstrak_original_name);
     }
 
+    /**
+     * Letter of Acceptance (PDF) untuk abstrak yang sudah diterima.
+     */
+    public function downloadLoa(Abstrak $abstrak)
+    {
+        $user = User::find(Auth::id());
+        abort_if((int) $abstrak->user_id !== (int) $user->id, 403);
+
+        if ($abstrak->status_abstrak !== 'diterima') {
+            return redirect()->back()->with('error', 'LoA hanya tersedia untuk abstrak yang sudah diterima.');
+        }
+
+        $gambar = function (string $nama) {
+            $path = resource_path('images/loa/' . $nama);
+            return is_file($path) ? 'data:image/png;base64,' . base64_encode(file_get_contents($path)) : null;
+        };
+
+        // Tanggal surat = tanggal abstrak diterima (update terakhir oleh admin).
+        $tanggal = ($abstrak->updated_at ?? now())->copy()->locale('id');
+        $bulanRomawi = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'][$tanggal->month - 1];
+        $idNaskah = 'STARNAS-2026-' . str_pad($abstrak->id, 4, '0', STR_PAD_LEFT);
+
+        $pdf = Pdf::loadView('peserta.loa_pdf', [
+            'nomorSurat' => str_pad($abstrak->id, 3, '0', STR_PAD_LEFT) . '/LoA/STARNAS-ASASI/' . $bulanRomawi . '/' . $tanggal->year,
+            'namaPenulis' => $user->nama_lengkap,
+            'afiliasi' => $user->institusi ?: '-',
+            'idNaskah' => $idNaskah,
+            'judulNaskah' => $abstrak->judul_abstrak,
+            'penulis' => $user->nama_lengkap,
+            'tanggalSurat' => $tanggal->translatedFormat('j F Y'),
+            'logoStarnas' => $gambar('logo-starnas.png'),
+            'logoAsasi' => $gambar('logo-asasi.png'),
+            'ttdKetua' => $gambar('ttd-ketua.png'),
+        ])->setPaper('a4');
+
+        return $pdf->download('LoA_' . $idNaskah . '.pdf');
+    }
+
     public function deleteAbstrak(Abstrak $abstrak)
     {
         abort_if($abstrak->user_id !== Auth::id(), 403);
+
+        if ($abstrak->status_abstrak === 'diterima') {
+            return redirect()->route('peserta.abstrak.upload')->with('error', 'Abstrak yang sudah diterima tidak dapat dihapus.');
+        }
 
         if ($abstrak->file_abstrak_path && Storage::disk('public')->exists($abstrak->file_abstrak_path)) {
             Storage::disk('public')->delete($abstrak->file_abstrak_path);

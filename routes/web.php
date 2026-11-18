@@ -181,6 +181,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/upload', 'uploadAbstrak')->name('upload');
                 Route::post('/upload', 'storeAbstrak')->name('store');
                 Route::get('/{abstrak}/download', 'downloadAbstrak')->name('download');
+                Route::get('/{abstrak}/loa', 'downloadLoa')->name('loa');
                 Route::delete('/{abstrak}/delete', 'deleteAbstrak')->name('delete');
             });
         });

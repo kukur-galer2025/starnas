@@ -140,7 +140,7 @@ class AdminController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             
             'nomor_handphone' => 'nullable|string|max:15',
-            'jenis_kelamin' => ['nullable', Rule::in(['Laki-Laki', 'Perempuan'])],
+            'jenis_kelamin' => ['nullable', Rule::in(['Laki-laki', 'Perempuan'])],
             'pekerjaan' => 'nullable|string|max:255',
             'institusi' => 'nullable|string|max:255',
             'provinsi' => 'nullable|string|max:255',

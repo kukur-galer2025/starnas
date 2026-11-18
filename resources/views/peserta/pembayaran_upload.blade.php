@@ -276,6 +276,40 @@
                 @endif
             </div>
 
+            {{-- REKENING TUJUAN TRANSFER --}}
+            <div class="bg-gradient-to-br from-primary/5 to-teal-50/40 rounded-2xl shadow-lg p-5 border border-primary/20">
+                <h4 class="font-bold text-gray-800 mb-3 flex items-center text-sm">
+                    <i class="fas fa-university text-primary mr-2"></i>
+                    Rekening Pembayaran
+                </h4>
+                <div class="space-y-2.5 text-xs">
+                    <div class="p-3 bg-white rounded-xl border border-gray-200 shadow-sm">
+                        <span class="text-gray-500 block text-[11px] mb-0.5">Bank Tujuan:</span>
+                        <strong class="text-gray-900 text-sm">Bank BSI</strong>
+                    </div>
+                    <div class="p-3 bg-white rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span class="text-gray-500 block text-[11px] mb-0.5">Nomor Rekening:</span>
+                            <strong class="text-primary text-base font-black font-mono tracking-wider">1912749480</strong>
+                        </div>
+                        <button type="button" 
+                            onclick="copyToClipboard('1912749480', this)" 
+                            class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold rounded-lg text-xs transition-all">
+                            Salin
+                        </button>
+                    </div>
+                    <div class="p-3 bg-white rounded-xl border border-gray-200 shadow-sm">
+                        <span class="text-gray-500 block text-[11px] mb-0.5">Atas Nama:</span>
+                        <strong class="text-gray-900 text-xs">Abdul Hadi Kadarusno</strong>
+                    </div>
+                    <a href="https://wa.me/628122729039?text=Halo%20Admin%20STARNAS%20ASASI%202026,%20saya%20sudah%20melakukan%20transfer%20ke%20rekening%20BSI%201912749480%20a.n.%20Abdul%20Hadi%20Kadarusno.%20Mohon%20untuk%20dikonfirmasi." 
+                       target="_blank" 
+                       class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow transition-all">
+                        <i class="fab fa-whatsapp text-sm"></i> Konfirmasi: +62 812-2729-039
+                    </a>
+                </div>
+            </div>
+
             {{-- TIPS UPLOAD --}}
             <div class="bg-gradient-to-br from-emerald-50 via-teal-50/50 to-emerald-100/40 rounded-2xl shadow-lg p-5 border border-emerald-200">
                 <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
@@ -414,6 +448,20 @@
                 const event = new Event('change');
                 fileInput.dispatchEvent(event);
             }
+        }
+
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(function() {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check text-xs"></i> <span>Tersalin!</span>';
+                btn.classList.add('bg-emerald-200');
+                setTimeout(function() {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('bg-emerald-200');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Gagal menyalin: ', err);
+            });
         }
     </script>
 @endsection

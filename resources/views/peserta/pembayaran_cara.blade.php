@@ -146,57 +146,81 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="space-y-4">
                     {{-- Detail Bank --}}
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white rounded-xl border border-gray-200">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
                         <div class="flex items-center mb-1 sm:mb-0">
-                            <i class="fas fa-landmark text-gray-500 mr-3"></i>
+                            <i class="fas fa-landmark text-primary mr-3 text-lg"></i>
                             <span class="font-medium text-gray-700">Bank</span>
                         </div>
-                        <span class="font-bold text-primary text-lg"></span>
+                        <span class="font-bold text-primary text-lg">Bank BSI</span>
                     </div>
                     
                     {{-- Detail Rekening --}}
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white rounded-xl border border-gray-200">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
                         <div class="flex items-center mb-1 sm:mb-0">
-                            <i class="fas fa-credit-card text-gray-500 mr-3"></i>
+                            <i class="fas fa-credit-card text-primary mr-3 text-lg"></i>
                             <span class="font-medium text-gray-700">Nomor Rekening</span>
                         </div>
-                        {{-- Nomor Rekening sudah disesuaikan dengan poster --}}
-                        <span class="font-bold text-gray-900 text-lg"></span> 
+                        <div class="flex items-center gap-2">
+                            <span id="no-rek" class="font-black text-gray-900 text-xl font-mono tracking-wider">1912749480</span>
+                            <button type="button" 
+                                onclick="copyToClipboard('1912749480', this)" 
+                                class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg transition-all"
+                                title="Salin nomor rekening">
+                                <i class="far fa-copy text-xs"></i>
+                                <span>Salin</span>
+                            </button>
+                        </div> 
                     </div>
                     
                     {{-- Detail Atas Nama --}}
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white rounded-xl border border-gray-200">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
                         <div class="flex items-center mb-1 sm:mb-0">
-                            <i class="fas fa-user-tie text-gray-500 mr-3"></i>
+                            <i class="fas fa-user-tie text-primary mr-3 text-lg"></i>
                             <span class="font-medium text-gray-700">Atas Nama</span>
                         </div>
-                        {{-- Atas Nama sudah disesuaikan dengan poster --}}
-                        <span class="font-bold text-gray-900 text-lg"></span>
+                        <span class="font-bold text-gray-900 text-lg">Abdul Hadi Kadarusno</span>
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-xl border border-red-200 p-6">
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-exclamation-circle text-red-500 text-xl mt-1"></i>
+                <div class="bg-white rounded-xl border border-red-200 p-6 flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div class="flex items-start space-x-3 mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-500 text-xl mt-1"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-red-800 text-lg mb-2">Perhatian!</h4>
+                                <ul class="text-red-700 text-sm space-y-2">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-red-500 mr-2 mt-1 text-xs flex-shrink-0"></i>
+                                        <span>Transfer sesuai dengan kategori pendaftaran Anda</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-red-500 mr-2 mt-1 text-xs flex-shrink-0"></i>
+                                        <span>Simpan bukti transfer untuk diupload di langkah berikutnya</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-red-500 mr-2 mt-1 text-xs flex-shrink-0"></i>
+                                        <span>Proses verifikasi membutuhkan waktu 1-2 hari kerja</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-red-800 text-lg mb-2">Perhatian!</h4>
-                            <ul class="text-red-700 text-sm space-y-2">
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-red-500 mr-2 mt-1 text-xs flex-shrink-0"></i>
-                                    <span>Transfer sesuai dengan kategori pendaftaran Anda</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-red-500 mr-2 mt-1 text-xs flex-shrink-0"></i>
-                                    <span>Simpan bukti transfer untuk diupload di langkah berikutnya</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-red-500 mr-2 mt-1 text-xs flex-shrink-0"></i>
-                                    <span>Proses verifikasi membutuhkan waktu 1-2 hari kerja</span>
-                                </li>
-                            </ul>
+                    </div>
+
+                    {{-- Konfirmasi Pembayaran WhatsApp --}}
+                    <div class="mt-4 pt-3.5 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-emerald-50/70 p-3.5 rounded-xl border border-emerald-200">
+                        <div class="text-xs text-gray-700">
+                            <div class="font-bold text-emerald-900 flex items-center gap-1.5">
+                                <i class="fab fa-whatsapp text-emerald-600 text-base"></i> Konfirmasi Pembayaran:
+                            </div>
+                            <span class="text-gray-600">WhatsApp: <strong class="text-gray-900">+62 812-2729-039</strong></span>
                         </div>
+                        <a href="https://wa.me/628122729039?text=Halo%20Admin%20STARNAS%20ASASI%202026,%20saya%20sudah%20melakukan%20transfer%20ke%20rekening%20BSI%201912749480%20a.n.%20Abdul%20Hadi%20Kadarusno.%20Mohon%20untuk%20dikonfirmasi." 
+                           target="_blank" 
+                           class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition-all whitespace-nowrap">
+                            <i class="fab fa-whatsapp text-sm"></i> Konfirmasi WA
+                        </a>
                     </div>
                 </div>
             </div>
@@ -211,4 +235,22 @@
             </a>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(function() {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check text-xs"></i> <span>Tersalin!</span>';
+                btn.classList.add('bg-emerald-200');
+                setTimeout(function() {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('bg-emerald-200');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Gagal menyalin: ', err);
+            });
+        }
+    </script>
+    @endpush
 @endsection

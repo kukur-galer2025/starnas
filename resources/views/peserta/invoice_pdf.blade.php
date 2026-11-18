@@ -6,14 +6,7 @@
     <title>Invoice {{ $nomorInvoice }}</title>
     <style>
         @page {
-            size: A4 portrait;
-            margin: 1.2cm 1.5cm;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 35px 45px 35px 45px;
         }
 
         body {
@@ -21,21 +14,23 @@
             font-size: 9.5pt;
             color: #1f2937;
             background: #ffffff;
-            line-height: 1.45;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
         }
 
         /* ===== WATERMARK ===== */
         .watermark {
             position: fixed;
-            top: 36%;
+            top: 38%;
             left: 5%;
             right: 5%;
             text-align: center;
             transform: rotate(-30deg);
-            font-size: 46pt;
+            font-size: 42pt;
             font-weight: bold;
-            letter-spacing: 4px;
-            opacity: 0.055;
+            letter-spacing: 5px;
+            opacity: 0.05;
             z-index: -1000;
         }
         .watermark-pending  { color: #d97706; }
@@ -47,9 +42,9 @@
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
-            border-bottom: 3px solid #059669;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
+            border-bottom: 2.5px solid #059669;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
         }
         .table-header td {
             vertical-align: middle;
@@ -57,57 +52,65 @@
             padding: 0;
         }
         .col-logo {
-            width: 75px;
+            width: 80px;
         }
         .col-logo img {
-            width: 68px;
+            width: 72px;
             height: auto;
         }
         .col-header-text {
-            padding-left: 12px;
+            padding-left: 14px;
         }
         .col-header-text h1 {
-            font-size: 13.5pt;
+            font-size: 14pt;
             font-weight: bold;
-            color: #065f46;
+            color: #064e3b;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.25;
+            letter-spacing: 0.3px;
         }
-        .col-header-text p {
-            font-size: 8.5pt;
+        .col-header-text .event-sub {
+            font-size: 9pt;
             color: #4b5563;
+            margin-top: 3px;
+            line-height: 1.3;
+        }
+        .col-header-text .event-venue {
+            font-size: 8.5pt;
+            color: #6b7280;
             margin-top: 2px;
             line-height: 1.3;
         }
         .col-inv {
-            width: 175px;
+            width: 180px;
             text-align: right;
         }
         .col-inv .inv-title {
-            font-size: 20pt;
+            font-size: 22pt;
             font-weight: bold;
             color: #059669;
             letter-spacing: 2px;
             line-height: 1;
         }
         .col-inv .inv-num {
-            font-size: 8pt;
+            font-size: 8.5pt;
             color: #6b7280;
-            margin-top: 4px;
+            margin-top: 5px;
+            font-weight: 500;
         }
 
         /* ===== STATUS BADGE ===== */
         .status-container {
             text-align: center;
-            margin-bottom: 14px;
+            margin-bottom: 20px;
         }
         .badge {
             display: inline-block;
-            padding: 4px 18px;
+            padding: 5px 22px;
             border-radius: 20px;
             font-size: 8.5pt;
             font-weight: bold;
-            letter-spacing: 1px;
+            letter-spacing: 1.2px;
             text-transform: uppercase;
         }
         .badge-pending  { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
@@ -119,52 +122,53 @@
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
-            margin-bottom: 14px;
+            margin-bottom: 22px;
         }
         .table-info-wrap td.info-col {
             vertical-align: top;
-            width: 48.5%;
+            width: 48%;
             padding: 0;
         }
         .table-info-wrap td.info-gap {
-            width: 3%;
+            width: 4%;
             padding: 0;
         }
 
         .card-box {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 10px 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 14px;
         }
         .card-header {
             font-size: 8.5pt;
             font-weight: bold;
             color: #065f46;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid #d1fae5;
-            padding-bottom: 4px;
-            margin-bottom: 6px;
+            letter-spacing: 0.6px;
+            border-bottom: 1.5px solid #cbd5e1;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
         }
         .table-card-inner {
             width: 100%;
             border-collapse: collapse;
         }
         .table-card-inner td {
-            padding: 2.5px 0;
+            padding: 3px 0;
             font-size: 8.5pt;
             vertical-align: top;
             border: none;
+            line-height: 1.4;
         }
         .table-card-inner td.lbl {
             width: 38%;
-            color: #6b7280;
-            padding-right: 4px;
+            color: #64748b;
+            padding-right: 6px;
         }
         .table-card-inner td.val {
             width: 62%;
-            color: #111827;
+            color: #0f172a;
             font-weight: 600;
         }
 
@@ -175,7 +179,7 @@
             color: #065f46;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         /* ===== DETAIL TABLE ===== */
@@ -183,30 +187,31 @@
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
         }
         .table-detail thead tr {
             background: #059669;
             color: #ffffff;
         }
         .table-detail thead th {
-            padding: 7px 10px;
+            padding: 9px 12px;
             text-align: left;
             font-size: 8.5pt;
             font-weight: bold;
             color: #ffffff;
             border: none;
+            letter-spacing: 0.3px;
         }
         .table-detail tbody tr {
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e2e8f0;
         }
         .table-detail tbody td {
-            padding: 8px 10px;
+            padding: 12px 12px;
             font-size: 9pt;
-            color: #374151;
+            color: #334155;
             vertical-align: middle;
             border: none;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         /* ===== TOTAL SUMMARY ===== */
@@ -214,7 +219,7 @@
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
-            margin-bottom: 14px;
+            margin-bottom: 22px;
         }
         .table-total-wrap td {
             border: none;
@@ -225,15 +230,15 @@
             border-collapse: collapse;
             background: #ecfdf5;
             border: 1.5px solid #059669;
-            border-radius: 6px;
+            border-radius: 8px;
         }
         .total-box td {
-            padding: 9px 14px;
+            padding: 11px 16px;
             vertical-align: middle;
         }
         .total-box .total-label {
             color: #065f46;
-            font-size: 8.5pt;
+            font-size: 9pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -241,7 +246,7 @@
         .total-box .total-amount {
             text-align: right;
             color: #065f46;
-            font-size: 13pt;
+            font-size: 13.5pt;
             font-weight: bold;
         }
 
@@ -253,11 +258,11 @@
             background: #fffbeb;
             border: 1px solid #fde68a;
             border-left: 4px solid #f59e0b;
-            border-radius: 6px;
-            margin-bottom: 14px;
+            border-radius: 8px;
+            margin-bottom: 22px;
         }
         .table-rekening-wrap td {
-            padding: 9px 12px;
+            padding: 12px 16px;
             border: none;
         }
         .rekening-title {
@@ -265,39 +270,39 @@
             font-weight: bold;
             color: #92400e;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
         }
         .table-rekening-inner {
             width: 100%;
             border-collapse: collapse;
         }
         .table-rekening-inner td {
-            padding: 2px 0;
+            padding: 3px 0;
             font-size: 8.5pt;
             border: none;
         }
         .table-rekening-inner td.rek-lbl {
-            width: 110px;
+            width: 115px;
             color: #78350f;
         }
         .table-rekening-inner td.rek-val {
-            color: #1f2937;
+            color: #1e293b;
             font-weight: bold;
         }
 
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
-            color: #9ca3af;
+            color: #94a3b8;
             font-size: 7.5pt;
             line-height: 1.6;
-            border-top: 1px solid #e5e7eb;
-            padding-top: 8px;
-            margin-top: 6px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
+            margin-top: 8px;
         }
         .footer .wa-contact {
-            margin-top: 3px;
+            margin-top: 4px;
             font-size: 8.5pt;
             font-weight: bold;
             color: #065f46;
@@ -343,8 +348,8 @@
             </td>
             <td class="col-header-text">
                 <h1>STARNAS ASASI &amp; ICoABCD 2026</h1>
-                <p>Seminar Nasional &amp; International Conference</p>
-                <p>1 &ndash; 2 Desember 2026 &bull; The Malioboro Hotel, Yogyakarta</p>
+                <p class="event-sub">Seminar Nasional &amp; International Conference</p>
+                <p class="event-venue">1 &ndash; 2 Desember 2026 &bull; The Malioboro Hotel, Yogyakarta</p>
             </td>
             <td class="col-inv">
                 <div class="inv-title">INVOICE</div>
@@ -414,8 +419,8 @@
     {{-- ══════════ TOTAL PEMBAYARAN ══════════ --}}
     <table class="table-total-wrap">
         <tr>
-            <td style="width: 45%;"></td>
-            <td style="width: 55%;">
+            <td style="width: 42%;"></td>
+            <td style="width: 58%;">
                 <table class="total-box">
                     <tr>
                         <td class="total-label">Total Pembayaran</td>
@@ -430,7 +435,7 @@
     <table class="table-rekening-wrap">
         <tr>
             <td>
-                <div class="rekening-title">&#9432; Informasi Rekening Tujuan Transfer</div>
+                <div class="rekening-title">Informasi Rekening Tujuan Transfer</div>
                 <table class="table-rekening-inner">
                     <tr>
                         <td class="rek-lbl">Bank</td>

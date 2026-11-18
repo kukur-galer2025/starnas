@@ -156,15 +156,14 @@ class PesertaController extends Controller
             }
 
             if ($kategori !== 'non-presenter' && !$this->bolehBayarPemakalah()) {
-                return redirect()->route('peserta.abstrak.upload')
-                    ->with('error', 'Kategori pemakalah: silakan upload abstrak terlebih dahulu. Pembayaran dapat dilakukan setelah abstrak Anda diterima.');
+                return $this->hasilUpload($request, 'peserta.abstrak.upload', 'error', 'Kategori pemakalah: silakan upload abstrak terlebih dahulu. Pembayaran dapat dilakukan setelah abstrak Anda diterima.');
             }
 
             $nominal = $harga[$kategori];
             $pembayaran = Pembayaran::where('user_id', Auth::id())->first();
 
             if ($pembayaran && in_array($pembayaran->status, ['pending', 'verified'])) {
-                return redirect()->route('peserta.riwayat')->with('error', 'Pembayaran sedang diproses atau sudah diverifikasi.');
+                return $this->hasilUpload($request, 'peserta.riwayat', 'error', 'Pembayaran sedang diproses atau sudah diverifikasi.');
             }
 
             // Hapus file lama jika ada
@@ -192,12 +191,12 @@ class PesertaController extends Controller
                 ['Bukti pembayaran Anda berhasil diunggah dan sedang menunggu verifikasi admin.', 'Kami akan mengirim email lagi setelah proses verifikasi selesai.'],
                 null, 'Lihat Riwayat Status', route('peserta.riwayat'));
 
-            return redirect()->route('peserta.riwayat')->with('success', 'Bukti pembayaran berhasil diunggah. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
+            return $this->hasilUpload($request, 'peserta.riwayat', 'success', 'Bukti pembayaran berhasil diunggah. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            return $this->gagalUpload($request, 'Data yang dikirim tidak valid.', 422, $e->errors());
         } catch (\Exception $e) {
             Log::error('StoreBukti Error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Gagal menyimpan: ' . $e->getMessage());
+            return $this->gagalUpload($request, 'Gagal menyimpan: ' . $e->getMessage(), 500);
         }
     }
 
@@ -366,13 +365,40 @@ class PesertaController extends Controller
         return view('peserta.upload_abstrak', compact('user', 'pembayaran', 'abstraks', 'sudahMaksimal', 'batasAbstrak'));
     }
 
+    /*
+     * Form upload (abstrak & bukti bayar) dikirim lewat XHR agar ada progress bar
+     * dan meminta JSON. Tanpa JS, form tetap bekerja dengan redirect biasa.
+     */
+
+    /** Selesai: simpan pesan flash lalu arahkan ke halaman tujuan. */
+    private function hasilUpload(Request $request, string $route, string $tipe, string $pesan)
+    {
+        session()->flash($tipe, $pesan);
+
+        return $request->expectsJson()
+            ? response()->json(['ok' => $tipe === 'success', 'redirect' => route($route)])
+            : redirect()->route($route);
+    }
+
+    /** Gagal: tampilkan pesan di halaman yang sama. */
+    private function gagalUpload(Request $request, string $pesan, int $status = 422, array $errors = [])
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $pesan, 'errors' => $errors ?: null], $status);
+        }
+
+        return $errors
+            ? redirect()->back()->withErrors($errors)->withInput()
+            : redirect()->back()->with('error', $pesan);
+    }
+
     public function storeAbstrak(Request $request)
     {
         try {
             $user = Auth::user();
             $jumlahAbstrak = \App\Models\Abstrak::where('user_id', $user->id)->count();
             if ($jumlahAbstrak >= 3) {
-                return redirect()->back()->with('error', 'Anda sudah mencapai batas maksimal 3 abstrak.');
+                return $this->gagalUpload($request, 'Anda sudah mencapai batas maksimal 3 abstrak.');
             }
 
             $request->validate([
@@ -396,11 +422,12 @@ class PesertaController extends Controller
                 ['Abstrak berjudul "' . $abstrak->judul_abstrak . '" berhasil diunggah dan sedang menunggu review (3-7 hari kerja).', 'Pembayaran kategori pemakalah dapat dilakukan setelah abstrak diterima.'],
                 null, 'Lihat Riwayat Status', route('peserta.riwayat'));
 
-            return redirect()->route('peserta.abstrak.upload')->with('success', 'Abstrak berhasil diupload. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
+            return $this->hasilUpload($request, 'peserta.abstrak.upload', 'success', 'Abstrak berhasil diupload. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            return $this->gagalUpload($request, 'Data yang dikirim tidak valid.', 422, $e->errors());
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+            Log::error('StoreAbstrak Error: ' . $e->getMessage());
+            return $this->gagalUpload($request, 'Gagal: ' . $e->getMessage(), 500);
         }
     }
 

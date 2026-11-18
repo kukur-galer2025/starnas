@@ -200,12 +200,14 @@
                         </div>
 
                         <div class="flex justify-end pt-4">
-                            <button type="submit"
+                            <button type="submit" id="btn-kirim-bukti"
                                 class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg shadow-emerald-600/20 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                                 <i class="fas fa-paper-plane mr-3"></i>
                                 Kirim Bukti Pembayaran
                             </button>
                         </div>
+
+                        @include('peserta.partials.upload-progress', ['id' => 'progress-bukti'])
                     </form>
                 </div>
             @endif
@@ -405,12 +407,26 @@
 
             // Input file disembunyikan, jadi validasi "wajib" bawaan browser tidak bisa
             // menampilkan pesan (form diam saja). Cek manual di sini.
-            document.getElementById('form-bukti').addEventListener('submit', function (e) {
+            const formBukti = document.getElementById('form-bukti');
+            formBukti.addEventListener('submit', function (e) {
+                e.preventDefault();
+
                 if (!fileInput.files.length) {
-                    e.preventDefault();
                     tampilkanErrorBukti('Silakan pilih file bukti pembayaran terlebih dahulu.');
                     dropArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
                 }
+
+                tampilkanErrorBukti('');
+                kirimDenganProgress(formBukti, {
+                    box: document.getElementById('progress-bukti'),
+                    tombol: document.getElementById('btn-kirim-bukti'),
+                    labelUpload: 'Mengunggah bukti pembayaran...',
+                    onGagal: function (pesan) {
+                        tampilkanErrorBukti(pesan);
+                        dropArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    },
+                });
             });
 
             fileInput.addEventListener('change', function (e) {

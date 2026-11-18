@@ -192,11 +192,13 @@
                                 </div>
                             </div>
 
-                            <button type="submit"
+                            <button type="submit" id="btn-upload-abstrak"
                                 class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-emerald-600/20 flex items-center justify-center">
                                 <i class="fas fa-upload mr-2"></i>
                                 Upload Abstrak
                             </button>
+
+                            @include('peserta.partials.upload-progress', ['id' => 'progress-abstrak'])
                         </form>
                     </div>
                 </div>
@@ -439,11 +441,24 @@
         // menampilkan pesan (form diam saja). Cek manual di sini.
         if (formAbstrak && fileInput) {
             formAbstrak.addEventListener('submit', function (e) {
+                e.preventDefault();
+
                 if (!fileInput.files.length) {
-                    e.preventDefault();
                     tampilkanError('Silakan pilih file abstrak terlebih dahulu.');
                     uploadArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
                 }
+
+                tampilkanError('');
+                kirimDenganProgress(formAbstrak, {
+                    box: document.getElementById('progress-abstrak'),
+                    tombol: document.getElementById('btn-upload-abstrak'),
+                    labelUpload: 'Mengunggah abstrak...',
+                    onGagal: function (pesan) {
+                        tampilkanError(pesan);
+                        uploadArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    },
+                });
             });
         }
 

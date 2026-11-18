@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Great+Vibes&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400;1,600&display=swap" rel="stylesheet">
     
-    <!-- Library Render Gambar HD (html2canvas + html-to-image fallback) -->
+    <!-- Library Render Gambar HD (html2canvas + html-to-image fallback, Bebas OKLCH) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 
@@ -37,7 +37,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 30px 15px 50px 15px;
+            padding: 24px 15px 40px 15px;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -49,7 +49,7 @@
         /* ══════════ FLOATING TOOLBAR AKSI (ATAS) ══════════ */
         .toolbar-wrapper {
             position: fixed;
-            top: 16px;
+            top: 14px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
@@ -174,27 +174,27 @@
         .page-container {
             width: 297mm;
             height: 210mm;
-            margin: 45px auto 20px auto;
+            margin: 40px auto 15px auto;
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            padding: 34px 46px 28px 46px;
+            padding: 26px 42px 20px 42px;
             background-color: #ffffff;
-            /* Pola mikro-keamanan sertifikat mewah (halus & bersih tanpa watermark lingkaran besar) */
+            /* Pola mikro-keamanan sertifikat mewah (tekstur kertas perbankan halus & bersih) */
             background-image: 
-                radial-gradient(rgba(6, 78, 59, 0.04) 1px, transparent 1px),
-                radial-gradient(rgba(212, 175, 55, 0.03) 1px, #ffffff 1px);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
+                radial-gradient(rgba(6, 78, 59, 0.045) 1.2px, transparent 1.2px),
+                radial-gradient(rgba(212, 175, 55, 0.035) 1.2px, #ffffff 1.2px);
+            background-size: 22px 22px;
+            background-position: 0 0, 11px 11px;
             box-shadow: 0 25px 65px rgba(0, 0, 0, 0.45);
         }
 
         /* ── BORDER FRAME MEWAH 2026 ── */
         .frame-outer-gold {
             position: absolute;
-            top: 14px; left: 14px; right: 14px; bottom: 14px;
+            top: 12px; left: 12px; right: 12px; bottom: 12px;
             border: 1.5px solid #c59b27;
             pointer-events: none;
             z-index: 1;
@@ -202,16 +202,16 @@
 
         .frame-mid-emerald {
             position: absolute;
-            top: 20px; left: 20px; right: 20px; bottom: 20px;
-            border: 3.5px double #064e3b;
+            top: 18px; left: 18px; right: 18px; bottom: 18px;
+            border: 4px double #064e3b;
             pointer-events: none;
             z-index: 1;
         }
 
         .frame-inner-gold {
             position: absolute;
-            top: 28px; left: 28px; right: 28px; bottom: 28px;
-            border: 1px solid rgba(212, 175, 55, 0.6);
+            top: 26px; left: 26px; right: 26px; bottom: 26px;
+            border: 1px solid rgba(212, 175, 55, 0.65);
             pointer-events: none;
             z-index: 1;
         }
@@ -219,15 +219,15 @@
         /* ── CORNER ORNAMENTS (VEKTOR SUDUT FILIGREE) ── */
         .corner-ornament {
             position: absolute;
-            width: 76px;
-            height: 76px;
+            width: 86px;
+            height: 86px;
             pointer-events: none;
             z-index: 2;
         }
-        .corner-tl { top: 22px; left: 22px; }
-        .corner-tr { top: 22px; right: 22px; transform: scaleX(-1); }
-        .corner-bl { bottom: 22px; left: 22px; transform: scaleY(-1); }
-        .corner-br { bottom: 22px; right: 22px; transform: scale(-1); }
+        .corner-tl { top: 20px; left: 20px; }
+        .corner-tr { top: 20px; right: 20px; transform: scaleX(-1); }
+        .corner-bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+        .corner-br { bottom: 20px; right: 20px; transform: scale(-1); }
 
         /* ── STRUKTUR KONTEN KANVAS ── */
         .cert-content {
@@ -246,14 +246,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 8px;
+            padding-bottom: 2px;
+            flex-shrink: 0;
         }
 
         .logo-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 16px;
+            gap: 20px;
             width: 100%;
             padding: 0 10px;
         }
@@ -261,11 +262,11 @@
         .logo-primary-group {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
 
         .logo-divider {
-            height: 28px;
+            height: 32px;
             width: 1.5px;
             background: linear-gradient(to bottom, transparent, #c59b27, transparent);
             margin: 0 4px;
@@ -274,20 +275,20 @@
         .logo-partners-group {
             display: flex;
             align-items: center;
-            gap: 11px;
+            gap: 14px;
         }
 
-        .logo-img-starnas { height: 38px; width: auto; object-fit: contain; }
-        .logo-img-asasi { height: 32px; width: auto; object-fit: contain; }
-        .logo-img-partner { height: 26px; width: auto; object-fit: contain; }
+        .logo-img-starnas { height: 44px; width: auto; object-fit: contain; }
+        .logo-img-asasi { height: 38px; width: auto; object-fit: contain; }
+        .logo-img-partner { height: 30px; width: auto; object-fit: contain; }
 
         .header-decor-line {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            width: 82%;
-            margin-top: 7px;
+            gap: 12px;
+            width: 88%;
+            margin-top: 8px;
         }
 
         .header-line {
@@ -298,46 +299,56 @@
 
         .header-gem {
             color: #c59b27;
-            font-size: 8px;
+            font-size: 9px;
             line-height: 1;
         }
 
-        /* ── KONTEN TENGAH / UTAMA SERTIFIKAT ── */
+        /* ── KONTEN TENGAH / UTAMA SERTIFIKAT (DISTRIBUSI VERTIKAL SEIMBANG) ── */
         .cert-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            padding: 4px 0;
+        }
+
+        .body-group-top {
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            margin-top: -2px;
+            width: 100%;
         }
 
         .cert-main-title {
             font-family: 'Cinzel', serif;
-            font-size: 40px;
+            font-size: 48px;
             font-weight: 800;
-            letter-spacing: 7px;
+            letter-spacing: 8px;
             text-transform: uppercase;
             color: #064e3b;
             line-height: 1.1;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             text-shadow: 0 1px 2px rgba(6, 78, 59, 0.15);
         }
 
         .cert-serial-number {
             font-family: 'Montserrat', sans-serif;
-            font-size: 10.5px;
+            font-size: 11.5px;
             font-weight: 700;
-            letter-spacing: 2.5px;
+            letter-spacing: 3px;
             color: #047857;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .cert-salutation {
             font-family: 'Great Vibes', cursive;
-            font-size: 24px;
-            color: #526071;
-            margin-bottom: 3px;
+            font-size: 28px;
+            color: #475569;
+            margin-bottom: 2px;
         }
 
         /* ── NAMA PESERTA ── */
@@ -345,16 +356,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 18px;
+            gap: 20px;
             width: 100%;
-            max-width: 860px;
-            margin: 4px 0 6px 0;
+            max-width: 920px;
+            margin: 2px 0;
         }
 
         .name-flourish {
             flex-grow: 1;
-            max-width: 110px;
-            height: 1.5px;
+            max-width: 140px;
+            height: 2px;
         }
 
         .flourish-left {
@@ -367,24 +378,30 @@
 
         .cert-name {
             font-family: 'Playfair Display', serif;
-            font-size: 34px;
+            font-size: 46px;
             font-weight: 700;
             color: #0f172a;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             line-height: 1.15;
             word-break: break-word;
-            padding: 0 8px;
+            padding: 0 10px;
         }
 
         /* ── DEDIKASI & BADGE PERAN ── */
+        .body-group-role {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
         .cert-dedication {
             font-family: 'Montserrat', sans-serif;
-            font-size: 10.5px;
+            font-size: 11.5px;
             font-weight: 700;
-            letter-spacing: 3px;
+            letter-spacing: 3.5px;
             text-transform: uppercase;
-            color: #556579;
-            margin-top: 3px;
+            color: #475569;
             margin-bottom: 6px;
         }
 
@@ -394,23 +411,23 @@
 
         .cert-badge {
             display: inline-block;
-            padding: 6px 36px;
+            padding: 8px 46px;
             border-radius: 9999px;
             background: linear-gradient(135deg, #064e3b 0%, #0d5f47 50%, #043e2e 100%);
-            border: 1.5px solid #d4af37;
-            box-shadow: 0 4px 14px rgba(6, 78, 59, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            border: 2px solid #d4af37;
+            box-shadow: 0 4px 16px rgba(6, 78, 59, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
             color: #ffffff;
             font-family: 'Cinzel', serif;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 3.5px;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 4px;
             text-transform: uppercase;
             transition: all 0.2s ease;
         }
 
         .cert-event-lead {
             font-family: 'Montserrat', sans-serif;
-            font-size: 11px;
+            font-size: 12px;
             font-style: italic;
             color: #64748b;
             margin-bottom: 2px;
@@ -418,32 +435,31 @@
 
         .cert-event-title {
             font-family: 'Cinzel', serif;
-            font-size: 21px;
+            font-size: 26px;
             font-weight: 800;
             color: #064e3b;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             text-transform: uppercase;
-            margin-bottom: 6px;
         }
 
         /* ── KOTAK TEMA ACARA (LUXURY PLAQUE) ── */
         .theme-plaque {
             width: 100%;
-            max-width: 800px;
-            background: linear-gradient(135deg, rgba(254, 252, 232, 0.5) 0%, rgba(240, 253, 244, 0.6) 100%);
-            border: 1px solid #d4af37;
-            border-radius: 6px;
-            padding: 7px 22px;
-            box-shadow: inset 0 0 8px rgba(212, 175, 55, 0.08);
-            margin-bottom: 4px;
+            max-width: 900px;
+            background: linear-gradient(135deg, rgba(254, 252, 232, 0.65) 0%, rgba(240, 253, 244, 0.75) 100%);
+            border: 1.5px solid #d4af37;
+            border-radius: 8px;
+            padding: 10px 28px;
+            box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.1), 0 3px 10px rgba(6, 78, 59, 0.05);
+            margin: 2px 0;
         }
 
         .theme-quote {
             font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 13px;
+            font-size: 14.5px;
             color: #1e293b;
-            line-height: 1.35;
+            line-height: 1.4;
         }
 
         .theme-quote-label {
@@ -454,12 +470,36 @@
 
         .theme-date-place {
             font-family: 'Montserrat', sans-serif;
-            font-size: 9.5px;
+            font-size: 10.5px;
             font-weight: 700;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.8px;
             color: #047857;
             text-transform: uppercase;
-            margin-top: 3px;
+            margin-top: 4px;
+        }
+
+        /* ── ORNAMEN PEMBATAS TENGAH (MENGISI RUANG TRANSISI DENGAN ELEGAN) ── */
+        .mid-ornament-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 65%;
+            max-width: 520px;
+            margin: 2px auto;
+        }
+
+        .mid-ornament-divider .decor-line {
+            flex-grow: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #c59b27, transparent);
+        }
+
+        .mid-ornament-divider .decor-seal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.85;
         }
 
         /* ── TANDA TANGAN & STEMPEL ── */
@@ -468,31 +508,31 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            padding: 0 35px 2px 35px;
-            margin-top: auto;
+            padding: 0 45px 2px 45px;
+            flex-shrink: 0;
         }
 
         .sig-col {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 250px;
+            width: 275px;
             text-align: center;
         }
 
         .sig-role {
             font-family: 'Montserrat', sans-serif;
-            font-size: 9.5px;
+            font-size: 10.5px;
             font-weight: 800;
             color: #475569;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.8px;
             text-transform: uppercase;
             margin-bottom: 2px;
         }
 
         .sig-image-box {
-            height: 64px;
-            width: 210px;
+            height: 70px;
+            width: 230px;
             position: relative;
             display: flex;
             justify-content: center;
@@ -501,7 +541,7 @@
         }
 
         .sig-img {
-            height: 52px;
+            height: 56px;
             width: auto;
             object-fit: contain;
             position: relative;
@@ -509,7 +549,7 @@
         }
 
         .stamp-img {
-            height: 72px;
+            height: 78px;
             width: auto;
             position: absolute;
             top: -6px;
@@ -522,15 +562,15 @@
         .stamp-right { left: 46%; transform: translateX(-50%); }
 
         .sig-line {
-            border-top: 1.5px solid #0f172a;
-            width: 240px;
+            border-top: 1.8px solid #0f172a;
+            width: 265px;
             text-align: center;
-            padding-top: 4px;
+            padding-top: 5px;
             font-weight: 700;
             color: #0f172a;
-            font-size: 12.5px;
+            font-size: 13.5px;
             font-family: 'Playfair Display', serif;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
         }
 
         /* ══════════ TOAST NOTIFIKASI RENDER ══════════ */
@@ -735,23 +775,23 @@
                 </div>
             </div>
 
-            {{-- Body Sertifikat --}}
+            {{-- Body Sertifikat (Distribusi Ruang Merata & Gagah) --}}
             <div class="cert-body">
-                <h1 class="cert-main-title">
-                    Sertifikat Penghargaan
-                </h1>
                 
-                {{-- Nomor Seri Unik --}}
-                <p class="cert-serial-number">
-                    No. Seri: {{ $nomor_unik }}
-                </p>
-                
-                {{-- Kalimat Penghormatan --}}
-                <p class="cert-salutation">
-                    Diberikan dengan hormat kepada:
-                </p>
+                {{-- Group 1: Judul Utama, Nomor Seri & Kalimat Penghormatan --}}
+                <div class="body-group-top">
+                    <h1 class="cert-main-title">
+                        Sertifikat Penghargaan
+                    </h1>
+                    <p class="cert-serial-number">
+                        No. Seri: {{ $nomor_unik }}
+                    </p>
+                    <p class="cert-salutation">
+                        Diberikan dengan hormat kepada:
+                    </p>
+                </div>
 
-                {{-- Nama Peserta dengan Flanking Line Ornamen --}}
+                {{-- Group 2: Nama Penerima dengan Flanking Line Ornamen Emas --}}
                 <div class="name-container">
                     <div class="name-flourish flourish-left"></div>
                     <h2 class="cert-name">
@@ -760,24 +800,23 @@
                     <div class="name-flourish flourish-right"></div>
                 </div>
 
-                {{-- Dedikasi & Badge Peran --}}
-                <p class="cert-dedication">
-                    Atas kontribusi dan dedikasinya sebagai
-                </p>
-
-                <div class="cert-badge-wrapper">
-                    <span id="role-badge" class="cert-badge">
-                        {{ $peran_peserta }}
-                    </span>
+                {{-- Group 3: Dedikasi, Badge Peran & Judul Konferensi --}}
+                <div class="body-group-role">
+                    <p class="cert-dedication">
+                        Atas kontribusi dan dedikasinya sebagai
+                    </p>
+                    <div class="cert-badge-wrapper">
+                        <span id="role-badge" class="cert-badge">
+                            {{ $peran_peserta }}
+                        </span>
+                    </div>
+                    <p class="cert-event-lead">dalam acara :</p>
+                    <h3 class="cert-event-title">
+                        STARNAS ASASI &amp; ICoABCD 2026
+                    </h3>
                 </div>
 
-                <p class="cert-event-lead">dalam acara :</p>
-
-                <h3 class="cert-event-title">
-                    STARNAS ASASI &amp; ICoABCD 2026
-                </h3>
-
-                {{-- Plakat Tema Acara Mewah --}}
+                {{-- Group 4: Plakat Tema Acara Mewah --}}
                 <div class="theme-plaque">
                     <p class="theme-quote">
                         "<span class="theme-quote-label">Tema:</span> {{ $tema }}"
@@ -786,6 +825,19 @@
                         YOGYAKARTA, 01 DESEMBER 2026 &bull; {{ strtoupper($tempat_acara) }}
                     </p>
                 </div>
+
+                {{-- Group 5: Ornamen Bintang Emas Pembatas Transisi (Menghilangkan Ruang Kosong Bawah) --}}
+                <div class="mid-ornament-divider">
+                    <span class="decor-line"></span>
+                    <span class="decor-seal">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L14.3 9.7L22 12L14.3 14.3L12 22L9.7 14.3L2 12L9.7 9.7L12 2Z" fill="#c59b27" />
+                            <circle cx="12" cy="12" r="2.5" fill="#064e3b" />
+                        </svg>
+                    </span>
+                    <span class="decor-line"></span>
+                </div>
+
             </div>
 
             {{-- Bagian Tanda Tangan & Cap Asli --}}
@@ -831,7 +883,7 @@
             // Palet warna mewah sesuai peran (menggunakan Hex & standard CSS, bebas OKLCH)
             let bgStyle = 'linear-gradient(135deg, #064e3b 0%, #0d5f47 50%, #043e2e 100%)';
             let borderColor = '#d4af37';
-            let shadowColor = 'rgba(6, 78, 59, 0.28)';
+            let shadowColor = 'rgba(6, 78, 59, 0.3)';
 
             if (roleName === 'Peserta Seminar') {
                 bgStyle = 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #1e40af 100%)';
@@ -844,7 +896,7 @@
             } else if (roleName === 'Presenter') {
                 bgStyle = 'linear-gradient(135deg, #064e3b 0%, #0d5f47 50%, #043e2e 100%)';
                 borderColor = '#d4af37';
-                shadowColor = 'rgba(6, 78, 59, 0.28)';
+                shadowColor = 'rgba(6, 78, 59, 0.3)';
             } else if (roleName === 'Panitia') {
                 bgStyle = 'linear-gradient(135deg, #78350f 0%, #d97706 50%, #92400e 100%)';
                 borderColor = '#fcd34d';
@@ -862,7 +914,7 @@
                 badge.innerText = roleName;
                 badge.style.background = bgStyle;
                 badge.style.borderColor = borderColor;
-                badge.style.boxShadow = `0 4px 14px ${shadowColor}, inset 0 1px 0 rgba(255, 255, 255, 0.25)`;
+                badge.style.boxShadow = `0 4px 16px ${shadowColor}, inset 0 1px 0 rgba(255, 255, 255, 0.3)`;
                 badge.style.opacity = '1';
                 badge.style.transform = 'scale(1)';
             }, 120);

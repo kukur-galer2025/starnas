@@ -81,13 +81,29 @@ class AdminController extends Controller
             'antri' => EmailLog::where('status', 'antri')->count(),
         ];
 
-        return view('admin.emails.index', compact('logs', 'ringkas', 'status', 'search'));
+        $kuotaHabisSampai = EmailLog::kuotaHabisSampai();
+
+        return view('admin.emails.index', compact('logs', 'ringkas', 'status', 'search', 'kuotaHabisSampai'));
+    }
+
+    /** Pesan peringatan bila pengiriman sedang ditunda karena kuota email habis. */
+    private function peringatanKuotaEmail(): ?string
+    {
+        $sampai = EmailLog::kuotaHabisSampai();
+
+        return $sampai
+            ? 'Kuota harian akun email pengirim sedang habis. Pengiriman ditunda, coba kirim ulang setelah pukul ' . $sampai->timezone(config('app.timezone'))->format('H:i') . '.'
+            : null;
     }
 
     public function resendEmail(EmailLog $emailLog)
     {
         if ($emailLog->status === 'terkirim') {
             return back()->with('warning', 'Email ini sudah terkirim.');
+        }
+
+        if ($pesan = $this->peringatanKuotaEmail()) {
+            return back()->with('warning', $pesan);
         }
 
         $emailLog->update(['status' => 'antri', 'percobaan' => 0, 'error' => null]);
@@ -98,6 +114,10 @@ class AdminController extends Controller
 
     public function resendFailedEmails()
     {
+        if ($pesan = $this->peringatanKuotaEmail()) {
+            return back()->with('warning', $pesan);
+        }
+
         $logs = EmailLog::where('status', 'gagal')
             ->orWhere(fn ($q) => $q->where('status', 'antri')->where('updated_at', '<', now()->subMinutes(5)))
             ->take(50)

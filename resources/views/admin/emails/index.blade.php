@@ -12,6 +12,18 @@
         ];
     @endphp
 
+    @if($kuotaHabisSampai)
+        <div class="mb-4 flex items-start gap-3 px-4 py-3 rounded-xl border bg-amber-50 border-amber-200 text-amber-800 text-sm">
+            <i class="fas fa-circle-exclamation mt-0.5"></i>
+            <div>
+                <p class="font-semibold">Kuota harian email pengirim sedang habis</p>
+                <p>Server email (Gmail) menolak pengiriman karena batas harian tercapai. Email baru otomatis ditandai gagal dan
+                   bisa dikirim ulang setelah pukul <strong>{{ $kuotaHabisSampai->timezone(config('app.timezone'))->format('H:i') }}</strong>
+                   (kuota Gmail pulih bertahap dalam 24 jam). Notifikasi lonceng di dashboard peserta tetap berjalan.</p>
+            </div>
+        </div>
+    @endif
+
     <div class="bg-white rounded-2xl border border-slate-200">
         <div class="flex flex-col lg:flex-row lg:items-center gap-3 justify-between p-4 md:p-5 border-b border-slate-100">
             <div class="flex flex-wrap gap-2">

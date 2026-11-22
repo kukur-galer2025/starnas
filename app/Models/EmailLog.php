@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Mail\NotifikasiPeserta;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -36,11 +38,43 @@ class EmailLog extends Model
     }
 
     /**
+     * Penanda di cache saat server email menolak karena kuota harian habis
+     * (Gmail: "550 5.4.5 Daily user sending limit exceeded"). Selama penanda
+     * aktif, pengiriman ditunda agar tidak terus menabrak batas yang sama.
+     */
+    public const CACHE_KUOTA_HABIS = 'email_kuota_habis_sampai';
+    public const JEDA_KUOTA_MENIT = 60;
+    public const PESAN_KUOTA = 'Kuota kirim harian akun email pengirim sudah habis (batas Gmail). Email ditunda, kirim ulang setelah kuota pulih (maks. 24 jam).';
+
+    /** Waktu sampai kapan pengiriman ditunda karena kuota habis, atau null. */
+    public static function kuotaHabisSampai(): ?Carbon
+    {
+        $sampai = Cache::get(self::CACHE_KUOTA_HABIS);
+
+        return $sampai && now()->lt($sampai) ? Carbon::parse($sampai) : null;
+    }
+
+    private static function errorKuota(\Throwable $e): bool
+    {
+        $pesan = $e->getMessage();
+
+        return str_contains($pesan, '5.4.5')
+            || stripos($pesan, 'sending limit exceeded') !== false
+            || stripos($pesan, 'quota exceeded') !== false;
+    }
+
+    /**
      * Kirim email ini sekarang dan catat hasilnya (terkirim / gagal).
-     * Mengulang otomatis sampai MAKS_PERCOBAAN bila SMTP sedang bermasalah.
+     * Mengulang otomatis sampai MAKS_PERCOBAAN bila SMTP sedang bermasalah,
+     * kecuali kuota harian habis (mengulang tidak ada gunanya).
      */
     public function kirimSekarang(): void
     {
+        if (self::kuotaHabisSampai()) {
+            $this->update(['status' => 'gagal', 'error' => self::PESAN_KUOTA]);
+            return;
+        }
+
         $p = $this->payload;
         $mail = new NotifikasiPeserta(
             '[STARNAS ASASI 2026] ' . $this->subjek,
@@ -60,8 +94,15 @@ class EmailLog extends Model
                 $this->update(['status' => 'terkirim', 'error' => null, 'terkirim_at' => now()]);
                 return;
             } catch (\Throwable $e) {
-                $this->update(['status' => 'gagal', 'error' => mb_substr($e->getMessage(), 0, 1000)]);
                 Log::error("Gagal kirim email #{$this->id} ke {$this->email} (percobaan {$i}): " . $e->getMessage());
+
+                if (self::errorKuota($e)) {
+                    Cache::put(self::CACHE_KUOTA_HABIS, now()->addMinutes(self::JEDA_KUOTA_MENIT)->toIso8601String(), now()->addMinutes(self::JEDA_KUOTA_MENIT));
+                    $this->update(['status' => 'gagal', 'error' => self::PESAN_KUOTA]);
+                    return;
+                }
+
+                $this->update(['status' => 'gagal', 'error' => mb_substr($e->getMessage(), 0, 1000)]);
 
                 if ($i < self::MAKS_PERCOBAAN) {
                     sleep($i * 2);

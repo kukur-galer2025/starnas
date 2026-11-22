@@ -880,7 +880,7 @@
                     <p class="sig-role">Ketua Panitia Pelaksana</p>
                     <div class="sig-image-box">
                         <img src="{{ asset('storage/ttd_ahmadzaki.png') }}" class="sig-img sig-img-tinggi" alt="TTD Ketua Panitia">
-                        <img src="{{ asset('storage/capstarnas.png') }}" class="stamp-img" alt="Cap STARNAS">
+                        <img src="{{ asset('storage/cap_starnas.png') }}" class="stamp-img" alt="Cap STARNAS">
                     </div>
                     <div class="sig-line">
                         Ir. Ahmad Zaki, S.T., M.Sc., Ph.D.

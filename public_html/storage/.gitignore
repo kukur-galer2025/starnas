@@ -1,2 +1,7 @@
 *
 !.gitignore
+# Aset statis yang ikut di-deploy lewat git (bukan upload peserta)
+!Template_Full_Paper_STARNAS_ASASI_2026.docx
+!ttd_adisusilo.png
+!ttd_ahmadzaki.png
+!cap_starnas.png

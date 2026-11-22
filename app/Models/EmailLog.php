@@ -39,12 +39,12 @@ class EmailLog extends Model
 
     /**
      * Penanda di cache saat server email menolak karena kuota harian habis
-     * (Gmail: "550 5.4.5 Daily user sending limit exceeded"). Selama penanda
+     * (mis. Gmail "550 5.4.5 Daily user sending limit exceeded", atau batas Hostinger). Selama penanda
      * aktif, pengiriman ditunda agar tidak terus menabrak batas yang sama.
      */
     public const CACHE_KUOTA_HABIS = 'email_kuota_habis_sampai';
     public const JEDA_KUOTA_MENIT = 60;
-    public const PESAN_KUOTA = 'Kuota kirim harian akun email pengirim sudah habis (batas Gmail). Email ditunda, kirim ulang setelah kuota pulih (maks. 24 jam).';
+    public const PESAN_KUOTA = 'Kuota kirim akun email pengirim sudah habis (batas dari penyedia email). Email ditunda, kirim ulang setelah kuota pulih.';
 
     /** Waktu sampai kapan pengiriman ditunda karena kuota habis, atau null. */
     public static function kuotaHabisSampai(): ?Carbon
@@ -59,8 +59,10 @@ class EmailLog extends Model
         $pesan = $e->getMessage();
 
         return str_contains($pesan, '5.4.5')
-            || stripos($pesan, 'sending limit exceeded') !== false
-            || stripos($pesan, 'quota exceeded') !== false;
+            || stripos($pesan, 'limit exceeded') !== false
+            || stripos($pesan, 'quota exceeded') !== false
+            || stripos($pesan, 'ratelimit') !== false
+            || stripos($pesan, 'rate limit') !== false;
     }
 
     /**

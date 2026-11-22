@@ -17,9 +17,9 @@
             <i class="fas fa-circle-exclamation mt-0.5"></i>
             <div>
                 <p class="font-semibold">Kuota harian email pengirim sedang habis</p>
-                <p>Server email (Gmail) menolak pengiriman karena batas harian tercapai. Email baru otomatis ditandai gagal dan
+                <p>Server email menolak pengiriman karena batas kirim akun pengirim tercapai. Email baru otomatis ditandai gagal dan
                    bisa dikirim ulang setelah pukul <strong>{{ $kuotaHabisSampai->timezone(config('app.timezone'))->format('H:i') }}</strong>
-                   (kuota Gmail pulih bertahap dalam 24 jam). Notifikasi lonceng di dashboard peserta tetap berjalan.</p>
+                   (kuota pulih bertahap, paling lama 24 jam). Notifikasi lonceng di dashboard peserta tetap berjalan.</p>
             </div>
         </div>
     @endif

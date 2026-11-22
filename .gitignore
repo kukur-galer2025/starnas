@@ -40,3 +40,6 @@ cgi-bin
 !/public/storage/abstrak/.gitignore
 /public_html/storage/bukti_pembayaran/*
 /public_html/storage/abstrak/*
+
+# Salinan .env dari server (berisi rahasia, jangan di-commit)
+.env.server

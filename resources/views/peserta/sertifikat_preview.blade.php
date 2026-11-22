@@ -502,13 +502,16 @@
             opacity: 0.85;
         }
 
-        /* ── TANDA TANGAN & STEMPEL ── */
+        /* ── TANDA TANGAN & STEMPEL ──
+           Dua kolom simetris: label jabatan, area TTD (tinggi tetap), garis, nama.
+           Stempel di kedua kolom diletakkan di posisi yang sama (menimpa awal TTD)
+           dan berukuran sama, sehingga kiri & kanan terlihat seimbang. */
         .cert-signatures {
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            padding: 0 45px 2px 45px;
+            padding: 0 92px 16px 92px; /* menjauh dari ornamen sudut & bingkai bawah */
             flex-shrink: 0;
         }
 
@@ -516,7 +519,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 275px;
+            width: 270px;
             text-align: center;
         }
 
@@ -527,43 +530,60 @@
             color: #475569;
             letter-spacing: 1.8px;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .sig-image-box {
-            height: 70px;
-            width: 230px;
+            height: 80px;
+            width: 240px;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         .sig-img {
-            height: 56px;
-            width: auto;
-            object-fit: contain;
             position: relative;
             z-index: 10;
+            object-fit: contain;
+        }
+
+        /* TTD melebar (Prof. Adi Susilo) */
+        .sig-img-lebar {
+            width: 196px;
+            height: auto;
+            margin-bottom: 6px;
+        }
+
+        /* TTD tegak (Ir. Ahmad Zaki): dibatasi tinggi agar bobot visual setara */
+        .sig-img-tinggi {
+            height: 82px;
+            width: auto;
+            margin-bottom: -4px;
+            margin-left: 58px;
+        }
+
+        /* Grup stempel + TTD tegak lebih sempit, geser agar tetap di tengah kolom */
+        .sig-img-tinggi + .stamp-img {
+            left: 98px;
         }
 
         .stamp-img {
-            height: 78px;
-            width: auto;
+            width: 74px;
+            height: 74px;
             position: absolute;
-            top: -6px;
+            bottom: 2px;
+            left: 62px;
+            transform: translateX(-50%);
             z-index: 15;
-            opacity: 0.88;
+            opacity: 0.85;
             mix-blend-mode: multiply;
         }
 
-        .stamp-left { left: 54%; transform: translateX(-50%); }
-        .stamp-right { left: 46%; transform: translateX(-50%); }
-
         .sig-line {
             border-top: 1.8px solid #0f172a;
-            width: 265px;
+            width: 260px;
             text-align: center;
             padding-top: 5px;
             font-weight: 700;
@@ -571,6 +591,7 @@
             font-size: 13.5px;
             font-family: 'Playfair Display', serif;
             letter-spacing: 0.3px;
+            white-space: nowrap;
         }
 
         /* ══════════ TOAST NOTIFIKASI RENDER ══════════ */
@@ -846,11 +867,11 @@
                 <div class="sig-col">
                     <p class="sig-role">Ketua Umum ASASI</p>
                     <div class="sig-image-box">
-                        <img src="{{ asset('storage/ttd_elfahmi.png') }}" class="sig-img" alt="TTD Ketua ASASI">
-                        <img src="{{ asset('storage/capasasi.png') }}" class="stamp-img stamp-left" alt="Cap ASASI">
+                        <img src="{{ asset('storage/ttd_adisusilo.png') }}" class="sig-img sig-img-lebar" alt="TTD Ketua Umum ASASI">
+                        <img src="{{ asset('storage/capasasi.png') }}" class="stamp-img" alt="Cap ASASI">
                     </div>
                     <div class="sig-line">
-                        Prof. Dr. Elfahmi, S.Si., M.Si.
+                        Prof. Drs. Ir. Adi Susilo, M.Si., Ph.D.
                     </div>
                 </div>
 
@@ -858,11 +879,11 @@
                 <div class="sig-col">
                     <p class="sig-role">Ketua Panitia Pelaksana</p>
                     <div class="sig-image-box">
-                        <img src="{{ asset('storage/ttdsoni.png') }}" class="sig-img" alt="TTD Ketua Panitia">
-                        <img src="{{ asset('storage/capstarnas.png') }}" class="stamp-img stamp-right" alt="Cap STARNAS">
+                        <img src="{{ asset('storage/ttd_ahmadzaki.png') }}" class="sig-img sig-img-tinggi" alt="TTD Ketua Panitia">
+                        <img src="{{ asset('storage/capstarnas.png') }}" class="stamp-img" alt="Cap STARNAS">
                     </div>
                     <div class="sig-line">
-                        Soni Ariawan, M.Ed.
+                        Ir. Ahmad Zaki, S.T., M.Sc., Ph.D.
                     </div>
                 </div>
             </div>

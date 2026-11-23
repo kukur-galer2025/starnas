@@ -142,6 +142,15 @@ Route::middleware(['auth'])->group(function () {
             // Ekspor Excel
             Route::get('/users/export-excel', 'exportPesertaExcel')->name('users.export-excel');
 
+            // Sertifikat khusus (Panitia, Pembicara, Moderator, Reviewer, Web Developer)
+            Route::prefix('sertifikat')->name('sertifikat.')->group(function () {
+                Route::get('/', 'sertifikatKhususIndex')->name('index');
+                Route::post('/', 'sertifikatKhususStore')->name('store');
+                Route::get('/{sertifikat}', 'sertifikatKhususShow')->name('show');
+                Route::put('/{sertifikat}', 'sertifikatKhususUpdate')->name('update');
+                Route::delete('/{sertifikat}', 'sertifikatKhususDestroy')->name('destroy');
+            });
+
             // Laporan Pembayaran
             Route::prefix('reports/payments')->name('reports.payments.')->group(function () {
                 Route::get('/', 'showPaymentsReport')->name('index');

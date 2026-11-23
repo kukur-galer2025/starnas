@@ -44,6 +44,7 @@
             ]],
             ['Komunikasi', [
                 ['admin.pengumuman.index', 'admin.pengumuman.*', 'fa-bullhorn', 'Pengumuman', 0, ''],
+                ['admin.sertifikat.index', 'admin.sertifikat.*', 'fa-award', 'Sertifikat Khusus', 0, ''],
             ]],
             ['Data & Laporan', [
                 ['admin.users.index', 'admin.users.*', 'fa-users', 'Pengguna', 0, ''],

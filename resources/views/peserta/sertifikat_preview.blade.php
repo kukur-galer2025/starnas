@@ -719,7 +719,7 @@
         </button>
 
         {{-- Tombol Tutup --}}
-        <a href="{{ route('peserta.riwayat') }}" class="btn-close" title="Kembali ke Riwayat">
+        <a href="{{ $kembali_url ?? route('peserta.riwayat') }}" class="btn-close" title="Kembali">
             <i class="fas fa-times"></i>
         </a>
     </div>
@@ -958,6 +958,14 @@
                 bgStyle = 'linear-gradient(135deg, #78350f 0%, #d97706 50%, #92400e 100%)';
                 borderColor = '#fcd34d';
                 shadowColor = 'rgba(120, 53, 15, 0.3)';
+            } else if (roleName === 'Moderator') {
+                bgStyle = 'linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #075985 100%)';
+                borderColor = '#7dd3fc';
+                shadowColor = 'rgba(12, 74, 110, 0.3)';
+            } else if (roleName === 'Reviewer') {
+                bgStyle = 'linear-gradient(135deg, #312e81 0%, #4f46e5 50%, #3730a3 100%)';
+                borderColor = '#a5b4fc';
+                shadowColor = 'rgba(49, 46, 129, 0.3)';
             } else if (roleName === 'Web Developer') {
                 bgStyle = 'linear-gradient(135deg, #881337 0%, #e11d48 50%, #9f1239 100%)';
                 borderColor = '#fda4af';

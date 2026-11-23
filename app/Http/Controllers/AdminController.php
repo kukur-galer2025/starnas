@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Response;
 use App\Support\NotifPeserta;
 use App\Models\EmailLog;
 use App\Models\Pengumuman;
+use App\Models\SertifikatKhusus;
 use App\Support\EksporExcel;
 use App\Support\Verifikasi;
 use Illuminate\Support\Str;
@@ -766,5 +767,100 @@ class AdminController extends Controller
         return EksporExcel::unduh('Laporan_Pembayaran_STARNAS_' . now()->format('Ymd_His'), 'Pembayaran',
             array_merge(['No'], array_map(fn ($k) => self::KOLOM_LAPORAN[$k][0], $kolom)),
             $baris);
+    }
+
+    // ==========================================================
+    // == SERTIFIKAT KHUSUS (PANITIA / PEMBICARA / DLL) ==
+    // ==========================================================
+
+    public function sertifikatKhususIndex(Request $request)
+    {
+        $peran = $request->input('peran');
+        $search = $request->input('search');
+
+        $sertifikats = SertifikatKhusus::query()
+            ->when(in_array($peran, SertifikatKhusus::PERAN, true), fn ($q) => $q->where('peran', $peran))
+            ->when($search, fn ($q) => $q->where(fn ($w) => $w->where('nama', 'like', '%' . $search . '%')->orWhere('institusi', 'like', '%' . $search . '%')))
+            ->orderBy('peran')->orderBy('nama')
+            ->paginate(25)->withQueryString();
+
+        $jumlahPeran = SertifikatKhusus::selectRaw('peran, count(*) as jumlah')->groupBy('peran')->pluck('jumlah', 'peran');
+
+        return view('admin.sertifikat.index', compact('sertifikats', 'jumlahPeran', 'peran', 'search'));
+    }
+
+    /**
+     * Simpan satu atau banyak sertifikat sekaligus.
+     * Kolom "daftar": satu orang per baris, format "Nama" atau "Nama | Institusi".
+     */
+    public function sertifikatKhususStore(Request $request)
+    {
+        $data = $request->validate([
+            'peran' => ['required', Rule::in(SertifikatKhusus::PERAN)],
+            'daftar' => 'required|string|max:20000',
+            'institusi' => 'nullable|string|max:255',
+        ], [
+            'daftar.required' => 'Isi minimal satu nama.',
+        ]);
+
+        $dibuat = 0;
+        foreach (preg_split('/\R/', $data['daftar']) as $baris) {
+            $bagian = array_map('trim', explode('|', $baris, 2));
+            $nama = preg_replace('/\s+/', ' ', $bagian[0] ?? '');
+            if ($nama === '') {
+                continue;
+            }
+
+            SertifikatKhusus::create([
+                'nama' => mb_substr($nama, 0, 255),
+                'peran' => $data['peran'],
+                'institusi' => mb_substr(($bagian[1] ?? '') ?: ($data['institusi'] ?? ''), 0, 255) ?: null,
+                'admin_id' => auth()->id(),
+            ]);
+            $dibuat++;
+        }
+
+        if ($dibuat === 0) {
+            return back()->withInput()->with('error', 'Tidak ada nama yang valid.');
+        }
+
+        return redirect()->route('admin.sertifikat.index', ['peran' => $data['peran']])
+            ->with('success', $dibuat . ' sertifikat ' . $data['peran'] . ' berhasil dibuat. Klik "Lihat & Unduh" untuk mengunduhnya.');
+    }
+
+    public function sertifikatKhususUpdate(Request $request, SertifikatKhusus $sertifikat)
+    {
+        $data = $request->validate([
+            'nama' => 'required|string|max:255',
+            'peran' => ['required', Rule::in(SertifikatKhusus::PERAN)],
+            'institusi' => 'nullable|string|max:255',
+        ]);
+
+        $sertifikat->update($data);
+
+        return back()->with('success', 'Sertifikat ' . $sertifikat->nomor() . ' diperbarui.');
+    }
+
+    public function sertifikatKhususShow(SertifikatKhusus $sertifikat)
+    {
+        return view('peserta.sertifikat_preview', [
+            'nama_peserta' => $sertifikat->nama,
+            'peran_peserta' => $sertifikat->peran,
+            'nomor_unik' => $sertifikat->nomor(),
+            'tanggal_acara' => '1 - 2 Desember 2026',
+            'tempat_acara' => 'The Malioboro Hotel, Yogyakarta',
+            'tema' => 'AI untuk Dukung Tenaga Terampil Dalam Mewujudkan Kemandirian Ekonomi dan Energi',
+            'qr_verifikasi' => Verifikasi::qr('K', $sertifikat->id),
+            'url_verifikasi' => Verifikasi::url('K', $sertifikat->id),
+            'kembali_url' => route('admin.sertifikat.index', ['peran' => $sertifikat->peran]),
+        ]);
+    }
+
+    public function sertifikatKhususDestroy(SertifikatKhusus $sertifikat)
+    {
+        $nomor = $sertifikat->nomor();
+        $sertifikat->delete();
+
+        return back()->with('success', 'Sertifikat ' . $nomor . ' dihapus. QR pada sertifikat tersebut kini tidak berlaku.');
     }
 }

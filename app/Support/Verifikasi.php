@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Abstrak;
 use App\Models\Pembayaran;
+use App\Models\SertifikatKhusus;
 use App\Models\User;
 use chillerlan\QRCode\Common\EccLevel;
 use chillerlan\QRCode\Output\QROutputInterface;
@@ -14,7 +15,8 @@ use chillerlan\QRCode\QROptions;
  * Kode verifikasi dokumen (sertifikat & LoA) untuk QR code.
  *
  * Format kode: <tipe>-<id>-<tanda>, mis. "S-12-9f3a1c7b2e4d".
- *   tipe  S = sertifikat peserta (id = user), L = LoA (id = abstrak)
+ *   tipe  S = sertifikat peserta (id = user), L = LoA (id = abstrak),
+ *         K = sertifikat khusus panitia/pembicara (id = sertifikat_khusus)
  *   tanda = HMAC dari APP_KEY, sehingga kode tidak bisa ditebak / dipalsukan
  *           tanpa menyimpan apa pun di database.
  */
@@ -55,7 +57,7 @@ class Verifikasi
      */
     public static function periksa(string $kode): ?array
     {
-        if (!preg_match('/^([SL])-(\d+)-([a-f0-9]{' . self::PANJANG_TANDA . '})$/', $kode, $m)) {
+        if (!preg_match('/^([SLK])-(\d+)-([a-f0-9]{' . self::PANJANG_TANDA . '})$/', $kode, $m)) {
             return null;
         }
 
@@ -67,6 +69,7 @@ class Verifikasi
         return match ($tipe) {
             'S' => self::dataSertifikat((int) $id),
             'L' => self::dataLoa((int) $id),
+            'K' => self::dataKhusus((int) $id),
         };
     }
 
@@ -86,6 +89,26 @@ class Verifikasi
                 'Nama' => $user->nama_lengkap,
                 'Peran' => self::peranPeserta($user, $bayar),
                 'Institusi' => $user->institusi ?: '-',
+                'Acara' => '1–2 Desember 2026, The Malioboro Hotel, Yogyakarta',
+            ],
+        ];
+    }
+
+    private static function dataKhusus(int $id): ?array
+    {
+        $s = SertifikatKhusus::find($id);
+        if (!$s) {
+            return null;
+        }
+
+        return [
+            'tipe' => 'Sertifikat',
+            'judul' => 'Sertifikat Penghargaan STARNAS ASASI 2026',
+            'baris' => [
+                'Nomor' => $s->nomor(),
+                'Nama' => $s->nama,
+                'Peran' => $s->peran,
+                'Institusi' => $s->institusi ?: '-',
                 'Acara' => '1–2 Desember 2026, The Malioboro Hotel, Yogyakarta',
             ],
         ];

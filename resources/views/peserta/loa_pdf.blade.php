@@ -50,7 +50,12 @@
         table.data td { padding: 2px 0; vertical-align: top; }
         table.data td.label { width: 105px; font-weight: bold; }
 
-        .ttd { margin-top: 18px; }
+        table.ttd-qr { width: 100%; border-collapse: collapse; margin-top: 18px; }
+        table.ttd-qr td { vertical-align: bottom; padding: 0; }
+        .ttd { text-align: left; }
+        td.qr { width: 130px; text-align: center; }
+        td.qr img { width: 96px; height: 96px; }
+        .qr-label { font-size: 8pt; color: #475569; margin-top: 2px; line-height: 1.2; }
         .ttd img { width: 160px; margin: 4px 0 2px -6px; }
         .ttd .nama-ketua { font-weight: bold; }
     </style>
@@ -112,12 +117,22 @@
 
     <p>Informasi mengenai jadwal dan sesi presentasi akan disampaikan oleh panitia.</p>
 
-    <div class="ttd">
-        Hormat kami,<br>
-        Yogyakarta, {{ $tanggalSurat }}<br>
-        Ketua Panitia STARNAS ASASI 2026<br>
-        @if($ttdKetua)<img src="{{ $ttdKetua }}">@else<div style="height: 90px;"></div>@endif
-        <div class="nama-ketua">Dr. Ahmad Zaki</div>
-    </div>
+    <table class="ttd-qr">
+        <tr>
+            <td class="ttd">
+                Hormat kami,<br>
+                Yogyakarta, {{ $tanggalSurat }}<br>
+                Ketua Panitia STARNAS ASASI 2026<br>
+                @if($ttdKetua)<img src="{{ $ttdKetua }}">@else<div style="height: 90px;"></div>@endif
+                <div class="nama-ketua">Dr. Ahmad Zaki</div>
+            </td>
+            @isset($qrVerifikasi)
+                <td class="qr">
+                    <img src="{{ $qrVerifikasi }}" alt="QR verifikasi">
+                    <div class="qr-label">Scan untuk verifikasi keaslian</div>
+                </td>
+            @endisset
+        </tr>
+    </table>
 </body>
 </html>

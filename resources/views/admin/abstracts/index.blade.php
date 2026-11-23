@@ -36,6 +36,11 @@
                         <option value="ditolak" {{ $status == 'ditolak' ? 'selected' : '' }}>Ditolak ({{ $rejectedCount }})
                         </option>
                     </select>
+                    <a href="{{ route('admin.abstracts.export-excel', array_filter(['status' => $status, 'search' => $search])) }}"
+                       title="Ekspor data abstrak (sesuai filter) ke Excel"
+                       class="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold whitespace-nowrap">
+                        <i class="fas fa-file-excel mr-2"></i>Excel
+                    </a>
                 </form>
             </div>
         </div>

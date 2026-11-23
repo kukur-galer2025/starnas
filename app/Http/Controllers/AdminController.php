@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use App\Support\NotifPeserta;
 use App\Models\EmailLog;
+use App\Models\Pengumuman;
+use App\Support\EksporExcel;
+use App\Support\Verifikasi;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -24,6 +28,9 @@ class AdminController extends Controller
      */
     public function statusSinkron()
     {
+        // Panel admin yang terbuka sekaligus menggerakkan antrean email (pengumuman massal).
+        NotifPeserta::prosesAntreanNanti();
+
         $abstrak = Abstrak::selectRaw('count(*) as total, max(updated_at) as terakhir')->first();
         $pembayaran = Pembayaran::selectRaw('count(*) as total, max(updated_at) as terakhir')->first();
 
@@ -120,15 +127,15 @@ class AdminController extends Controller
 
         $logs = EmailLog::where('status', 'gagal')
             ->orWhere(fn ($q) => $q->where('status', 'antri')->where('updated_at', '<', now()->subMinutes(5)))
-            ->take(50)
+            ->take(500)
             ->get();
 
-        foreach ($logs as $log) {
-            $log->update(['status' => 'antri', 'percobaan' => 0, 'error' => null]);
-            NotifPeserta::jadwalkan($log);
-        }
+        // Masukkan ke antrean; dikirim bertahap (10 per putaran) selama panel admin terbuka,
+        // agar tidak menabrak batas kirim penyedia email sekaligus.
+        EmailLog::whereIn('id', $logs->pluck('id'))->update(['status' => 'antri', 'percobaan' => 0, 'error' => null, 'updated_at' => now()]);
+        NotifPeserta::prosesAntreanNanti($logs->pluck('id')->take(NotifPeserta::BATCH_ANTREAN)->all());
 
-        return back()->with('success', $logs->count() . ' email dijadwalkan untuk dikirim ulang.');
+        return back()->with('success', $logs->count() . ' email masuk antrean kirim ulang. Email terkirim bertahap; biarkan halaman admin terbuka sampai selesai.');
     }
 
     public function manageUsers(Request $request)
@@ -201,8 +208,19 @@ class AdminController extends Controller
     {
         $pembayaran->load('user');
         $emailLogs = EmailLog::where('user_id', $pembayaran->user_id)->latest()->take(8)->get();
+        $abstraksPeserta = Abstrak::where('user_id', $pembayaran->user_id)->latest()->get();
 
-        return view('admin.payments.show', compact('pembayaran', 'emailLogs'));
+        // Cocokkan kategori yang dibayar dengan status abstrak peserta.
+        $adaDiterima = $abstraksPeserta->contains('status_abstrak', 'diterima');
+        $peringatanKategori = match (true) {
+            $pembayaran->kategori_pembayaran === 'non-presenter' && $adaDiterima
+                => 'Peserta ini punya abstrak DITERIMA tetapi membayar kategori Non Presenter (Rp100.000). Bila tetap akan presentasi, minta peserta membayar kategori pemakalah. Sertifikat peserta ini akan tertulis "Peserta Seminar".',
+            $pembayaran->kategori_pembayaran !== 'non-presenter' && !$adaDiterima
+                => 'Peserta ini membayar kategori PEMAKALAH tetapi belum punya abstrak yang diterima. Pastikan abstraknya sudah direview sebelum memverifikasi.',
+            default => null,
+        };
+
+        return view('admin.payments.show', compact('pembayaran', 'emailLogs', 'abstraksPeserta', 'peringatanKategori'));
     }
 
     public function verifyPayment(Request $request, Pembayaran $pembayaran)
@@ -597,5 +615,156 @@ class AdminController extends Controller
 
         // ?tampil=1 -> buka di tab baru (siap dicetak), selain itu unduh.
         return $request->boolean('tampil') ? $pdf->stream($nama) : $pdf->download($nama);
+    }
+
+    // ==========================================================
+    // == PENGUMUMAN / BROADCAST KE PESERTA ==
+    // ==========================================================
+
+    public function pengumumanIndex()
+    {
+        $pengumumans = Pengumuman::with('admin')->latest()->paginate(10);
+        $jumlahTarget = collect(Pengumuman::TARGET)->map(fn ($label, $key) => Pengumuman::queryPenerima($key)->count());
+
+        return view('admin.pengumuman.index', compact('pengumumans', 'jumlahTarget'));
+    }
+
+    public function pengumumanStore(Request $request)
+    {
+        $data = $request->validate([
+            'judul' => 'required|string|max:150',
+            'isi' => 'required|string|max:5000',
+            'target' => ['required', Rule::in(array_keys(Pengumuman::TARGET))],
+            'tautan' => 'nullable|url|max:500',
+            'teks_tautan' => 'nullable|string|max:60',
+            'kirim_email' => 'nullable|boolean',
+        ], [
+            'tautan.url' => 'Tautan harus berupa alamat lengkap, mis. https://zoom.us/j/123...',
+        ]);
+
+        $penerima = Pengumuman::queryPenerima($data['target'])->get(['id', 'nama_lengkap', 'email']);
+        if ($penerima->isEmpty()) {
+            return back()->withInput()->with('error', 'Tidak ada peserta pada kelompok "' . Pengumuman::TARGET[$data['target']] . '".');
+        }
+
+        $pengumuman = Pengumuman::create([
+            'admin_id' => auth()->id(),
+            'judul' => $data['judul'],
+            'isi' => $data['isi'],
+            'target' => $data['target'],
+            'tautan' => $data['tautan'] ?? null,
+            'teks_tautan' => ($data['tautan'] ?? null) ? (($data['teks_tautan'] ?? null) ?: 'Buka Tautan') : null,
+            'kirim_email' => $request->boolean('kirim_email'),
+            'jumlah_penerima' => $penerima->count(),
+        ]);
+
+        $urlHalaman = route('peserta.pengumuman');
+        $paragraf = array_values(array_filter(array_map('trim', preg_split('/\R/', $pengumuman->isi))));
+        $idEmail = [];
+
+        foreach ($penerima as $user) {
+            NotifPeserta::buatNotifikasi($user, $pengumuman->judul, Str::limit($pengumuman->isi, 140), $urlHalaman, $pengumuman->id);
+
+            if ($pengumuman->kirim_email) {
+                $log = NotifPeserta::catatEmail($user, 'Pengumuman: ' . $pengumuman->judul, $pengumuman->judul, $paragraf,
+                    null, $pengumuman->teks_tautan ?? 'Lihat di Dashboard', $pengumuman->tautan ?? $urlHalaman);
+                if ($log) {
+                    $idEmail[] = $log->id;
+                }
+            }
+        }
+
+        if ($idEmail) {
+            NotifPeserta::prosesAntreanNanti(array_slice($idEmail, 0, NotifPeserta::BATCH_ANTREAN));
+        }
+
+        $pesan = 'Pengumuman terkirim ke ' . $penerima->count() . ' peserta (notifikasi dashboard).';
+        if ($idEmail) {
+            $pesan .= ' ' . count($idEmail) . ' email dikirim bertahap; pantau di menu Status Email dan biarkan halaman admin terbuka sampai selesai.';
+        }
+
+        return redirect()->route('admin.pengumuman.index')->with('success', $pesan);
+    }
+
+    public function pengumumanDestroy(Pengumuman $pengumuman)
+    {
+        $pengumuman->delete(); // notifikasi lonceng ikut terhapus (cascade)
+
+        return back()->with('success', 'Pengumuman "' . $pengumuman->judul . '" dihapus dari dashboard peserta.');
+    }
+
+    // ==========================================================
+    // == EKSPOR EXCEL ==
+    // ==========================================================
+
+    public function exportPesertaExcel()
+    {
+        $users = User::where('role', 'peserta')
+            ->with(['pembayarans' => fn ($q) => $q->latest()])
+            ->withCount(['abstraks', 'abstraks as abstrak_diterima_count' => fn ($q) => $q->where('status_abstrak', 'diterima')])
+            ->orderBy('nama_lengkap')
+            ->get();
+
+        $baris = $users->values()->map(function (User $u, $i) {
+            $bayar = $u->pembayarans->first();
+            return [
+                $i + 1, $u->nama_lengkap, $u->email, $u->nomor_handphone ?: '-', $u->jenis_kelamin ?: '-',
+                $u->pekerjaan ?: '-', $u->institusi ?: '-', $u->provinsi ?: '-',
+                $bayar ? $bayar->labelKategori() : '-', $bayar ? $bayar->labelStatus() : 'Belum bayar',
+                $bayar ? (int) $bayar->nominal : 0, $u->abstraks_count, $u->abstrak_diterima_count,
+                $u->google_id ? 'Google' : 'Email', $u->created_at?->format('d/m/Y H:i'),
+            ];
+        });
+
+        return EksporExcel::unduh('Data_Peserta_STARNAS_' . now()->format('Ymd_His'), 'Peserta',
+            ['No', 'Nama Lengkap', 'Email', 'No. HP', 'Jenis Kelamin', 'Pekerjaan', 'Institusi', 'Provinsi',
+             'Kategori Bayar', 'Status Bayar', 'Nominal', 'Jumlah Abstrak', 'Abstrak Diterima', 'Daftar Via', 'Tanggal Daftar'],
+            $baris);
+    }
+
+    public function exportAbstrakExcel(Request $request)
+    {
+        $status = $request->input('status', 'all');
+        $search = $request->input('search');
+
+        $abstraks = Abstrak::with(['user.pembayarans' => fn ($q) => $q->latest()])
+            ->when($status !== 'all', fn ($q) => $q->where('status_abstrak', $status))
+            ->when($search, fn ($q) => $q->where(fn ($w) => $w->where('judul_abstrak', 'like', '%' . $search . '%')
+                ->orWhereHas('user', fn ($u) => $u->where('nama_lengkap', 'like', '%' . $search . '%')->orWhere('email', 'like', '%' . $search . '%'))))
+            ->orderBy('created_at')
+            ->get();
+
+        $labelStatus = ['pending' => 'Menunggu Review', 'diterima' => 'Diterima', 'ditolak' => 'Ditolak'];
+
+        $baris = $abstraks->values()->map(function (Abstrak $a, $i) use ($labelStatus) {
+            $bayar = $a->user?->pembayarans->first();
+            return [
+                $i + 1, Verifikasi::idNaskah($a->id), $a->judul_abstrak, $a->penulis ?: ($a->user->nama_lengkap ?? '-'),
+                $a->user->nama_lengkap ?? '-', $a->user->email ?? '-', $a->user->nomor_handphone ?? '-', $a->user->institusi ?? '-',
+                $labelStatus[$a->status_abstrak] ?? $a->status_abstrak, $a->catatan_reviewer_abstrak ?: '-',
+                $a->created_at?->format('d/m/Y H:i'),
+                $bayar ? $bayar->labelKategori() : '-', $bayar ? $bayar->labelStatus() : 'Belum bayar',
+            ];
+        });
+
+        return EksporExcel::unduh('Data_Abstrak_STARNAS_' . now()->format('Ymd_His'), 'Abstrak',
+            ['No', 'ID Naskah', 'Judul', 'Penulis', 'Pengunggah', 'Email', 'No. HP', 'Institusi',
+             'Status', 'Catatan Reviewer', 'Tanggal Upload', 'Kategori Bayar', 'Status Bayar'],
+            $baris);
+    }
+
+    public function exportPaymentsExcel(Request $request)
+    {
+        $payments = $this->queryLaporan($request)->get();
+        $kolom = $this->kolomTerpilih($request);
+
+        $baris = $payments->values()->map(function (Pembayaran $p, $i) use ($kolom) {
+            return array_merge([$i + 1], array_map(
+                fn ($k) => $k === 'nominal' ? (int) $p->nominal : $this->nilaiKolom($p, $k), $kolom));
+        });
+
+        return EksporExcel::unduh('Laporan_Pembayaran_STARNAS_' . now()->format('Ymd_His'), 'Pembayaran',
+            array_merge(['No'], array_map(fn ($k) => self::KOLOM_LAPORAN[$k][0], $kolom)),
+            $baris);
     }
 }

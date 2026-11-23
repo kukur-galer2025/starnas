@@ -16,6 +16,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 use App\Support\NotifPeserta;
 use App\Models\Notifikasi;
+use App\Models\Pengumuman;
+use App\Support\Verifikasi;
+use Illuminate\Support\Carbon;
 
 class PesertaController extends Controller
 {
@@ -23,22 +26,42 @@ class PesertaController extends Controller
     {
         $user = Auth::user();
         $pembayaran = Pembayaran::where('user_id', $user->id)->latest()->first();
+        $pengumumanTerbaru = $this->queryPengumumanSaya()->take(3)->get();
 
-        return view('peserta.beranda', compact('pembayaran'));
+        return view('peserta.beranda', compact('pembayaran', 'pengumumanTerbaru'));
+    }
+
+    /** Pengumuman yang dikirim admin ke peserta yang sedang login (terbaru dulu). */
+    private function queryPengumumanSaya()
+    {
+        return Pengumuman::whereIn('id', Notifikasi::where('user_id', Auth::id())->whereNotNull('pengumuman_id')->select('pengumuman_id'))
+            ->latest();
+    }
+
+    public function pengumuman()
+    {
+        $pengumumans = $this->queryPengumumanSaya()->paginate(10);
+
+        // Buka halaman ini = semua notifikasi pengumuman dianggap sudah dibaca.
+        Notifikasi::where('user_id', Auth::id())->whereNotNull('pengumuman_id')->whereNull('dibaca_at')->update(['dibaca_at' => now()]);
+
+        return view('peserta.pengumuman', compact('pengumumans'));
     }
 
     /**
      * Ringkasan status terkini, dipoll oleh browser agar tampilan peserta
      * langsung mengikuti perubahan dari admin tanpa refresh manual.
+     * Penanda abstrak mencakup SEMUA abstrak (jumlah + perubahan terakhir), sehingga
+     * perubahan pada abstrak yang lebih lama pun ikut terdeteksi.
      */
     public function statusSinkron()
     {
         $userId = Auth::id();
-        $abstrak = Abstrak::where('user_id', $userId)->latest()->first();
+        $abstrak = Abstrak::where('user_id', $userId)->selectRaw('count(*) as jumlah, max(updated_at) as terakhir')->first();
         $pembayaran = Pembayaran::where('user_id', $userId)->latest()->first();
 
         return response()->json([
-            'abstrak' => $abstrak ? $abstrak->status_abstrak . '|' . $abstrak->updated_at?->timestamp : 'none',
+            'abstrak' => $abstrak && $abstrak->jumlah ? $abstrak->jumlah . '|' . $abstrak->terakhir : 'none',
             'pembayaran' => $pembayaran ? $pembayaran->status . '|' . $pembayaran->updated_at?->timestamp : 'none',
         ])->header('Cache-Control', 'no-store, max-age=0');
     }
@@ -323,6 +346,17 @@ class PesertaController extends Controller
         return $pdf->download('Kwitansi-STARNAS-' . $pembayaran->id . '.pdf');
     }
 
+    /** Waktu sertifikat mulai bisa diunduh (setelah acara selesai), lihat config/starnas.php. */
+    public static function waktuSertifikatDibuka(): Carbon
+    {
+        return Carbon::parse(config('starnas.sertifikat_dibuka'), 'Asia/Jakarta')->locale('id');
+    }
+
+    public static function sertifikatSudahDibuka(): bool
+    {
+        return now()->greaterThanOrEqualTo(self::waktuSertifikatDibuka());
+    }
+
     public function generateSertifikat()
     {
         // FORCE REFRESH: AMBIL DATA FRESH DARI DB
@@ -337,15 +371,17 @@ class PesertaController extends Controller
             return redirect()->route('peserta.riwayat')->with('error', 'Sertifikat tidak dapat diunduh. Pembayaran belum terverifikasi.');
         }
 
-        $nomor_sertifikat_unik = 'ASASI01122026-' . str_pad($user->id, 4, '0', STR_PAD_LEFT);
-
-        $abstrak = Abstrak::where('user_id', $user->id)->latest()->first();
-        $peran_peserta = ($abstrak && $abstrak->status_abstrak == 'diterima') ? 'Presenter' : 'Peserta Seminar';
+        if (!self::sertifikatSudahDibuka()) {
+            return redirect()->route('peserta.riwayat')->with('error', 'Sertifikat dapat diunduh mulai ' . self::waktuSertifikatDibuka()->translatedFormat('j F Y \p\u\k\u\l H.i') . ' WIB, setelah acara selesai.');
+        }
 
         $sertifikatData = [
             'nama_peserta' => $user->nama_lengkap, // Nama Terbaru
-            'peran_peserta' => $peran_peserta,
-            'nomor_unik' => $nomor_sertifikat_unik,
+            // Peran ditentukan sistem; peserta tidak bisa memilih sendiri.
+            'peran_peserta' => Verifikasi::peranPeserta($user, $pembayaranVerified),
+            'nomor_unik' => Verifikasi::nomorSertifikat($user->id),
+            'qr_verifikasi' => Verifikasi::qr('S', $user->id),
+            'url_verifikasi' => Verifikasi::url('S', $user->id),
             'tanggal_acara' => '1 - 2 Desember 2026',
             'tempat_acara' => 'The Malioboro Hotel, Yogyakarta',
             'tema' => 'AI untuk Dukung Tenaga Terampil Dalam Mewujudkan Kemandirian Ekonomi dan Energi',
@@ -403,15 +439,18 @@ class PesertaController extends Controller
 
             $request->validate([
                 'judul_abstrak' => 'required|string|max:255',
+                'penulis' => 'required|string|max:1000',
                 'abstrak_file' => 'required|file|mimes:doc,docx,pdf|max:10240'
             ]);
 
             $file = $request->file('abstrak_file');
-            $filePath = $file->storeAs('abstrak', 'abstrak_' . time() . '_' . $user->id . '.' . $file->getClientOriginalExtension(), 'public');
+            // Nama acak agar URL file tidak bisa ditebak (disk publik).
+            $filePath = $file->storeAs('abstrak', 'abstrak_' . $user->id . '_' . Str::random(32) . '.' . strtolower($file->getClientOriginalExtension()), 'public');
 
             $abstrak = \App\Models\Abstrak::create([
                 'user_id' => $user->id,
                 'judul_abstrak' => $request->judul_abstrak,
+                'penulis' => trim($request->penulis),
                 'file_abstrak_path' => $filePath,
                 'file_abstrak_original_name' => $file->getClientOriginalName(),
                 'status_abstrak' => 'pending',
@@ -472,7 +511,7 @@ class PesertaController extends Controller
         // Tanggal surat = tanggal abstrak diterima (update terakhir oleh admin).
         $tanggal = ($abstrak->updated_at ?? now())->copy()->locale('id');
         $bulanRomawi = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'][$tanggal->month - 1];
-        $idNaskah = 'STARNAS-2026-' . str_pad($abstrak->id, 4, '0', STR_PAD_LEFT);
+        $idNaskah = Verifikasi::idNaskah($abstrak->id);
 
         $pdf = Pdf::loadView('peserta.loa_pdf', [
             'nomorSurat' => str_pad($abstrak->id, 3, '0', STR_PAD_LEFT) . '/LoA/STARNAS-ASASI/' . $bulanRomawi . '/' . $tanggal->year,
@@ -480,14 +519,35 @@ class PesertaController extends Controller
             'afiliasi' => $user->institusi ?: '-',
             'idNaskah' => $idNaskah,
             'judulNaskah' => $abstrak->judul_abstrak,
-            'penulis' => $user->nama_lengkap,
+            'penulis' => $abstrak->penulis ?: $user->nama_lengkap,
             'tanggalSurat' => $tanggal->translatedFormat('j F Y'),
             'logoStarnas' => $gambar('logo-starnas.png'),
             'logoAsasi' => $gambar('logo-asasi.png'),
             'ttdKetua' => $gambar('ttd-ketua.png'),
+            'qrVerifikasi' => Verifikasi::qr('L', $abstrak->id),
+            'urlVerifikasi' => Verifikasi::url('L', $abstrak->id),
         ])->setPaper('a4');
 
         return $pdf->download('LoA_' . $idNaskah . '.pdf');
+    }
+
+    /**
+     * Ubah daftar nama penulis (boleh kapan saja, termasuk setelah diterima,
+     * agar LoA mencantumkan seluruh penulis).
+     */
+    public function updatePenulis(Request $request, Abstrak $abstrak)
+    {
+        abort_if((int) $abstrak->user_id !== (int) Auth::id(), 403);
+
+        $data = $request->validate(['penulis' => 'required|string|max:1000'], [
+            'penulis.required' => 'Nama penulis wajib diisi.',
+        ]);
+
+        // Tanpa menyentuh updated_at: tanggal itu dipakai sebagai tanggal diterima di LoA.
+        $abstrak->timestamps = false;
+        $abstrak->update(['penulis' => trim($data['penulis'])]);
+
+        return redirect()->route('peserta.abstrak.upload')->with('success', 'Nama penulis abstrak berhasil diperbarui.');
     }
 
     public function deleteAbstrak(Abstrak $abstrak)

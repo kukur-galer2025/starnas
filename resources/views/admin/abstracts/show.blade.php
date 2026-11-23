@@ -128,6 +128,18 @@
                         </div>
                     </div>
 
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Penulis</label>
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                            <p class="text-gray-900 leading-relaxed break-words">
+                                {{ $abstrak->penulis ?: ($abstrak->user->nama_lengkap ?? '-') }}
+                                @unless($abstrak->penulis)
+                                    <span class="block text-xs text-amber-600 mt-1">Peserta belum mengisi daftar penulis (memakai nama pengunggah).</span>
+                                @endunless
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="mb-8">
                         <label class="block text-sm font-medium text-gray-700 mb-3">File Abstrak</label>
                         <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center bg-gray-50">

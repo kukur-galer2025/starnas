@@ -64,6 +64,36 @@
                                             <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {{ $stConfig['badge'] }}">{{ $stConfig['label'] }}</span>
                                         </div>
                                         <p class="font-semibold text-gray-900 leading-snug mb-1">{{ $abs->judul_abstrak }}</p>
+
+                                        {{-- Penulis (dicantumkan di LoA) + form ubah --}}
+                                        <details class="mb-1 group" @if($errors->has('penulis') && old('abstrak_id') == $abs->id) open @endif>
+                                            <summary class="text-xs text-gray-600 cursor-pointer list-none">
+                                                <i class="fas fa-users mr-1 text-primary"></i>
+                                                <span class="font-medium">Penulis:</span>
+                                                @if($abs->penulis)
+                                                    {{ $abs->penulis }}
+                                                @else
+                                                    <span class="text-amber-600">belum diisi (LoA memakai nama Anda saja)</span>
+                                                @endif
+                                                <span class="ml-1 text-primary font-semibold hover:underline">&middot; Ubah</span>
+                                            </summary>
+                                            <form action="{{ route('peserta.abstrak.penulis', $abs->id) }}" method="POST" class="mt-2 flex flex-col sm:flex-row gap-2">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="abstrak_id" value="{{ $abs->id }}">
+                                                <input type="text" name="penulis" maxlength="1000" required
+                                                       value="{{ old('abstrak_id') == $abs->id ? old('penulis') : ($abs->penulis ?: $user->nama_lengkap) }}"
+                                                       placeholder="Nama Penulis 1, Nama Penulis 2, ..."
+                                                       class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                                <button type="submit" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-semibold rounded-lg">
+                                                    Simpan
+                                                </button>
+                                            </form>
+                                            @if($errors->has('penulis') && old('abstrak_id') == $abs->id)
+                                                <p class="text-red-500 text-xs mt-1">{{ $errors->first('penulis') }}</p>
+                                            @endif
+                                        </details>
+
                                         <p class="text-xs text-gray-500">
                                             <i class="fas fa-file mr-1"></i>{{ $abs->file_abstrak_original_name }}
                                             &bull; Diunggah {{ $abs->created_at->format('d M Y, H:i') }}
@@ -152,6 +182,24 @@
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                                 <p class="text-xs text-gray-500 mt-1 char-counter">0/255 karakter</p>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="penulis" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Nama Seluruh Penulis <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text"
+                                        id="penulis"
+                                        name="penulis"
+                                        value="{{ old('penulis', $user->nama_lengkap) }}"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300 @error('penulis') border-red-500 @enderror"
+                                        placeholder="Nama Penulis 1, Nama Penulis 2, Nama Penulis 3"
+                                        required
+                                        maxlength="1000">
+                                @error('penulis')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                                <p class="text-xs text-gray-500 mt-1">Pisahkan dengan koma, urut sesuai naskah. Nama ini dicantumkan di Letter of Acceptance (LoA).</p>
                             </div>
 
                             <div class="mb-6">

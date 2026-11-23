@@ -120,6 +120,10 @@
                         class="btn-export inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold">
                         <i class="fas fa-file-pdf"></i> PDF
                     </button>
+                    <button type="button" data-export="{{ route('admin.reports.payments.export-excel') }}"
+                        class="btn-export inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
                 </div>
             </div>
 

@@ -12,6 +12,35 @@
         </p>
     </div>
 
+    {{-- Pengumuman terbaru dari panitia --}}
+    @if($pengumumanTerbaru->isNotEmpty())
+        <div class="bg-white border border-emerald-200 rounded-2xl shadow-sm mb-6 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-3 bg-emerald-50 border-b border-emerald-100">
+                <h2 class="font-bold text-emerald-900 flex items-center">
+                    <i class="fas fa-bullhorn text-emerald-600 mr-2"></i> Pengumuman Panitia
+                </h2>
+                <a href="{{ route('peserta.pengumuman') }}" class="text-xs font-semibold text-emerald-700 hover:underline">Lihat semua</a>
+            </div>
+            <div class="divide-y divide-gray-100">
+                @foreach($pengumumanTerbaru as $p)
+                    <div class="px-5 py-4">
+                        <div class="flex items-center justify-between gap-3 mb-1">
+                            <p class="font-semibold text-gray-900">{{ $p->judul }}</p>
+                            <span class="text-xs text-gray-400 whitespace-nowrap">{{ $p->created_at->diffForHumans() }}</span>
+                        </div>
+                        <div class="text-sm text-gray-700 leading-relaxed">{{ $p->isiHtml() }}</div>
+                        @if($p->tautan)
+                            <a href="{{ $p->tautan }}" target="_blank" rel="noopener"
+                               class="inline-flex items-center mt-3 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl">
+                                <i class="fas fa-arrow-up-right-from-square mr-2"></i> {{ $p->teks_tautan ?: 'Buka Tautan' }}
+                            </a>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <!-- Welcome Alert -->
     <div class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-700 text-white p-6 rounded-2xl shadow-lg mb-8" role="alert">
         <div class="flex items-start space-x-4">

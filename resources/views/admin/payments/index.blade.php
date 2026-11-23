@@ -69,13 +69,7 @@
                                 </td>
                                 
                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
-                                    @switch($payment->kategori_pembayaran)
-                                        @case('asasi') <span class="text-emerald-700 font-semibold">Anggota ASASI</span> @break
-                                        @case('umum') Umum @break
-                                        @case('mahasiswa') Mahasiswa @break
-                                        @case('non-presenter') Non Presenter @break
-                                        @default {{ ucfirst($payment->kategori_pembayaran) }}
-                                    @endswitch
+                                    {{ $payment->labelKategori() }}
                                 </td>
                                 
                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-bold text-right">

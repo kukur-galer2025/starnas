@@ -23,6 +23,10 @@
                         <i class="fas fa-sync mr-1"></i> Reset
                     </a>
                 @endif
+                <a href="{{ route('admin.users.export-excel') }}" title="Ekspor semua data peserta ke Excel"
+                   class="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-slate-800 hover:bg-slate-900 whitespace-nowrap">
+                    <i class="fas fa-file-excel mr-1"></i> Ekspor Peserta
+                </a>
             </form>
         </div>
         <div class="overflow-x-auto">

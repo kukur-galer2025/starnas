@@ -92,4 +92,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Abstrak::class);
     }
+
+    public function pembayarans(): HasMany
+    {
+        return $this->hasMany(Pembayaran::class);
+    }
+
+    /**
+     * Kirim link reset password lewat email sistem (tercatat di Status Email admin).
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = route('password.reset', ['token' => $token, 'email' => $this->email]);
+
+        \App\Support\NotifPeserta::kirim($this, 'Reset Password', 'Permintaan reset password',
+            [
+                'Kami menerima permintaan untuk mengatur ulang password akun STARNAS ASASI 2026 Anda.',
+                'Klik tombol di bawah untuk membuat password baru. Link berlaku selama ' . config('auth.passwords.users.expire', 60) . ' menit.',
+                'Jika Anda tidak meminta reset password, abaikan email ini. Password Anda tidak akan berubah.',
+            ],
+            null, 'Buat Password Baru', $url, notifikasi: false);
+    }
 }

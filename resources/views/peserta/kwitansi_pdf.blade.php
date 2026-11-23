@@ -252,13 +252,7 @@
                         <td>
                             Biaya Pendaftaran Kategori: 
                             <strong style="color: #059669;">
-                                @switch($pembayaran->kategori_pembayaran)
-                                    @case('asasi') Anggota ASASI @break
-                                    @case('umum') Umum @break
-                                    @case('mahasiswa') Mahasiswa @break
-                                    @case('non-presenter') Non Presenter @break
-                                    @default {{ ucfirst($pembayaran->kategori_pembayaran) }}
-                                @endswitch
+                                {{ $pembayaran->labelKategori() }}
                             </strong>
                             @if($pembayaran->nomor_anggota_asasi)
                                 <br><small style="color: #7f8c8d;">(No. Anggota: {{ $pembayaran->nomor_anggota_asasi }})</small>

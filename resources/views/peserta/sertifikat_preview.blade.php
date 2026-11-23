@@ -581,6 +581,34 @@
             mix-blend-mode: multiply;
         }
 
+        /* QR verifikasi di tengah blok tanda tangan */
+        .qr-verifikasi {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            align-self: flex-end;
+            margin-bottom: 2px;
+        }
+
+        .qr-verifikasi img {
+            width: 74px;
+            height: 74px;
+            padding: 3px;
+            background: #ffffff;
+            border: 1px solid #c59b27;
+            border-radius: 6px;
+        }
+
+        .qr-label {
+            margin-top: 4px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 7.5px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+
         .sig-line {
             border-top: 1.8px solid #0f172a;
             width: 260px;
@@ -670,14 +698,10 @@
     {{-- ══════════ FLOATING TOOLBAR AKSI (ATAS) ══════════ --}}
     <div class="toolbar-wrapper no-print">
         
-        {{-- Pilihan Peran --}}
+        {{-- Peran ditentukan sistem (tidak bisa diganti peserta) --}}
         <div class="role-group">
             <span class="role-title">Peran:</span>
-            <button type="button" onclick="changeRole('Peserta Seminar', this)" class="role-pill {{ $peran_peserta == 'Peserta Seminar' ? 'active' : '' }}">Peserta</button>
-            <button type="button" onclick="changeRole('Pembicara', this)" class="role-pill {{ $peran_peserta == 'Pembicara' ? 'active' : '' }}">Pembicara</button>
-            <button type="button" onclick="changeRole('Presenter', this)" class="role-pill {{ $peran_peserta == 'Presenter' ? 'active' : '' }}">Presenter</button> 
-            <button type="button" onclick="changeRole('Panitia', this)" class="role-pill {{ $peran_peserta == 'Panitia' ? 'active' : '' }}">Panitia</button>
-            <button type="button" onclick="changeRole('Web Developer', this)" class="role-pill {{ $peran_peserta == 'Web Developer' ? 'active' : '' }}">Web Dev</button>
+            <span class="role-pill active" style="cursor: default;">{{ $peran_peserta }}</span>
         </div>
 
         <div class="toolbar-sep"></div>
@@ -875,6 +899,14 @@
                     </div>
                 </div>
 
+                {{-- QR verifikasi keaslian (tengah, di antara dua tanda tangan) --}}
+                @isset($qr_verifikasi)
+                    <div class="qr-verifikasi">
+                        <img src="{{ $qr_verifikasi }}" alt="QR verifikasi sertifikat">
+                        <p class="qr-label">Scan untuk verifikasi</p>
+                    </div>
+                @endisset
+
                 {{-- TTD Kanan: Ketua Panitia Pelaksana --}}
                 <div class="sig-col">
                     <p class="sig-role">Ketua Panitia Pelaksana</p>
@@ -893,7 +925,11 @@
 
     {{-- ══════════ JAVASCRIPT: INTERAKSI & DOWNLOAD GAMBAR HD BEBAS OKLCH ══════════ --}}
     <script>
-        // GANTI PERAN VIA TOOLBAR
+        // WARNA BADGE SESUAI PERAN (peran ditentukan server)
+        document.addEventListener('DOMContentLoaded', function () {
+            changeRole(@json($peran_peserta));
+        });
+
         function changeRole(roleName, btn) {
             const badge = document.getElementById('role-badge');
             

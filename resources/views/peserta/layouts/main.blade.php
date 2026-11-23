@@ -164,6 +164,20 @@
                                <i class="fas fa-history w-5 h-5 mr-4"></i>
                                Riwayat Status
                             </a>
+
+                            @php
+                                $pengumumanBaru = \App\Models\Notifikasi::where('user_id', Auth::id())
+                                    ->whereNotNull('pengumuman_id')->whereNull('dibaca_at')->count();
+                            @endphp
+                            <a href="{{ route('peserta.pengumuman') }}"
+                               class="nav-item flex items-center p-4 text-base font-medium rounded-xl transition-all duration-300
+                               @if(Request::routeIs('peserta.pengumuman')) active bg-primary/5 text-white border-l-4 border-primary @else text-gray-600 hover:bg-gray-50 hover:text-primary hover:border-l-4 hover:border-primary/50 @endif">
+                               <i class="fas fa-bullhorn w-5 h-5 mr-4"></i>
+                               <span class="flex-1">Pengumuman</span>
+                               @if($pengumumanBaru > 0)
+                                   <span class="ml-2 text-xs font-bold bg-red-500 text-white px-2 py-0.5 rounded-full">{{ $pengumumanBaru }}</span>
+                               @endif
+                            </a>
                         </nav>
                     </div>
                 </aside>

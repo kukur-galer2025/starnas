@@ -224,12 +224,19 @@
                                                         Unduh Kwitansi
                                                     </a>
                                                     
-                                                    {{-- PERBAIKAN 4: Tombol lebih besar (py-3) dan teks lebih besar (text-base) --}}
-                                                    <a href="{{ route('peserta.sertifikat.download') }}"
-                                                        class="inline-flex items-center justify-center w-full px-4 py-3 bg-primary hover:bg-emerald-700 text-white font-bold rounded-2xl text-base transition-colors duration-200 group shadow-md hover:shadow-lg">
-                                                        <i class="fas fa-award mr-2"></i>
-                                                        Unduh Sertifikat
-                                                    </a>
+                                                    {{-- Sertifikat baru terbuka setelah acara selesai (config/starnas.php) --}}
+                                                    @if(\App\Http\Controllers\PesertaController::sertifikatSudahDibuka())
+                                                        <a href="{{ route('peserta.sertifikat.download') }}"
+                                                            class="inline-flex items-center justify-center w-full px-4 py-3 bg-primary hover:bg-emerald-700 text-white font-bold rounded-2xl text-base transition-colors duration-200 group shadow-md hover:shadow-lg">
+                                                            <i class="fas fa-award mr-2"></i>
+                                                            Unduh Sertifikat
+                                                        </a>
+                                                    @else
+                                                        <div class="w-full px-4 py-3 bg-gray-100 border border-gray-200 text-gray-500 font-semibold rounded-2xl text-sm text-center" title="Sertifikat dibuka setelah acara selesai">
+                                                            <i class="fas fa-lock mr-1"></i> Sertifikat tersedia
+                                                            {{ \App\Http\Controllers\PesertaController::waktuSertifikatDibuka()->translatedFormat('j F Y, H.i') }} WIB
+                                                        </div>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </td>

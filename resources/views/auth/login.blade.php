@@ -256,8 +256,8 @@
                             <i class="fas fa-exclamation-triangle mr-1"></i>{{ $errors->first() }}
                         </div>
                     @endif
-                    @if(session('success'))
-                        <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm" role="status">{{ session('success') }}</div>
+                    @if(session('success') || session('status'))
+                        <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm" role="status">{{ session('success') ?: session('status') }}</div>
                     @endif
 
                     <div class="form-space-compact">
@@ -287,13 +287,16 @@
                                 Ingat saya
                             </label>
                         </div>
+                        <a href="{{ route('password.request') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700">
+                            Lupa password?
+                        </a>
                     </div>
 
                     <!-- Hubungi Admin WhatsApp -->
                     <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-xl whatsapp-section text-center p-3">
                         <p class="text-xs text-emerald-900 mb-2 font-medium">
                             <i class="fas fa-info-circle mr-1 text-emerald-600"></i>
-                            Jika lupa password atau butuh bantuan, hubungi admin
+                            Butuh bantuan? Hubungi admin
                         </p>
                         <a href="https://wa.me/6285225519882" target="_blank"
                             class="inline-flex items-center justify-center py-1.5 px-3 rounded-lg btn-whatsapp font-medium text-xs">

@@ -42,6 +42,9 @@
                 ['admin.abstracts.index', 'admin.abstracts.*', 'fa-file-lines', 'Abstrak', $badgeAbstrak, 'bg-amber-500'],
                 ['admin.payments.index', 'admin.payments.*', 'fa-money-check-dollar', 'Pembayaran', $badgeBayar, 'bg-amber-500'],
             ]],
+            ['Komunikasi', [
+                ['admin.pengumuman.index', 'admin.pengumuman.*', 'fa-bullhorn', 'Pengumuman', 0, ''],
+            ]],
             ['Data & Laporan', [
                 ['admin.users.index', 'admin.users.*', 'fa-users', 'Pengguna', 0, ''],
                 ['admin.emails.index', 'admin.emails.*', 'fa-envelope-circle-check', 'Status Email', $badgeEmail, 'bg-red-500'],

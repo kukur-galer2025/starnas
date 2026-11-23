@@ -6,6 +6,8 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\VerifikasiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +49,12 @@ Route::view('/komite', 'peserta.komite')->name('komite');
 Route::view('/rundown-starnas', 'peserta.rundown_starnas')->name('rundown.starnas');
 Route::view('/rundown-rakornas', 'peserta.rundown_rakornas')->name('rundown.rakornas');
 
+// Verifikasi keaslian sertifikat / LoA (hasil scan QR code)
+Route::get('/verifikasi/{kode}', [VerifikasiController::class, 'show'])
+    ->middleware('throttle:60,1')
+    ->where('kode', '[A-Za-z0-9\-]+')
+    ->name('verifikasi');
+
 
 // =========================================================================
 // 2. GUEST ROUTES (Khusus pengunjung yang belum login)
@@ -65,6 +73,14 @@ Route::middleware('guest')->group(function () {
         Route::post('/login', 'login')->middleware('throttle:10,1');
         Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');
         Route::get('/auth/google/callback', 'handleGoogleCallback')->name('auth.google.callback');
+    });
+
+    // Lupa password (link reset dikirim lewat email)
+    Route::controller(PasswordResetController::class)->group(function () {
+        Route::get('/lupa-password', 'showLinkRequestForm')->name('password.request');
+        Route::post('/lupa-password', 'sendResetLink')->middleware('throttle:5,1')->name('password.email');
+        Route::get('/reset-password/{token}', 'showResetForm')->name('password.reset');
+        Route::post('/reset-password', 'reset')->middleware('throttle:10,1')->name('password.update');
     });
 });
 
@@ -116,15 +132,27 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/{emailLog}/resend', 'resendEmail')->name('resend');
             });
 
+            // Pengumuman / broadcast ke peserta
+            Route::prefix('pengumuman')->name('pengumuman.')->group(function () {
+                Route::get('/', 'pengumumanIndex')->name('index');
+                Route::post('/', 'pengumumanStore')->name('store');
+                Route::delete('/{pengumuman}', 'pengumumanDestroy')->name('destroy');
+            });
+
+            // Ekspor Excel
+            Route::get('/users/export-excel', 'exportPesertaExcel')->name('users.export-excel');
+
             // Laporan Pembayaran
             Route::prefix('reports/payments')->name('reports.payments.')->group(function () {
                 Route::get('/', 'showPaymentsReport')->name('index');
                 Route::get('/export-pdf', 'exportPaymentsPdf')->name('export-pdf');
+                Route::get('/export-excel', 'exportPaymentsExcel')->name('export-excel');
             });
 
             // Manajemen Abstrak
             Route::prefix('abstracts')->name('abstracts.')->group(function () {
                 Route::get('/', 'manageAbstracts')->name('index');
+                Route::get('/export-excel', 'exportAbstrakExcel')->name('export-excel');
                 Route::get('/{abstrak}', 'showAbstract')->name('show');
                 Route::post('/{abstrak}/verify', 'verifyAbstract')->name('verify');
                 Route::post('/{abstrak}/reject', 'rejectAbstract')->name('reject');
@@ -150,6 +178,9 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/baca-semua', 'bacaSemuaNotifikasi')->name('baca-semua');
                 Route::get('/{notifikasi}/buka', 'bukaNotifikasi')->name('buka');
             });
+
+            // Pengumuman dari panitia
+            Route::get('/pengumuman', 'pengumuman')->name('pengumuman');
 
             // Sinkronisasi status abstrak & pembayaran (dipoll browser)
             Route::get('/status-sinkron', 'statusSinkron')->name('status.sinkron');
@@ -182,6 +213,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/upload', 'storeAbstrak')->name('store');
                 Route::get('/{abstrak}/download', 'downloadAbstrak')->name('download');
                 Route::get('/{abstrak}/loa', 'downloadLoa')->name('loa');
+                Route::patch('/{abstrak}/penulis', 'updatePenulis')->name('penulis');
                 Route::delete('/{abstrak}/delete', 'deleteAbstrak')->name('delete');
             });
         });

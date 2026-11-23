@@ -16,6 +16,7 @@ class Abstrak extends Model
     protected $fillable = [
         'user_id',
         'judul_abstrak',
+        'penulis',
         'file_abstrak_path',
         'file_abstrak_original_name',
         'status_abstrak', // pending, diterima, ditolak

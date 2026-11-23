@@ -85,13 +85,7 @@
                             <i class="fas fa-tag mr-2"></i> Kategori Dipilih
                         </dt>
                         <dd class="text-lg font-bold text-gray-900">
-                            @switch($pembayaran->kategori_pembayaran)
-                                @case('asasi') Anggota ASASI @break
-                                @case('umum') Umum @break
-                                @case('mahasiswa') Mahasiswa @break
-                                @case('non-presenter') Non Presenter @break
-                                @default {{ ucfirst($pembayaran->kategori_pembayaran) }}
-                            @endswitch
+                            {{ $pembayaran->labelKategori() }}
                         </dd>
                     </div>
                     
@@ -102,13 +96,13 @@
                         </dd>
                     </div>
 
-                    @if ($pembayaran->kategori_pembayaran == 'asasi' && $pembayaran->nomor_anggota_asasi)
+                    @if (str_starts_with((string) $pembayaran->kategori_pembayaran, 'asasi'))
                         <div class="pt-2 border-t border-red-200">
                             <dt class="text-xs font-semibold text-red-500 uppercase flex items-center">
                                 <i class="fas fa-id-card mr-2"></i> Nomor Anggota ASASI
                             </dt>
                             <dd class="text-lg font-bold text-red-700 bg-red-100 px-2 py-1 rounded">
-                                {{ $pembayaran->nomor_anggota_asasi }}
+                                {{ $pembayaran->nomor_anggota_asasi ?: '(tidak diisi peserta)' }}
                             </dd>
                             <p class="text-xs text-red-600 mt-1 font-semibold">
                                 *Wajib cek validitas nomor ini secara manual.
@@ -120,11 +114,35 @@
 
             <div class="border-t pt-6">
                 <h3 class="text-xl font-bold mb-4 text-emerald-600 flex items-center gap-2">
+                    <i class="fas fa-file-lines"></i> Abstrak Peserta
+                </h3>
+                @if($peringatanKategori)
+                    <div class="mb-3 flex items-start gap-2 p-3 rounded-lg border bg-amber-50 border-amber-300 text-amber-900 text-sm">
+                        <i class="fas fa-triangle-exclamation mt-0.5"></i>
+                        <span>{{ $peringatanKategori }}</span>
+                    </div>
+                @endif
+                @forelse($abstraksPeserta as $abs)
+                    @php
+                        $warnaAbs = ['diterima' => 'bg-green-100 text-green-800', 'ditolak' => 'bg-red-100 text-red-800'][$abs->status_abstrak] ?? 'bg-yellow-100 text-yellow-800';
+                        $labelAbs = ['diterima' => 'Diterima', 'ditolak' => 'Ditolak'][$abs->status_abstrak] ?? 'Menunggu';
+                    @endphp
+                    <a href="{{ route('admin.abstracts.show', $abs->id) }}" class="flex items-start justify-between gap-3 py-2 border-b border-dashed last:border-0 hover:bg-gray-50 rounded">
+                        <span class="text-sm text-gray-800 leading-snug">{{ $abs->judul_abstrak }}</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap {{ $warnaAbs }}">{{ $labelAbs }}</span>
+                    </a>
+                @empty
+                    <p class="text-sm text-gray-500">Peserta ini belum mengunggah abstrak.</p>
+                @endforelse
+            </div>
+
+            <div class="border-t pt-6">
+                <h3 class="text-xl font-bold mb-4 text-emerald-600 flex items-center gap-2">
                     <i class="fas fa-user-check"></i> Data Peserta
                 </h3>
                 <dl class="space-y-3 text-sm">
                     <div class="flex justify-between items-start border-b border-dashed pb-2"><dt class="font-medium text-gray-500 w-1/3">Nama:</dt><dd class="text-gray-900 font-semibold w-2/3 text-right">{{ $pembayaran->user->nama_lengkap }}</dd></div>
-                    <div class="flex justify-between items-start border-b border-dashed pb-2"><dt class="font-medium text-gray-500 w-1/3">Email:</dt><dd class="text-gray-900 w-2/3 text-right">{{ $pembayaran->user->email }}</dd></div>
+                    <div class="flex justify-between items-start border-b border-dashed pb-2"><dt class="font-medium text-gray-500 w-1/3">Email:</dt><dd class="text-gray-900 w-2/3 text-right break-all">{{ $pembayaran->user->email }}</dd></div>
                     <div class="flex justify-between items-start border-b border-dashed pb-2"><dt class="font-medium text-gray-500 w-1/3">Tgl Upload:</dt><dd class="text-gray-900 w-2/3 text-right">{{ $pembayaran->created_at->format('d M Y H:i') }} WIB</dd></div>
                     <div class="flex justify-between items-start"><dt class="font-medium text-gray-500 w-1/3">Role Akun:</dt><dd class="text-gray-900 w-2/3 text-right">{{ ucfirst($pembayaran->user->role) }}</dd></div>
                 </dl>
@@ -188,7 +206,7 @@
                     </h3>
                     <p class="text-sm text-gray-600 mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
                         Periksa kesesuaian antara <strong class="text-emerald-700">Nominal Seharusnya</strong> dengan <strong class="text-emerald-700">Bukti Transfer</strong>. 
-                        @if($pembayaran->kategori_pembayaran == 'asasi')
+                        @if(str_starts_with((string) $pembayaran->kategori_pembayaran, 'asasi'))
                         <br>Periksa juga validitas <strong class="text-red-600">Nomor Anggota ASASI</strong> yang dilampirkan.
                         @endif
                     </p>

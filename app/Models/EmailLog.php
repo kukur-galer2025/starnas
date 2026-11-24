@@ -15,6 +15,7 @@ class EmailLog extends Model
 
     protected $fillable = [
         'user_id',
+        'pengumuman_id',
         'email',
         'subjek',
         'payload',

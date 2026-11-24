@@ -57,11 +57,12 @@ class NotifPeserta
     }
 
     /** Catat email dengan status "antri" tanpa langsung mengirim. */
-    public static function catatEmail(User $user, string $subjek, string $judul, array $baris, ?string $catatan = null, ?string $tombolTeks = null, ?string $tombolUrl = null): ?EmailLog
+    public static function catatEmail(User $user, string $subjek, string $judul, array $baris, ?string $catatan = null, ?string $tombolTeks = null, ?string $tombolUrl = null, ?int $pengumumanId = null): ?EmailLog
     {
         try {
             return EmailLog::create([
                 'user_id' => $user->id,
+                'pengumuman_id' => $pengumumanId,
                 'email' => $user->email,
                 'subjek' => $subjek,
                 'payload' => [

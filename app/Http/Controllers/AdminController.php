@@ -454,7 +454,12 @@ class AdminController extends Controller
                              ->withInput()
                              ->with('show_reject_form', true);
         }
-        
+
+        // Abstrak yang sudah dibayar & diverifikasi tidak boleh ditolak: LoA dan pembayarannya jadi tidak sah.
+        if (Pembayaran::where('abstrak_id', $abstrak->id)->where('status', 'verified')->exists()) {
+            return redirect()->back()->with('error', 'Abstrak ini sudah dibayar dan pembayarannya terverifikasi, sehingga tidak dapat ditolak. Hubungi peserta terlebih dahulu bila memang perlu dibatalkan.');
+        }
+
         $abstrak->update([
             'status_abstrak' => 'ditolak',
             'catatan_reviewer_abstrak' => $request->catatan_reviewer_abstrak
@@ -670,7 +675,7 @@ class AdminController extends Controller
 
             if ($pengumuman->kirim_email) {
                 $log = NotifPeserta::catatEmail($user, 'Pengumuman: ' . $pengumuman->judul, $pengumuman->judul, $paragraf,
-                    null, $pengumuman->teks_tautan ?? 'Lihat di Dashboard', $pengumuman->tautan ?? $urlHalaman);
+                    null, $pengumuman->teks_tautan ?? 'Lihat di Dashboard', $pengumuman->tautan ?? $urlHalaman, $pengumuman->id);
                 if ($log) {
                     $idEmail[] = $log->id;
                 }
@@ -691,9 +696,17 @@ class AdminController extends Controller
 
     public function pengumumanDestroy(Pengumuman $pengumuman)
     {
+        // Email yang masih antre (belum terkirim) ikut dibatalkan, mis. bila link Zoom-nya salah.
+        $dibatalkan = EmailLog::where('pengumuman_id', $pengumuman->id)->where('status', 'antri')->delete();
+
         $pengumuman->delete(); // notifikasi lonceng ikut terhapus (cascade)
 
-        return back()->with('success', 'Pengumuman "' . $pengumuman->judul . '" dihapus dari dashboard peserta.');
+        $pesan = 'Pengumuman "' . $pengumuman->judul . '" dihapus dari dashboard peserta.';
+        if ($dibatalkan) {
+            $pesan .= ' ' . $dibatalkan . ' email yang belum terkirim dibatalkan.';
+        }
+
+        return back()->with('success', $pesan);
     }
 
     // ==========================================================

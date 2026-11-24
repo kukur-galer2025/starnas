@@ -187,6 +187,8 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
+                            {{-- Satu peserta = satu sertifikat: tombol hanya di pembayaran terverifikasi pertama --}}
+                            @php $sertifikatSudahTampil = false; @endphp
                             @foreach($riwayat_pembayaran as $item)
                                     <tr class="hover:bg-gray-50 transition-colors duration-150">
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -256,7 +258,9 @@
                                                     </a>
                                                     
                                                     {{-- Sertifikat baru terbuka setelah acara selesai (config/starnas.php) --}}
-                                                    @if(\App\Http\Controllers\PesertaController::sertifikatSudahDibuka())
+                                                    @if($sertifikatSudahTampil)
+                                                        {{-- sudah ditampilkan di baris lain --}}
+                                                    @elseif(\App\Http\Controllers\PesertaController::sertifikatSudahDibuka())
                                                         <a href="{{ route('peserta.sertifikat.download') }}"
                                                             class="inline-flex items-center justify-center w-full px-4 py-3 bg-primary hover:bg-emerald-700 text-white font-bold rounded-2xl text-base transition-colors duration-200 group shadow-md hover:shadow-lg">
                                                             <i class="fas fa-award mr-2"></i>
@@ -268,6 +272,7 @@
                                                             {{ \App\Http\Controllers\PesertaController::waktuSertifikatDibuka()->translatedFormat('j F Y, H.i') }} WIB
                                                         </div>
                                                     @endif
+                                                    @php $sertifikatSudahTampil = true; @endphp
                                                 @endif
                                             </div>
                                         </td>

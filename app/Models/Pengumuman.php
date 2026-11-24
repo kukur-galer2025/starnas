@@ -25,7 +25,7 @@ class Pengumuman extends Model
         'online' => 'Pemakalah online (pembayaran terverifikasi)',
         'non_presenter' => 'Non Presenter (pembayaran terverifikasi)',
         'presenter' => 'Presenter (abstrak diterima)',
-        'belum_bayar' => 'Peserta yang belum membayar',
+        'belum_bayar' => 'Belum mengunggah bukti bayar',
     ];
 
     public function admin()
@@ -60,13 +60,14 @@ class Pengumuman extends Model
         return match ($target) {
             'terverifikasi' => $peserta->whereHas('pembayarans', $bayarVerified),
             'onsite' => $peserta->whereHas('pembayarans', fn ($q) => $q->where('status', 'verified')
-                ->where('kategori_pembayaran', 'like', '%\_onsite')),
+                ->where('kategori_pembayaran', 'like', '%onsite')),
             'online' => $peserta->whereHas('pembayarans', fn ($q) => $q->where('status', 'verified')
-                ->where('kategori_pembayaran', 'like', '%\_online')),
+                ->where('kategori_pembayaran', 'like', '%online')),
             'non_presenter' => $peserta->whereHas('pembayarans', fn ($q) => $q->where('status', 'verified')
                 ->where('kategori_pembayaran', 'non-presenter')),
             'presenter' => $peserta->whereHas('abstraks', fn ($q) => $q->where('status_abstrak', 'diterima')),
-            'belum_bayar' => $peserta->whereDoesntHave('pembayarans', $bayarVerified),
+            // Belum punya pembayaran menunggu/terverifikasi (yang sedang diverifikasi tidak ikut diingatkan)
+            'belum_bayar' => $peserta->whereDoesntHave('pembayarans', fn ($q) => $q->whereIn('status', ['pending', 'verified'])),
             default => $peserta,
         };
     }

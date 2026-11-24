@@ -621,6 +621,11 @@ class PesertaController extends Controller
             return redirect()->route('peserta.abstrak.upload')->with('error', 'Abstrak yang sudah diterima tidak dapat dihapus.');
         }
 
+        // Abstrak yang punya pembayaran menunggu/terverifikasi tidak boleh dihapus (pembayaran kehilangan abstraknya).
+        if (Pembayaran::where('abstrak_id', $abstrak->id)->whereIn('status', Pembayaran::STATUS_AKTIF)->exists()) {
+            return redirect()->route('peserta.abstrak.upload')->with('error', 'Abstrak ini sudah memiliki pembayaran yang sedang diproses atau terverifikasi, sehingga tidak dapat dihapus. Hubungi panitia bila perlu.');
+        }
+
         if ($abstrak->file_abstrak_path && Storage::disk('public')->exists($abstrak->file_abstrak_path)) {
             Storage::disk('public')->delete($abstrak->file_abstrak_path);
         }

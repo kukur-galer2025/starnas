@@ -409,7 +409,11 @@
         <tbody>
             <tr>
                 <td style="text-align: center;">1</td>
-                <td>Biaya Registrasi STARNAS ASASI &amp; ICoABCD 2026</td>
+                <td>Biaya Registrasi STARNAS ASASI &amp; ICoABCD 2026
+                    @if($pembayaran->abstrak)
+                        <br><small style="color: #64748b;">Abstrak: {{ $pembayaran->abstrak->judul_abstrak }}</small>
+                    @endif
+                </td>
                 <td>{{ $kategoriLabel }}</td>
                 <td style="text-align: right; font-weight: bold;">Rp {{ number_format($pembayaran->nominal, 0, ',', '.') }}</td>
             </tr>

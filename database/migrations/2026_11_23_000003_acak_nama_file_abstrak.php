@@ -16,11 +16,15 @@ return new class extends Migration
     {
         $disk = Storage::disk('public');
 
+        // Pola dicocokkan di PHP (REGEXP tidak tersedia di semua database, mis. SQLite untuk test)
         DB::table('abstracts')
-            ->where('file_abstrak_path', 'regexp', '^abstrak/abstrak_[0-9]+_[0-9]+\\.[A-Za-z0-9]+$')
+            ->where('file_abstrak_path', 'like', 'abstrak/abstrak_%')
             ->orderBy('id')
             ->each(function ($row) use ($disk) {
                 $lama = $row->file_abstrak_path;
+                if (!preg_match('#^abstrak/abstrak_[0-9]+_[0-9]+\.[A-Za-z0-9]+$#', $lama)) {
+                    return;
+                }
                 $ext = strtolower(pathinfo($lama, PATHINFO_EXTENSION));
                 $baru = 'abstrak/abstrak_' . $row->user_id . '_' . Str::random(32) . '.' . $ext;
 

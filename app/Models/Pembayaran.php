@@ -16,6 +16,7 @@ class Pembayaran extends Model
 
     protected $fillable = [
         'user_id',
+        'abstrak_id',
         'bukti_path',
         'status',
         'catatan_admin',
@@ -52,11 +53,25 @@ class Pembayaran extends Model
         return self::STATUS[$this->status] ?? ucfirst((string) $this->status);
     }
 
+    /** Status yang masih "memakai" slot pembayaran (tidak boleh upload lagi). */
+    public const STATUS_AKTIF = ['pending', 'verified'];
+
+    public function isPemakalah(): bool
+    {
+        return $this->kategori_pembayaran !== 'non-presenter';
+    }
+
     /**
      * Relasi: Pembayaran ini dimiliki oleh satu User (Peserta).
      */
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** Abstrak yang dibayar (kategori pemakalah). Non Presenter: null. */
+    public function abstrak()
+    {
+        return $this->belongsTo(Abstrak::class, 'abstrak_id');
     }
 }

@@ -28,4 +28,16 @@ class Abstrak extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // Setiap abstrak yang dipresentasikan dibayar terpisah
+    public function pembayarans()
+    {
+        return $this->hasMany(Pembayaran::class, 'abstrak_id');
+    }
+
+    /** Pembayaran terbaru untuk abstrak ini (status bayar yang berlaku). */
+    public function pembayaranTerakhir()
+    {
+        return $this->hasOne(Pembayaran::class, 'abstrak_id')->latestOfMany();
+    }
 }

@@ -88,7 +88,25 @@
                             {{ $pembayaran->labelKategori() }}
                         </dd>
                     </div>
-                    
+
+                    @if($pembayaran->isPemakalah())
+                        <div class="pt-2 border-t border-emerald-200">
+                            <dt class="text-xs font-semibold text-gray-500 uppercase flex items-center">
+                                <i class="fas fa-file-lines mr-2"></i> Untuk Abstrak
+                            </dt>
+                            <dd class="text-sm font-semibold text-gray-900 leading-snug">
+                                @if($pembayaran->abstrak)
+                                    <a href="{{ route('admin.abstracts.show', $pembayaran->abstrak->id) }}" class="hover:underline">{{ $pembayaran->abstrak->judul_abstrak }}</a>
+                                    <span class="block text-xs font-normal text-gray-500 mt-0.5">
+                                        {{ \App\Support\Verifikasi::idNaskah($pembayaran->abstrak->id) }} · Status abstrak: {{ ucfirst($pembayaran->abstrak->status_abstrak) }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-500 italic">Tidak terkait abstrak (data lama)</span>
+                                @endif
+                            </dd>
+                        </div>
+                    @endif
+
                     <div class="pt-2 border-t border-emerald-200">
                         <dt class="text-xs font-semibold text-gray-500 uppercase">Nominal Seharusnya</dt>
                         <dd class="text-3xl font-extrabold text-emerald-700">

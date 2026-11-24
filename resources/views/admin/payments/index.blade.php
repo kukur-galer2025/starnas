@@ -68,8 +68,13 @@
                                     <i class="fas fa-user-circle mr-1 text-gray-400"></i> {{ $payment->user->nama_lengkap }}
                                 </td>
                                 
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
-                                    {{ $payment->labelKategori() }}
+                                <td class="px-4 py-4 text-sm text-gray-700 font-medium">
+                                    <span class="whitespace-nowrap">{{ $payment->labelKategori() }}</span>
+                                    @if($payment->abstrak)
+                                        <span class="block text-xs font-normal text-gray-500 max-w-[16rem] truncate" title="{{ $payment->abstrak->judul_abstrak }}">
+                                            <i class="fas fa-file-lines mr-1"></i>{{ $payment->abstrak->judul_abstrak }}
+                                        </span>
+                                    @endif
                                 </td>
                                 
                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-bold text-right">

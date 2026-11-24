@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\Pembayaran;
 use App\Models\User;
 use App\Models\Abstrak;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -58,11 +59,12 @@ class PesertaController extends Controller
     {
         $userId = Auth::id();
         $abstrak = Abstrak::where('user_id', $userId)->selectRaw('count(*) as jumlah, max(updated_at) as terakhir')->first();
-        $pembayaran = Pembayaran::where('user_id', $userId)->latest()->first();
+        // Semua pembayaran (bisa lebih dari satu: per abstrak)
+        $pembayaran = Pembayaran::where('user_id', $userId)->selectRaw('count(*) as jumlah, max(updated_at) as terakhir')->first();
 
         return response()->json([
             'abstrak' => $abstrak && $abstrak->jumlah ? $abstrak->jumlah . '|' . $abstrak->terakhir : 'none',
-            'pembayaran' => $pembayaran ? $pembayaran->status . '|' . $pembayaran->updated_at?->timestamp : 'none',
+            'pembayaran' => $pembayaran && $pembayaran->jumlah ? $pembayaran->jumlah . '|' . $pembayaran->terakhir : 'none',
         ])->header('Cache-Control', 'no-store, max-age=0');
     }
 
@@ -123,28 +125,54 @@ class PesertaController extends Controller
     }
 
     /**
-     * Kategori pemakalah baru boleh dibayar setelah abstrak diterima.
-     * Kategori non-presenter tidak wajib abstrak. Peserta yang sudah punya
-     * data pembayaran (data lama) tidak dibatasi.
+     * Abstrak peserta beserta status bayarnya. Pembayaran pemakalah dilakukan PER ABSTRAK:
+     * abstrak bisa dibayar bila sudah diterima (atau sudah pernah dibayar = data lama)
+     * dan belum punya pembayaran yang menunggu/terverifikasi.
      */
-    private function bolehBayarPemakalah(): bool
+    private function abstrakDenganStatusBayar(int $userId)
     {
-        $userId = Auth::id();
-
-        if (Pembayaran::where('user_id', $userId)->exists()) {
-            return true;
-        }
-
-        return Abstrak::where('user_id', $userId)->where('status_abstrak', 'diterima')->exists();
+        return Abstrak::with('pembayaranTerakhir')
+            ->where('user_id', $userId)
+            ->oldest()
+            ->get()
+            ->each(function (Abstrak $abstrak) {
+                $bayar = $abstrak->pembayaranTerakhir;
+                $abstrak->setAttribute('bisa_dibayar',
+                    ($abstrak->status_abstrak === 'diterima' || $bayar !== null)
+                    && !($bayar && in_array($bayar->status, Pembayaran::STATUS_AKTIF, true)));
+            });
     }
 
-    public function uploadBukti()
+    /** Pembayaran Non Presenter terakhir (tanpa abstrak). */
+    private function pembayaranNonPresenter(int $userId): ?Pembayaran
+    {
+        return Pembayaran::where('user_id', $userId)->whereNull('abstrak_id')
+            ->where('kategori_pembayaran', 'non-presenter')->latest()->first();
+    }
+
+    /** Non Presenter hanya untuk peserta yang belum punya pembayaran aktif apa pun. */
+    private function bolehNonPresenter(int $userId): bool
+    {
+        return !Pembayaran::where('user_id', $userId)->whereIn('status', Pembayaran::STATUS_AKTIF)->exists();
+    }
+
+    public function uploadBukti(Request $request)
     {
         $user = Auth::user();
-        $pembayaran = Pembayaran::where('user_id', $user->id)->latest()->first();
-        $bolehPemakalah = $this->bolehBayarPemakalah();
+        $abstraks = $this->abstrakDenganStatusBayar($user->id);
+        $nonPresenter = $this->pembayaranNonPresenter($user->id);
+        $bolehNonPresenter = $this->bolehNonPresenter($user->id);
+        $bolehPemakalah = $abstraks->contains('bisa_dibayar', true);
 
-        return view('peserta.pembayaran_upload', compact('pembayaran', 'bolehPemakalah'));
+        // ?abstrak=ID (mis. dari tombol di email) langsung memilih abstrak tersebut
+        $dipilih = $abstraks->first(fn ($a) => $a->bisa_dibayar && (int) $a->id === (int) $request->query('abstrak'))
+            ?? $abstraks->firstWhere('bisa_dibayar', true);
+
+        $pembayaran = Pembayaran::where('user_id', $user->id)->latest()->first();
+
+        return view('peserta.pembayaran_upload', compact(
+            'pembayaran', 'abstraks', 'nonPresenter', 'bolehNonPresenter', 'bolehPemakalah', 'dipilih'
+        ));
     }
 
     public function storeBukti(Request $request)
@@ -164,7 +192,13 @@ class PesertaController extends Controller
                     }),
                     'nullable', 'string', 'max:255'
                 ],
+                'abstrak_id' => [
+                    Rule::requiredIf(fn () => $request->input('kategori_pembayaran') !== 'non-presenter'),
+                    'nullable', 'integer',
+                ],
                 'bukti_bayar' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            ], [
+                'abstrak_id.required' => 'Pilih abstrak yang akan dibayar.',
             ]);
 
             $harga = [
@@ -178,40 +212,69 @@ class PesertaController extends Controller
                 throw new \Exception("Kategori pembayaran tidak valid.");
             }
 
-            if ($kategori !== 'non-presenter' && !$this->bolehBayarPemakalah()) {
-                return $this->hasilUpload($request, 'peserta.abstrak.upload', 'error', 'Kategori pemakalah: silakan upload abstrak terlebih dahulu. Pembayaran dapat dilakukan setelah abstrak Anda diterima.');
-            }
-
-            $nominal = $harga[$kategori];
-            $pembayaran = Pembayaran::where('user_id', Auth::id())->first();
-
-            if ($pembayaran && in_array($pembayaran->status, ['pending', 'verified'])) {
-                return $this->hasilUpload($request, 'peserta.riwayat', 'error', 'Pembayaran sedang diproses atau sudah diverifikasi.');
-            }
-
-            // Hapus file lama jika ada
-            if ($pembayaran && $pembayaran->bukti_path) {
-                if (Storage::disk('public')->exists($pembayaran->bukti_path)) {
-                    Storage::disk('public')->delete($pembayaran->bukti_path);
-                }
-            }
+            $userId = Auth::id();
+            $pemakalah = $kategori !== 'non-presenter';
+            $abstrakId = $pemakalah ? (int) $request->input('abstrak_id') : null;
 
             $path = $request->file('bukti_bayar')->store('bukti_pembayaran', 'public');
 
-            Pembayaran::updateOrCreate(
-                ['user_id' => Auth::id()],
-                [
+            // Cek & simpan dalam satu transaksi (baris terkunci) agar satu abstrak tidak dibayar dua kali
+            $hasil = DB::transaction(function () use ($userId, $pemakalah, $abstrakId, $kategori, $harga, $path, $request) {
+                if ($pemakalah) {
+                    $abstrak = Abstrak::where('user_id', $userId)->whereKey($abstrakId)->lockForUpdate()->first();
+                    if (!$abstrak) {
+                        return ['gagal' => 'Abstrak yang dipilih tidak ditemukan.'];
+                    }
+
+                    $riwayatAbstrak = Pembayaran::where('abstrak_id', $abstrak->id)->latest()->lockForUpdate()->first();
+                    if ($abstrak->status_abstrak !== 'diterima' && !$riwayatAbstrak) {
+                        return ['gagal' => 'Abstrak "' . $abstrak->judul_abstrak . '" belum diterima. Pembayaran pemakalah dapat dilakukan setelah abstrak diterima.', 'ke' => 'peserta.abstrak.upload'];
+                    }
+                    if ($riwayatAbstrak && in_array($riwayatAbstrak->status, Pembayaran::STATUS_AKTIF, true)) {
+                        return ['gagal' => 'Pembayaran untuk abstrak "' . $abstrak->judul_abstrak . '" sedang diproses atau sudah diverifikasi.', 'ke' => 'peserta.riwayat'];
+                    }
+                    $lama = $riwayatAbstrak;
+                } else {
+                    User::whereKey($userId)->lockForUpdate()->first();
+                    if (!$this->bolehNonPresenter($userId)) {
+                        return ['gagal' => 'Anda sudah memiliki pembayaran yang sedang diproses atau sudah diverifikasi.', 'ke' => 'peserta.riwayat'];
+                    }
+                    $abstrak = null;
+                    $lama = $this->pembayaranNonPresenter($userId);
+                }
+
+                $data = [
+                    'user_id' => $userId,
+                    'abstrak_id' => $abstrak?->id,
                     'bukti_path' => $path,
                     'status' => 'pending',
                     'catatan_admin' => null,
                     'kategori_pembayaran' => $kategori,
-                    'nominal' => $nominal,
+                    'nominal' => $harga[$kategori],
                     'nomor_anggota_asasi' => $request->input('nomor_anggota_asasi'),
-                ]
-            );
+                ];
 
+                // Upload ulang setelah ditolak: pakai baris yang sama (bukti lama diganti)
+                $buktiLama = $lama?->bukti_path;
+                $lama ? $lama->update($data) : Pembayaran::create($data);
+
+                return ['abstrak' => $abstrak, 'bukti_lama' => $buktiLama];
+            });
+
+            if (isset($hasil['gagal'])) {
+                Storage::disk('public')->delete($path);
+                return isset($hasil['ke'])
+                    ? $this->hasilUpload($request, $hasil['ke'], 'error', $hasil['gagal'])
+                    : $this->gagalUpload($request, $hasil['gagal']);
+            }
+
+            if ($hasil['bukti_lama'] && Storage::disk('public')->exists($hasil['bukti_lama'])) {
+                Storage::disk('public')->delete($hasil['bukti_lama']);
+            }
+
+            $untuk = $hasil['abstrak'] ? ' untuk abstrak "' . $hasil['abstrak']->judul_abstrak . '"' : '';
             NotifPeserta::kirim(Auth::user(), 'Bukti Pembayaran Diterima Sistem', 'Bukti pembayaran Anda sudah kami terima',
-                ['Bukti pembayaran Anda berhasil diunggah dan sedang menunggu verifikasi admin.', 'Kami akan mengirim email lagi setelah proses verifikasi selesai.'],
+                ['Bukti pembayaran' . $untuk . ' berhasil diunggah dan sedang menunggu verifikasi admin.', 'Kami akan mengirim email lagi setelah proses verifikasi selesai.'],
                 null, 'Lihat Riwayat Status', route('peserta.riwayat'));
 
             return $this->hasilUpload($request, 'peserta.riwayat', 'success', 'Bukti pembayaran berhasil diunggah. Konfirmasi dikirim ke email Anda, cek juga folder Spam.');
@@ -254,8 +317,8 @@ class PesertaController extends Controller
     public function riwayat()
     {
         $user = Auth::user();
-        $riwayat_pembayaran = Pembayaran::where('user_id', $user->id)->latest()->get();
-        $abstraks = Abstrak::where('user_id', $user->id)->latest()->get();
+        $riwayat_pembayaran = Pembayaran::with('abstrak:id,judul_abstrak')->where('user_id', $user->id)->latest()->get();
+        $abstraks = Abstrak::with('pembayaranTerakhir')->where('user_id', $user->id)->latest()->get();
 
         return view('peserta.riwayat', compact('riwayat_pembayaran', 'abstraks'));
     }

@@ -257,6 +257,9 @@
                             @if($pembayaran->nomor_anggota_asasi)
                                 <br><small style="color: #7f8c8d;">(No. Anggota: {{ $pembayaran->nomor_anggota_asasi }})</small>
                             @endif
+                            @if($pembayaran->abstrak)
+                                <br><small style="color: #7f8c8d;">Abstrak: {{ $pembayaran->abstrak->judul_abstrak }}</small>
+                            @endif
                         </td>
                         <td style="text-align: right;">Rp {{ number_format($pembayaran->nominal, 0, ',', '.') }}</td>
                     </tr>

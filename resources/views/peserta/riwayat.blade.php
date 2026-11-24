@@ -81,6 +81,31 @@
                                             <i class="fas fa-file-signature mr-1.5"></i> Unduh LoA
                                         </a>
                                     @endif
+
+                                    {{-- Status pembayaran abstrak ini (tiap abstrak dibayar terpisah) --}}
+                                    @php $bayarAbs = $abs->pembayaranTerakhir; @endphp
+                                    @if($bayarAbs || $st === 'diterima')
+                                        <div class="mt-2 text-xs">
+                                            <span class="font-medium text-gray-500">Pembayaran:</span>
+                                            @if(!$bayarAbs)
+                                                <span class="font-semibold text-gray-700">Belum dibayar</span>
+                                                <a href="{{ route('peserta.pembayaran.upload', ['abstrak' => $abs->id]) }}"
+                                                   class="ml-1 inline-flex items-center px-3 py-1 bg-primary hover:bg-emerald-700 text-white font-semibold rounded-full transition-colors duration-200">
+                                                    <i class="fas fa-wallet mr-1.5"></i> Bayar
+                                                </a>
+                                            @elseif($bayarAbs->status === 'verified')
+                                                <span class="font-semibold text-green-700">Terverifikasi</span>
+                                            @elseif($bayarAbs->status === 'pending')
+                                                <span class="font-semibold text-amber-700">Menunggu verifikasi</span>
+                                            @else
+                                                <span class="font-semibold text-red-700">Ditolak</span>
+                                                <a href="{{ route('peserta.pembayaran.upload', ['abstrak' => $abs->id]) }}"
+                                                   class="ml-1 inline-flex items-center px-3 py-1 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-full transition-colors duration-200">
+                                                    <i class="fas fa-redo mr-1.5"></i> Upload Ulang
+                                                </a>
+                                            @endif
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             @if($abs->catatan_reviewer_abstrak)
@@ -172,6 +197,12 @@
                                                 <i class="fas fa-clock mr-1"></i>
                                                 {{ $item->created_at->format('H:i') }} WIB
                                             </div>
+                                            <div class="text-xs text-gray-600 mt-1.5 whitespace-normal max-w-[16rem]">
+                                                {{ $item->labelKategori() }}
+                                                @if($item->abstrak)
+                                                    <span class="block text-gray-500 italic leading-snug">Abstrak: {{ \Illuminate\Support\Str::limit($item->abstrak->judul_abstrak, 70) }}</span>
+                                                @endif
+                                            </div>
                                         </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -208,7 +239,7 @@
                                                 {{-- JIKA DITOLAK, MUNCUL TOMBOL UPLOAD ULANG --}}
                                                 @if($item->status == 'rejected')
                                                     {{-- PERBAIKAN 2: Tombol lebih besar (py-3) dan teks lebih besar (text-base) --}}
-                                                    <a href="{{ route('peserta.pembayaran.upload') }}"
+                                                    <a href="{{ route('peserta.pembayaran.upload', array_filter(['abstrak' => $item->abstrak_id])) }}"
                                                         class="inline-flex items-center justify-center w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-2xl text-base transition-colors duration-200 group shadow-md hover:shadow-lg">
                                                         <i class="fas fa-redo mr-2"></i>
                                                         Upload Ulang

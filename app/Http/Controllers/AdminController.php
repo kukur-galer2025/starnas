@@ -192,7 +192,7 @@ class AdminController extends Controller
     {
         $search = $request->input('search');
         
-        $paymentsQuery = Pembayaran::with('user')->orderBy('created_at', 'desc');
+        $paymentsQuery = Pembayaran::with(['user', 'abstrak:id,judul_abstrak'])->orderBy('created_at', 'desc');
 
         if ($search) {
             $paymentsQuery->whereHas('user', function ($query) use ($search) {
@@ -207,7 +207,7 @@ class AdminController extends Controller
 
     public function showPayment(Pembayaran $pembayaran)
     {
-        $pembayaran->load('user');
+        $pembayaran->load(['user', 'abstrak']);
         $emailLogs = EmailLog::where('user_id', $pembayaran->user_id)->latest()->take(8)->get();
         $abstraksPeserta = Abstrak::where('user_id', $pembayaran->user_id)->latest()->get();
 
@@ -216,6 +216,8 @@ class AdminController extends Controller
         $peringatanKategori = match (true) {
             $pembayaran->kategori_pembayaran === 'non-presenter' && $adaDiterima
                 => 'Peserta ini punya abstrak DITERIMA tetapi membayar kategori Non Presenter (Rp100.000). Bila tetap akan presentasi, minta peserta membayar kategori pemakalah. Sertifikat peserta ini akan tertulis "Peserta Seminar".',
+            $pembayaran->kategori_pembayaran !== 'non-presenter' && $pembayaran->abstrak && $pembayaran->abstrak->status_abstrak !== 'diterima'
+                => 'Abstrak yang dibayar ("' . $pembayaran->abstrak->judul_abstrak . '") belum berstatus DITERIMA. Pastikan abstraknya sudah direview sebelum memverifikasi.',
             $pembayaran->kategori_pembayaran !== 'non-presenter' && !$adaDiterima
                 => 'Peserta ini membayar kategori PEMAKALAH tetapi belum punya abstrak yang diterima. Pastikan abstraknya sudah direview sebelum memverifikasi.',
             default => null,
@@ -250,7 +252,7 @@ class AdminController extends Controller
         ]);
         
         NotifPeserta::kirim($pembayaran->user, 'Pembayaran Terverifikasi', 'Pembayaran Anda telah diverifikasi',
-            ['Terima kasih, pembayaran pendaftaran Anda telah kami terima dan diverifikasi.', 'Kwitansi dapat diunduh melalui halaman Riwayat Status di dashboard peserta.'],
+            ['Terima kasih, pembayaran pendaftaran Anda' . ($pembayaran->abstrak ? ' untuk abstrak "' . $pembayaran->abstrak->judul_abstrak . '"' : '') . ' telah kami terima dan diverifikasi.', 'Kwitansi dapat diunduh melalui halaman Riwayat Status di dashboard peserta.'],
             $request->input('catatan_admin'), 'Buka Riwayat Status', route('peserta.riwayat'));
 
         return redirect()->route('admin.payments.show', $pembayaran->id)->with('success', 'Pembayaran dari ' . $pembayaran->user->nama_lengkap . ' berhasil diverifikasi.');
@@ -278,8 +280,8 @@ class AdminController extends Controller
         ]);
         
         NotifPeserta::kirim($pembayaran->user, 'Pembayaran Ditolak', 'Bukti pembayaran Anda belum dapat diverifikasi',
-            ['Mohon maaf, bukti pembayaran Anda ditolak. Silakan unggah ulang bukti pembayaran yang sesuai.'],
-            $request->catatan_admin, 'Upload Ulang Bukti', route('peserta.pembayaran.upload'));
+            ['Mohon maaf, bukti pembayaran Anda' . ($pembayaran->abstrak ? ' untuk abstrak "' . $pembayaran->abstrak->judul_abstrak . '"' : '') . ' ditolak. Silakan unggah ulang bukti pembayaran yang sesuai.'],
+            $request->catatan_admin, 'Upload Ulang Bukti', route('peserta.pembayaran.upload', array_filter(['abstrak' => $pembayaran->abstrak_id])));
 
         return redirect()->route('admin.payments.show', $pembayaran->id)->with('success', 'Pembayaran dari ' . $pembayaran->user->nama_lengkap . ' berhasil ditolak.');
     }
@@ -427,8 +429,8 @@ class AdminController extends Controller
         ]);
         
         NotifPeserta::kirim($abstrak->user, 'Abstrak Diterima', 'Selamat, abstrak Anda diterima',
-            ['Abstrak Anda berjudul "' . $abstrak->judul_abstrak . '" telah diterima.', 'Anda sekarang dapat melanjutkan ke tahap pembayaran pendaftaran.'],
-            $abstrak->catatan_reviewer_abstrak, 'Lanjut ke Pembayaran', route('peserta.pembayaran.upload'));
+            ['Abstrak Anda berjudul "' . $abstrak->judul_abstrak . '" telah diterima.', 'Anda sekarang dapat melanjutkan ke tahap pembayaran untuk abstrak ini. Setiap abstrak yang dipresentasikan dibayar terpisah.'],
+            $abstrak->catatan_reviewer_abstrak, 'Lanjut ke Pembayaran', route('peserta.pembayaran.upload', ['abstrak' => $abstrak->id]));
 
         return redirect()->route('admin.abstracts.show', $abstrak->id)->with('success', 'Abstrak dari ' . $abstrak->user->nama_lengkap . ' berhasil diverifikasi.');
     }
@@ -707,19 +709,23 @@ class AdminController extends Controller
             ->get();
 
         $baris = $users->values()->map(function (User $u, $i) {
-            $bayar = $u->pembayarans->first();
+            // Peserta bisa punya beberapa pembayaran (satu per abstrak): ringkas semuanya
+            $bayars = $u->pembayarans;
+            $kategori = $bayars->map->labelKategori()->unique()->implode(', ');
+            $status = $bayars->isEmpty() ? 'Belum bayar'
+                : $bayars->groupBy('status')->map(fn ($g, $s) => $g->count() . ' ' . (Pembayaran::STATUS[$s] ?? $s))->implode(', ');
             return [
                 $i + 1, $u->nama_lengkap, $u->email, $u->nomor_handphone ?: '-', $u->jenis_kelamin ?: '-',
                 $u->pekerjaan ?: '-', $u->institusi ?: '-', $u->provinsi ?: '-',
-                $bayar ? $bayar->labelKategori() : '-', $bayar ? $bayar->labelStatus() : 'Belum bayar',
-                $bayar ? (int) $bayar->nominal : 0, $u->abstraks_count, $u->abstrak_diterima_count,
+                $kategori ?: '-', $status,
+                (int) $bayars->where('status', 'verified')->sum('nominal'), $u->abstraks_count, $u->abstrak_diterima_count,
                 $u->google_id ? 'Google' : 'Email', $u->created_at?->format('d/m/Y H:i'),
             ];
         });
 
         return EksporExcel::unduh('Data_Peserta_STARNAS_' . now()->format('Ymd_His'), 'Peserta',
             ['No', 'Nama Lengkap', 'Email', 'No. HP', 'Jenis Kelamin', 'Pekerjaan', 'Institusi', 'Provinsi',
-             'Kategori Bayar', 'Status Bayar', 'Nominal', 'Jumlah Abstrak', 'Abstrak Diterima', 'Daftar Via', 'Tanggal Daftar'],
+             'Kategori Bayar', 'Status Bayar', 'Nominal Terverifikasi', 'Jumlah Abstrak', 'Abstrak Diterima', 'Daftar Via', 'Tanggal Daftar'],
             $baris);
     }
 
@@ -728,7 +734,7 @@ class AdminController extends Controller
         $status = $request->input('status', 'all');
         $search = $request->input('search');
 
-        $abstraks = Abstrak::with(['user.pembayarans' => fn ($q) => $q->latest()])
+        $abstraks = Abstrak::with(['user', 'pembayaranTerakhir'])
             ->when($status !== 'all', fn ($q) => $q->where('status_abstrak', $status))
             ->when($search, fn ($q) => $q->where(fn ($w) => $w->where('judul_abstrak', 'like', '%' . $search . '%')
                 ->orWhereHas('user', fn ($u) => $u->where('nama_lengkap', 'like', '%' . $search . '%')->orWhere('email', 'like', '%' . $search . '%'))))
@@ -738,7 +744,7 @@ class AdminController extends Controller
         $labelStatus = ['pending' => 'Menunggu Review', 'diterima' => 'Diterima', 'ditolak' => 'Ditolak'];
 
         $baris = $abstraks->values()->map(function (Abstrak $a, $i) use ($labelStatus) {
-            $bayar = $a->user?->pembayarans->first();
+            $bayar = $a->pembayaranTerakhir;
             return [
                 $i + 1, Verifikasi::idNaskah($a->id), $a->judul_abstrak, $a->penulis ?: ($a->user->nama_lengkap ?? '-'),
                 $a->user->nama_lengkap ?? '-', $a->user->email ?? '-', $a->user->nomor_handphone ?? '-', $a->user->institusi ?? '-',

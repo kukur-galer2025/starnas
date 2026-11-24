@@ -66,11 +66,76 @@
             </div>
 
             @php
-                // Logika untuk menentukan apakah user boleh upload
-                $canUpload = !$pembayaran || $pembayaran->status === 'rejected';
+                $statusBayar = [
+                    'pending'  => ['Menunggu Verifikasi', 'bg-amber-100 text-amber-800 border-amber-200', 'fa-clock'],
+                    'verified' => ['Terverifikasi', 'bg-green-100 text-green-800 border-green-200', 'fa-check-circle'],
+                    'rejected' => ['Ditolak, unggah ulang', 'bg-red-100 text-red-800 border-red-200', 'fa-times-circle'],
+                ];
+                $canUpload = $bolehPemakalah || $bolehNonPresenter;
+                // Catatan penolakan untuk target yang sedang dipilih
+                $ditolakSebelumnya = $dipilih?->pembayaranTerakhir?->status === 'rejected'
+                    ? $dipilih->pembayaranTerakhir
+                    : (!$dipilih && $nonPresenter?->status === 'rejected' ? $nonPresenter : null);
             @endphp
 
-            {{-- ALERT: JIKA TIDAK BISA UPLOAD (PENDING/VERIFIED) --}}
+            {{-- PEMBAYARAN PER ABSTRAK --}}
+            @if($abstraks->isNotEmpty())
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-200">
+                    <h4 class="font-bold text-gray-800 flex items-center mb-1">
+                        <i class="fas fa-layer-group text-primary mr-2"></i> Pembayaran per Abstrak
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-4">Setiap abstrak yang dipresentasikan dibayar terpisah. Pilih abstrak yang akan dibayar.</p>
+
+                    <div class="space-y-3">
+                        @foreach($abstraks as $abs)
+                            @php
+                                $bayarAbs = $abs->pembayaranTerakhir;
+                                $aktif = $dipilih && $dipilih->id === $abs->id;
+                            @endphp
+                            <div class="rounded-xl border p-4 transition {{ $aktif ? 'border-primary bg-emerald-50/60 ring-2 ring-primary/20' : 'border-gray-200' }}">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <p class="text-xs text-gray-500">Abstrak #{{ $loop->iteration }}</p>
+                                        <p class="text-sm font-semibold text-gray-900 leading-snug">{{ $abs->judul_abstrak }}</p>
+                                        <div class="mt-1.5 flex flex-wrap gap-1.5">
+                                            @if($bayarAbs)
+                                                @php [$lbl, $cls, $ico] = $statusBayar[$bayarAbs->status] ?? [ucfirst($bayarAbs->status), 'bg-gray-100 text-gray-700 border-gray-200', 'fa-question-circle']; @endphp
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $cls }}">
+                                                    <i class="fas {{ $ico }} mr-1"></i> {{ $lbl }}
+                                                </span>
+                                            @elseif($abs->status_abstrak === 'diterima')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border bg-gray-100 text-gray-700 border-gray-200">
+                                                    <i class="fas fa-wallet mr-1"></i> Belum dibayar
+                                                </span>
+                                            @elseif($abs->status_abstrak === 'ditolak')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border bg-red-50 text-red-700 border-red-200">Abstrak ditolak</span>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border bg-yellow-50 text-yellow-800 border-yellow-200">
+                                                    <i class="fas fa-hourglass-half mr-1"></i> Menunggu review abstrak
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @if($abs->bisa_dibayar)
+                                        @if($aktif)
+                                            <span class="shrink-0 inline-flex items-center px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">
+                                                <i class="fas fa-check mr-1.5"></i> Dipilih
+                                            </span>
+                                        @else
+                                            <a href="{{ route('peserta.pembayaran.upload', ['abstrak' => $abs->id]) }}#form-bukti"
+                                               class="shrink-0 inline-flex items-center px-4 py-2 rounded-xl border border-primary text-primary hover:bg-emerald-50 text-xs font-bold transition">
+                                                <i class="fas fa-wallet mr-1.5"></i> Bayar abstrak ini
+                                            </a>
+                                        @endif
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- ALERT: TIDAK ADA YANG PERLU DIBAYAR --}}
             @if(!$canUpload)
                 <div
                     class="bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-primary text-emerald-950 p-6 rounded-2xl shadow-lg">
@@ -80,15 +145,15 @@
                         </div>
                         <div class="flex-1">
                             <h4 class="font-bold text-lg mb-2 text-emerald-900">Status Upload</h4>
-                            @if($pembayaran->status == 'verified')
+                            @if($abstraks->contains(fn ($a) => $a->status_abstrak === 'pending' && !$a->pembayaranTerakhir))
                                 <p class="text-emerald-800 leading-relaxed">
-                                    <strong class="text-emerald-600">Pembayaran Anda telah terverifikasi!</strong>
-                                    Anda tidak perlu mengunggah bukti pembayaran lagi.
+                                    <strong class="text-emerald-700">Semua pembayaran yang tersedia sudah diproses.</strong>
+                                    Abstrak lain yang masih direview dapat dibayar setelah diterima.
                                 </p>
                             @else
                                 <p class="text-emerald-800 leading-relaxed">
-                                    <strong class="text-amber-600">Bukti pembayaran Anda sedang menunggu verifikasi.</strong>
-                                    Harap tunggu keputusan dari admin.
+                                    <strong class="text-emerald-600">Semua pembayaran Anda sudah diunggah.</strong>
+                                    Pantau statusnya di halaman <a href="{{ route('peserta.riwayat') }}" class="underline font-semibold">Riwayat Status</a>.
                                 </p>
                             @endif
                         </div>
@@ -112,25 +177,40 @@
                                     class="block w-full p-3 bg-gray-50 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-300">
                                     <option value="" selected disabled>-- Pilih Kategori & Tarif Pendaftaran --</option>
                                     <optgroup label="📍 KATEGORI ONSITE (OFFLINE DI YOGYAKARTA)">
-                                        <option value="asasi_onsite" @disabled(!($bolehPemakalah ?? false))>Anggota ASASI (Pemakalah Onsite) — Rp 450.000</option>
-                                        <option value="umum_onsite" @disabled(!($bolehPemakalah ?? false))>Umum (Pemakalah Onsite) — Rp 500.000</option>
-                                        <option value="mahasiswa_onsite" @disabled(!($bolehPemakalah ?? false))>Mahasiswa (Pemakalah Onsite) — Rp 250.000</option>
+                                        <option value="asasi_onsite" @disabled(!$bolehPemakalah)>Anggota ASASI (Pemakalah Onsite) — Rp 450.000</option>
+                                        <option value="umum_onsite" @disabled(!$bolehPemakalah)>Umum (Pemakalah Onsite) — Rp 500.000</option>
+                                        <option value="mahasiswa_onsite" @disabled(!$bolehPemakalah)>Mahasiswa (Pemakalah Onsite) — Rp 250.000</option>
                                     </optgroup>
                                     <optgroup label="💻 KATEGORI ONLINE (VIRTUAL ZOOM)">
-                                        <option value="asasi_online" @disabled(!($bolehPemakalah ?? false))>Anggota ASASI (Pemakalah Online) — Rp 250.000</option>
-                                        <option value="umum_online" @disabled(!($bolehPemakalah ?? false))>Umum (Pemakalah Online) — Rp 300.000</option>
-                                        <option value="mahasiswa_online" @disabled(!($bolehPemakalah ?? false))>Mahasiswa (Pemakalah Online) — Rp 150.000</option>
-                                        <option value="non-presenter">Non Presenter (Online) — Rp 100.000</option>
+                                        <option value="asasi_online" @disabled(!$bolehPemakalah)>Anggota ASASI (Pemakalah Online) — Rp 250.000</option>
+                                        <option value="umum_online" @disabled(!$bolehPemakalah)>Umum (Pemakalah Online) — Rp 300.000</option>
+                                        <option value="mahasiswa_online" @disabled(!$bolehPemakalah)>Mahasiswa (Pemakalah Online) — Rp 150.000</option>
+                                        <option value="non-presenter" @disabled(!$bolehNonPresenter)>Non Presenter (Online) — Rp 100.000</option>
                                     </optgroup>
                                 </select>
-                                @if(!($bolehPemakalah ?? false))
+                                @if(!$bolehPemakalah)
                                     <p class="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                                         <i class="fas fa-info-circle mr-1"></i>
-                                        Kategori pemakalah baru bisa dipilih setelah abstrak Anda <strong>diterima</strong>.
-                                        <a href="{{ route('peserta.abstrak.upload') }}" class="underline font-semibold">Upload abstrak</a>.
-                                        Jika hanya hadir tanpa presentasi, pilih <strong>Non Presenter</strong>.
+                                        Kategori pemakalah baru bisa dipilih untuk abstrak yang sudah <strong>diterima</strong> dan belum dibayar.
+                                        <a href="{{ route('peserta.abstrak.upload') }}" class="underline font-semibold">Kelola abstrak</a>.
+                                        @if($bolehNonPresenter) Jika hanya hadir tanpa presentasi, pilih <strong>Non Presenter</strong>. @endif
                                     </p>
                                 @endif
+                            </div>
+
+                            {{-- Field: Abstrak yang dibayar (kategori pemakalah) --}}
+                            <div id="pilih-abstrak" class="hidden">
+                                <label for="abstrak_id" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-file-lines text-primary mr-2"></i>
+                                    Abstrak yang Dibayar <span class="text-red-500">*</span>
+                                </label>
+                                <select id="abstrak_id" name="abstrak_id" disabled
+                                    class="block w-full p-3 bg-gray-50 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-300">
+                                    @foreach($abstraks->where('bisa_dibayar', true) as $abs)
+                                        <option value="{{ $abs->id }}" @selected($dipilih && $dipilih->id === $abs->id)>{{ \Illuminate\Support\Str::limit($abs->judul_abstrak, 90) }}</option>
+                                    @endforeach
+                                </select>
+                                <p class="text-xs text-gray-500 mt-2">Satu bukti transfer untuk satu abstrak.</p>
                             </div>
 
                             {{-- Display Harga (Javascript controlled) --}}
@@ -182,7 +262,7 @@
                             <p id="bukti-error" class="hidden mt-2 text-sm text-red-500"></p>
 
                             {{-- Alert: Bukti Ditolak --}}
-                            @if($pembayaran && $pembayaran->status == 'rejected')
+                            @if($ditolakSebelumnya)
                                 <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
                                     <div class="flex items-start space-x-3">
                                         <i class="fas fa-exclamation-triangle text-red-500 mt-1 flex-shrink-0"></i>
@@ -190,7 +270,7 @@
                                             <h5 class="font-semibold text-red-800 text-sm">Bukti Sebelumnya Ditolak</h5>
                                             <p class="text-red-700 text-xs mt-1">
                                                 Catatan Admin:
-                                                <strong>{{ $pembayaran->catatan_admin ?? 'Tidak ada catatan' }}</strong>
+                                                <strong>{{ $ditolakSebelumnya->catatan_admin ?? 'Tidak ada catatan' }}</strong>
                                             </p>
                                             <p class="text-red-600 text-xs mt-2">Silakan unggah bukti pembayaran yang baru.</p>
                                         </div>
@@ -237,45 +317,37 @@
         {{-- KOLOM SIDEBAR (STATUS DAN TIPS) --}}
         <div class="lg:col-span-1 space-y-6 order-1 lg:order-2">
             
-            {{-- STATUS CARD --}}
-            <div class="bg-white rounded-2xl shadow-xl p-6 border-t-4 
-                @if(!$pembayaran) border-red-500 
-                @elseif($pembayaran->status == 'pending') border-orange-500 
-                @elseif($pembayaran->status == 'verified') border-green-500 
-                @else border-red-500 @endif">
+            {{-- STATUS CARD: ringkasan semua pembayaran (per abstrak + non presenter) --}}
+            @php
+                $semuaBayar = $abstraks->pluck('pembayaranTerakhir')->push($nonPresenter)->filter();
+                $belumDibayar = $abstraks->filter(fn ($a) => $a->bisa_dibayar && !$a->pembayaranTerakhir)->count();
+                $jumlah = fn ($st) => $semuaBayar->where('status', $st)->count();
+                $warnaKartu = $jumlah('rejected') ? 'border-red-500' : ($jumlah('pending') ? 'border-orange-500' : ($semuaBayar->isNotEmpty() && !$belumDibayar ? 'border-green-500' : 'border-red-500'));
+            @endphp
+            <div class="bg-white rounded-2xl shadow-xl p-6 border-t-4 {{ $warnaKartu }}">
+                <h4 class="text-lg font-bold text-gray-800 mb-4">Status Verifikasi</h4>
 
-                <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-lg font-bold text-gray-800">Status Verifikasi</h4>
-                    <i class="fas @if(!$pembayaran) fa-times-circle text-red-500 
-                    @elseif($pembayaran->status == 'pending') fa-clock text-orange-500 
-                    @elseif($pembayaran->status == 'verified') fa-check-circle text-green-500 
-                    @else fa-times-circle text-red-500 @endif text-xl"></i>
-                </div>
-
-                @if(!$pembayaran)
-                    <p class="text-2xl font-bold text-red-500 mb-3">Belum Ada Bukti</p>
-                    <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                        <div class="bg-red-500 h-2 rounded-full" style="width: 0%"></div>
-                    </div>
+                @if($semuaBayar->isEmpty())
+                    <p class="text-2xl font-bold text-red-500 mb-2">Belum Ada Bukti</p>
                     <p class="text-sm text-gray-600">Silakan unggah bukti transfer untuk memulai verifikasi</p>
-                @elseif($pembayaran->status == 'pending')
-                    <p class="text-2xl font-bold text-orange-500 mb-3">Menunggu Verifikasi</p>
-                    <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                        <div class="bg-orange-500 h-2 rounded-full" style="width: 50%"></div>
-                    </div>
-                    <p class="text-sm text-gray-600">Bukti Anda sedang diperiksa oleh admin</p>
-                @elseif($pembayaran->status == 'verified')
-                    <p class="text-2xl font-bold text-green-500 mb-3">Terverifikasi</p>
-                    <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                        <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
-                    </div>
-                    <p class="text-sm text-gray-600">Pembayaran berhasil! Status Anda aktif</p>
                 @else
-                    <p class="text-2xl font-bold text-red-500 mb-3">Ditolak</p>
-                    <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                        <div class="bg-red-500 h-2 rounded-full" style="width: 25%"></div>
-                    </div>
-                    <p class="text-sm text-gray-600">Bukti ditolak. Silakan upload ulang</p>
+                    <ul class="space-y-2 text-sm">
+                        @foreach(['verified' => ['Terverifikasi', 'text-green-600', 'fa-check-circle'], 'pending' => ['Menunggu verifikasi', 'text-orange-500', 'fa-clock'], 'rejected' => ['Ditolak', 'text-red-500', 'fa-times-circle']] as $st => [$lbl, $warna, $ico])
+                            @if($jumlah($st))
+                                <li class="flex items-center justify-between">
+                                    <span class="flex items-center gap-2 text-gray-700"><i class="fas {{ $ico }} {{ $warna }}"></i> {{ $lbl }}</span>
+                                    <strong class="{{ $warna }}">{{ $jumlah($st) }}</strong>
+                                </li>
+                            @endif
+                        @endforeach
+                        @if($belumDibayar)
+                            <li class="flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-gray-700"><i class="fas fa-wallet text-gray-400"></i> Abstrak belum dibayar</span>
+                                <strong class="text-gray-700">{{ $belumDibayar }}</strong>
+                            </li>
+                        @endif
+                    </ul>
+                    <a href="{{ route('peserta.riwayat') }}" class="mt-4 inline-flex text-xs font-semibold text-primary hover:underline">Lihat riwayat lengkap &rarr;</a>
                 @endif
             </div>
 
@@ -345,7 +417,7 @@
         // ==============================================
         // == SCRIPT BARU UNTUK KATEGORI DAN HARGA ==
         // ==============================================
-        document.getElementById('kategori_pembayaran').addEventListener('change', function (e) {
+        document.getElementById('kategori_pembayaran')?.addEventListener('change', function (e) {
             const kategori = e.target.value;
             const hargaDisplayDiv = document.getElementById('harga-display');
             const hargaTeks = document.getElementById('harga-teks');
@@ -365,6 +437,14 @@
                 // Non Presenter
                 'non-presenter': 'Rp 100.000'
             };
+
+            // Kategori pemakalah wajib memilih abstrak yang dibayar
+            const pilihAbstrak = document.getElementById('pilih-abstrak');
+            const abstrakSelect = document.getElementById('abstrak_id');
+            const pemakalah = kategori && kategori !== 'non-presenter';
+            pilihAbstrak.classList.toggle('hidden', !pemakalah);
+            abstrakSelect.disabled = !pemakalah;
+            pemakalah ? abstrakSelect.setAttribute('required', 'required') : abstrakSelect.removeAttribute('required');
 
             if (kategori in harga) {
                 // 1. Tampilkan harga
